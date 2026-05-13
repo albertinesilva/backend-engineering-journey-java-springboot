@@ -42,7 +42,6 @@ import java.util.List;
 public record ProductCreateRequest(
     String name,
     String description,
-    Boolean active,
     Double price,
     String imgUrl,
     Instant date,
