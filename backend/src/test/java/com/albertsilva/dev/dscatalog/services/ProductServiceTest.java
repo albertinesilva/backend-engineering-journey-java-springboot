@@ -193,7 +193,7 @@ class ProductServiceTest {
       Mockito.when(productMapper.toResponsePage(page)).thenReturn(expectedPage);
 
       // Act
-      Page<ProductResponse> result = service.findAllPaged(name, pageable);
+      Page<ProductResponse> result = service.search(name, pageable);
 
       // Assert
       Assertions.assertNotNull(result);
@@ -216,7 +216,7 @@ class ProductServiceTest {
       Mockito.when(productMapper.toResponsePage(page)).thenReturn(expectedPage);
 
       // Act
-      Page<ProductResponse> result = service.findAllPaged(name, pageable);
+      Page<ProductResponse> result = service.search(name, pageable);
 
       // Assert
       Assertions.assertNotNull(result);
@@ -240,7 +240,7 @@ class ProductServiceTest {
       Mockito.when(productMapper.toResponsePage(page)).thenReturn(expectedPage);
 
       // Act
-      Page<ProductResponse> result = service.findAllPaged(name, pageable);
+      Page<ProductResponse> result = service.search(name, pageable);
 
       // Assert
       Assertions.assertNotNull(result);
@@ -271,7 +271,7 @@ class ProductServiceTest {
       Mockito.when(productMapper.toResponse(product)).thenReturn(expectedResponse);
 
       // Act
-      ProductResponse result = service.insert(request);
+      ProductResponse result = service.create(request);
 
       // Assert
       Assertions.assertNotNull(result);

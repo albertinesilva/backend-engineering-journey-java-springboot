@@ -74,9 +74,6 @@ public class ProductMapper {
     entity.setImgUrl(request.imgUrl());
     entity.setDate(request.date());
 
-    // trata null → default false
-    entity.setActive(request.active() != null ? request.active() : false);
-
     return entity;
   }
 
@@ -115,10 +112,6 @@ public class ProductMapper {
 
     if (request.description() != null) {
       entity.setDescription(request.description());
-    }
-
-    if (request.active() != null) {
-      entity.setActive(request.active());
     }
 
     if (request.price() != null) {
@@ -204,6 +197,7 @@ public class ProductMapper {
         entity.getPrice(),
         entity.getImgUrl(),
         entity.getDate(),
+        entity.isActive(),
         entity.getCategories().stream().map(cat -> new CategoryResponse(
             cat.getId(),
             cat.getName(),

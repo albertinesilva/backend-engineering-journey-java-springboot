@@ -3,6 +3,11 @@ package com.albertsilva.dev.dscatalog.dto.product.request;
 import java.time.Instant;
 import java.util.List;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
+
 /**
  * DTO utilizado para atualização de produtos.
  *
@@ -20,18 +25,25 @@ import java.util.List;
  *
  * @param name        novo nome
  * @param description nova descrição
- * @param active      novo status
  * @param price       novo preço
  * @param imgUrl      nova imagem
  * @param date        nova data
  * @param categoryIds novos IDs de categorias
  */
 public record ProductUpdateRequest(
-                String name,
-                String description,
-                Boolean active,
-                Double price,
-                String imgUrl,
-                Instant date,
-                List<Long> categoryIds) {
+    @NotBlank(message = "O nome do produto é obrigatório") 
+    @Size(min = 3, max = 100, message = "O nome do produto deve conter entre 3 e 100 caracteres") 
+    String name,
+
+    @Size(min = 3, max = 200, message = "A descrição do produto deve conter no máximo 200 caracteres") 
+    String description,
+
+    @Positive(message = "O preço deve ser um valor positivo") 
+    Double price,
+    String imgUrl,
+
+    @PastOrPresent(message = "A data deve ser no passado ou presente") 
+    Instant date,
+
+    List<Long> categoryIds) {
 }
