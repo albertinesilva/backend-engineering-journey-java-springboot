@@ -101,9 +101,11 @@ A aplicação contempla a organização em camadas: `controller`, `service` e `r
 ┃ ┗ 📂 `exceptions`  
 ┃ ┃ ┣ 📂 `enums`  
 ┃ ┃ ┃ ┗ 📄 `ErrorType.java`  
-┃ ┃ ┗ 📂 `advice`  
-┃ ┃ ┃ ┣ 📄 `ControllerExceptionHandler.java`  
+┃ ┃ ┗ 📂 `handler`  
+┃ ┃ ┃ ┗ 📄 `ControllerExceptionHandler.java`  
+┃ ┃ ┗ 📂 `response`  
 ┃ ┃ ┃ ┗ 📄 `ProblemDetails.java`  
+┃ ┃ ┃  
 ┣ 📄 `DscatalogApplication.java`  
 ┣ 📂 `resources`  
 ┃ ┣ 📂 `db`  
