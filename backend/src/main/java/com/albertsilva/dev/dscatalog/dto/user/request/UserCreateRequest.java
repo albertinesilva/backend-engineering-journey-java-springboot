@@ -7,7 +7,6 @@ import com.albertsilva.dev.dscatalog.validation.user.annotation.UniqueEmail;
 import com.albertsilva.dev.dscatalog.validation.user.annotation.UserCreateValid;
 import com.albertsilva.dev.dscatalog.validation.user.annotation.ValidEmail;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
