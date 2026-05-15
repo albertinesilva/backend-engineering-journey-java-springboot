@@ -75,4 +75,42 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
    */
   Page<Category> findByNameContainingIgnoreCase(String name, Pageable pageable);
 
+  /**
+   * Verifica se existe uma categoria com o nome informado (ignorando
+   * maiúsculas/minúsculas).
+   *
+   * <p>
+   * <b>Uso típico:</b>
+   * </p>
+   * <ul>
+   * <li>Validação de unicidade antes de criar ou atualizar uma categoria</li>
+   * </ul>
+   *
+   * @param name nome da categoria a ser verificada
+   * @return {@code true} se existir uma categoria com o nome, {@code false} caso
+   *         contrário
+   */
+  boolean existsByNameIgnoreCase(String name);
+
+  /**
+   * Verifica se existe uma categoria com o nome informado (ignorando
+   * maiúsculas/minúsculas) e ID diferente do fornecido.
+   *
+   * <p>
+   * <b>Uso típico:</b>
+   * </p>
+   * <ul>
+   * <li>Validação de unicidade antes de atualizar uma categoria, ignorando a
+   * própria categoria sendo atualizada</li>
+   * </ul>
+   *
+   * @param name nome da categoria a ser verificada
+   * @param id   ID da categoria que está sendo atualizada (a ser ignorada na
+   *             verificação)
+   * @return {@code true} se existir outra categoria com o mesmo nome,
+   *         {@code false}
+   *         caso contrário
+   */
+  boolean existsByNameIgnoreCaseAndIdNot(String name, Long id);
+
 }

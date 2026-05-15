@@ -64,6 +64,7 @@ public class Category implements Serializable {
    * Utilizado para identificação e exibição.
    * </p>
    */
+  @Column(nullable = false, unique = true, length = 80)
   private String name;
 
   /**
@@ -74,6 +75,7 @@ public class Category implements Serializable {
    * associados.
    * </p>
    */
+  @Column(length = 255)
   private String description;
 
   /**
