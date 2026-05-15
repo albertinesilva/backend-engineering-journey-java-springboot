@@ -18,8 +18,8 @@ import com.albertsilva.dev.dscatalog.dto.product.response.ProductResponse;
 import com.albertsilva.dev.dscatalog.entity.Category;
 import com.albertsilva.dev.dscatalog.entity.Product;
 import com.albertsilva.dev.dscatalog.mapper.product.ProductMapper;
-import com.albertsilva.dev.dscatalog.repositorie.CategoryRepository;
-import com.albertsilva.dev.dscatalog.repositorie.ProductRepository;
+import com.albertsilva.dev.dscatalog.repository.CategoryRepository;
+import com.albertsilva.dev.dscatalog.repository.ProductRepository;
 import com.albertsilva.dev.dscatalog.service.exceptions.DatabaseException;
 import com.albertsilva.dev.dscatalog.service.exceptions.ResourceNotFoundException;
 

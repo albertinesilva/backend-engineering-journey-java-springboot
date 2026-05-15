@@ -1,4 +1,4 @@
-package com.albertsilva.dev.dscatalog.repositorie;
+package com.albertsilva.dev.dscatalog.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

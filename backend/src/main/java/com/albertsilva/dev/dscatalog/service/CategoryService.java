@@ -13,7 +13,7 @@ import com.albertsilva.dev.dscatalog.dto.category.request.CategoryUpdateRequest;
 import com.albertsilva.dev.dscatalog.dto.category.response.CategoryResponse;
 import com.albertsilva.dev.dscatalog.entity.Category;
 import com.albertsilva.dev.dscatalog.mapper.category.CategoryMapper;
-import com.albertsilva.dev.dscatalog.repositorie.CategoryRepository;
+import com.albertsilva.dev.dscatalog.repository.CategoryRepository;
 import com.albertsilva.dev.dscatalog.service.exceptions.ResourceNotFoundException;
 
 import jakarta.persistence.EntityNotFoundException;
