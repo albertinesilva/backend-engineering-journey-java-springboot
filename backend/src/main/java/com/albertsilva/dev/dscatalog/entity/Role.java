@@ -1,6 +1,6 @@
 package com.albertsilva.dev.dscatalog.entity;
 
-import java.io.Serializable;
+import org.springframework.security.core.GrantedAuthority;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,7 +25,7 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "tb_role")
-public class Role implements Serializable {
+public class Role implements GrantedAuthority {
   private static final long serialVersionUID = 1L;
 
   /** Identificador único da role. */
@@ -61,6 +61,7 @@ public class Role implements Serializable {
   /**
    * @return nome/identificador da autoridade (por exemplo, "ROLE_USER")
    */
+  @Override
   public String getAuthority() {
     return authority;
   }

@@ -1,8 +1,11 @@
 package com.albertsilva.dev.dscatalog.entity;
 
-import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -42,7 +45,7 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "tb_user")
-public class User implements Serializable {
+public class User implements UserDetails {
   private static final long serialVersionUID = 1L;
 
   /** Identificador único do usuário. Gerado pelo banco de dados. */
@@ -189,22 +192,6 @@ public class User implements Serializable {
     this.active = active;
   }
 
-  /**
-   * Verifica se o usuário possui uma role com o nome informado.
-   *
-   * @param roleName nome da role a ser verificada
-   * @return {@code true} se o usuário possui a role; {@code false} caso
-   *         contrário
-   */
-  public boolean hasRole(String roleName) {
-
-    if (roleName == null) {
-      return false;
-    }
-
-    return roles.stream().anyMatch(role -> roleName.equals(role.getAuthority()));
-  }
-
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -228,6 +215,48 @@ public class User implements Serializable {
     } else if (!id.equals(other.id))
       return false;
     return true;
+  }
+
+  /**
+   * Retorna as autoridades (roles) associadas ao usuário.
+   *
+   * <p>
+   * Este método é usado pelo Spring Security para determinar as permissões do
+   * usuário durante a autenticação e autorização.
+   * </p>
+   *
+   * @return coleção de autoridades (roles) do usuário
+   */
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    return roles;
+  }
+
+  /**
+   * Retorna o email do usuário, que é usado como nome de usuário para
+   * autenticação.
+   * 
+   * @return email do usuário como nome de usuário para autenticação
+   */
+  @Override
+  public String getUsername() {
+    return email;
+  }
+
+  /**
+   * Verifica se o usuário possui uma role com o nome informado.
+   *
+   * @param roleName nome da role a ser verificada
+   * @return {@code true} se o usuário possui a role; {@code false} caso
+   *         contrário
+   */
+  public boolean hasRole(String roleName) {
+
+    if (roleName == null) {
+      return false;
+    }
+
+    return roles.stream().anyMatch(role -> roleName.equals(role.getAuthority()));
   }
 
 }
