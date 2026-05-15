@@ -3,10 +3,9 @@ package com.albertsilva.dev.dscatalog.dto.user.request;
 import java.util.Set;
 
 import com.albertsilva.dev.dscatalog.validation.user.annotation.StrongPassword;
-import com.albertsilva.dev.dscatalog.validation.user.annotation.UniqueEmail;
 import com.albertsilva.dev.dscatalog.validation.user.annotation.UserUpdateValid;
+import com.albertsilva.dev.dscatalog.validation.user.annotation.ValidEmail;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
@@ -23,8 +22,7 @@ public record UserUpdateRequest(
         String lastName,
 
         @NotBlank(message = "Email é obrigatório")
-        @Email(message = "Favor informar um email válido")
-        @UniqueEmail
+        @ValidEmail
         String email,
 
         @StrongPassword

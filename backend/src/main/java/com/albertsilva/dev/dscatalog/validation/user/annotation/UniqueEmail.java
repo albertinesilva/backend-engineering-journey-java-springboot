@@ -13,7 +13,6 @@ import jakarta.validation.Payload;
 @Constraint(validatedBy = UniqueEmailValidator.class)
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-
 public @interface UniqueEmail {
 
     String message() default "Email já existente";

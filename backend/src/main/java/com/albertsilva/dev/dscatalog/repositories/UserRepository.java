@@ -7,8 +7,6 @@ import org.springframework.stereotype.Repository;
 
 import com.albertsilva.dev.dscatalog.entities.User;
 
-import jakarta.validation.constraints.Email;
-
 /**
  * Repositório responsável pelo acesso a dados da entidade {@link User}.
  *
@@ -94,5 +92,50 @@ public interface UserRepository extends JpaRepository<User, Long> {
    */
   User findByEmail(String email);
 
+  /**
+   * Verifica se existe um usuário com o email informado, ignorando diferenças
+   * entre maiúsculas e minúsculas.
+   *
+   * <p>
+   * <b>Como o Spring interpreta esse método:</b>
+   * </p>
+   * <ul>
+   * <li><b>existsBy</b> → operação de existência</li>
+   * <li><b>Email</b> → campo da entidade</li>
+   * <li><b>IgnoreCase</b> → ignora diferenças entre maiúsculas/minúsculas</li>
+   * </ul>
+   *
+   * @param email email a ser verificado
+   * @return {@code true} se existir um usuário com o email, {@code false}
+   *         caso contrário
+   */
   boolean existsByEmailIgnoreCase(String email);
+
+  /**
+   * Verifica se existe um usuário com o email informado, ignorando diferenças
+   * entre maiúsculas e minúsculas, e que tenha um ID diferente do fornecido.
+   *
+   * <p>
+   * Este método é útil para validação de atualização, garantindo que o email
+   * seja único entre os usuários, exceto o próprio usuário que está sendo
+   * atualizado.
+   * </p>
+   *
+   * <p>
+   * <b>Como o Spring interpreta esse método:</b>
+   * </p>
+   * <ul>
+   * <li><b>existsBy</b> → operação de existência</li>
+   * <li><b>Email</b> → campo da entidade</li>
+   * <li><b>IgnoreCase</b> → ignora diferenças entre maiúsculas/minúsculas</li>
+   * <li><b>AndIdNot</b> → condição adicional para excluir um ID específico</li>
+   * </ul>
+   *
+   * @param email email a ser verificado
+   * @param id    ID do usuário a ser excluído da verificação
+   * @return {@code true} se existir um usuário com o email (exceto o ID),
+   *         {@code false}
+   *         caso contrário
+   */
+  boolean existsByEmailIgnoreCaseAndIdNot(String email, Long id);
 }

@@ -13,7 +13,6 @@ import jakarta.validation.Payload;
 @Constraint(validatedBy = UserCreateValidator.class)
 @Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-
 public @interface UserCreateValid {
   String message() default "Validation error";
 
