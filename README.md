@@ -65,58 +65,62 @@ A aplicação contempla a organização em camadas: `controller`, `service` e `r
 📦 `com.albertsilva.dev.dscatalog`  
 ┣ 📂 `config`  
 ┃ ┗ 📄 `SpringDocOpenApiConfig.java`  
-┣ 📂 `category`  
-┃ ┣ 📂 `mapper`  
-┃ ┃ ┗ 📄 `CategoryMapper.java`  
-┃ ┣ 📂 `request`  
-┃ ┃ ┣ 📄 `CategoryCreateRequest.java`  
-┃ ┃ ┗ 📄 `CategoryUpdateRequest.java`  
-┃ ┗ 📂 `response`  
-┃ ┗ 📄 `CategoryResponse.java`  
-┣ 📂 `product`  
-┃ ┣ 📂 `mapper`  
-┃ ┃ ┗ 📄 `ProductMapper.java`  
-┃ ┣ 📂 `request`  
-┃ ┃ ┣ 📄 `ProductCreateRequest.java`  
-┃ ┃ ┗ 📄 `ProductUpdateRequest.java`  
-┃ ┗ 📂 `response`  
-┃ ┣ 📄 `ProductDetailsResponse.java`  
-┃ ┗ 📄 `ProductResponse.java`  
-┣ 📂 `entities`  
+┣ 📂 `dto`  
+┃ ┣ 📂 `category`  
+┃ ┃ ┣ 📂 `request`  
+┃ ┃ ┃ ┣ 📄 `CategoryCreateRequest.java`  
+┃ ┃ ┃ ┗ 📄 `CategoryUpdateRequest.java`  
+┃ ┃ ┗ 📂 `response`  
+┃ ┃ ┃ ┗ 📄 `CategoryResponse.java`  
+┃ ┣ 📂 `product`  
+┃ ┃ ┣ 📂 `request`  
+┃ ┃ ┃ ┣ 📄 `ProductCreateRequest.java`  
+┃ ┃ ┃ ┗ 📄 `ProductUpdateRequest.java`  
+┃ ┃ ┗ 📂 `response`  
+┃ ┃ ┃ ┣ 📄 `ProductDetailsResponse.java`  
+┃ ┃ ┃ ┗ 📄 `ProductResponse.java`  
+┣ 📂 `entity`  
 ┃ ┣ 📄 `Category.java`  
 ┃ ┗ 📄 `Product.java`  
-┣ 📂 `repositories`  
+┣ 📂 `mapper`  
+┃ ┣ 📂 `category`  
+┃ ┃ ┗ 📄 `CategoryMapper.java`  
+┃ ┗ 📂 `product`  
+┃ ┃ ┗ 📄 `ProductMapper.java`  
+┣ 📂 `repository`  
 ┃ ┣ 📄 `CategoryRepository.java`  
 ┃ ┗ 📄 `ProductRepository.java`  
-┣ 📂 `services`  
+┣ 📂 `service`  
 ┃ ┣ 📂 `exceptions`  
 ┃ ┃ ┣ 📄 `DatabaseException.java`  
 ┃ ┃ ┗ 📄 `ResourceNotFoundException.java`  
 ┃ ┣ 📄 `CategoryService.java`  
 ┃ ┗ 📄 `ProductService.java`  
 ┣ 📂 `web`  
-┃ ┣ 📂 `controllers`  
+┃ ┣ 📂 `controller`  
 ┃ ┃ ┣ 📄 `CategoryController.java`  
 ┃ ┃ ┗ 📄 `ProductController.java`  
 ┃ ┗ 📂 `exceptions`  
 ┃ ┃ ┣ 📂 `enums`  
 ┃ ┃ ┃ ┗ 📄 `ErrorType.java`  
-┃ ┃ ┗ 📂 `handler`  
+┃ ┃ ┣ 📂 `handler`  
 ┃ ┃ ┃ ┗ 📄 `ControllerExceptionHandler.java`  
 ┃ ┃ ┗ 📂 `response`  
 ┃ ┃ ┃ ┗ 📄 `ProblemDetails.java`  
-┃ ┃ ┃  
 ┣ 📄 `DscatalogApplication.java`  
 ┣ 📂 `resources`  
 ┃ ┣ 📂 `db`  
+┃ ┃ ┣ 📂 `data`  
 ┃ ┃ ┣ 📂 `migration`  
-┃ ┃ ┗ 📂 `data / schema`  
+┃ ┃ ┗ 📂 `schema`  
 ┃ ┣ 📂 `static`  
 ┃ ┣ 📂 `templates`  
 ┃ ┣ 📄 `application-dev.properties`  
+┃ ┣ 📄 `application-prod.properties`  
 ┃ ┣ 📄 `application-test.properties`  
 ┃ ┣ 📄 `application.properties`  
-┃ ┗ 📄 `import.sql`
+┃ ┣ 📄 `banner-dev.txt`  
+┃ ┗ 📄 `import.sql`  
 
 ---
 
