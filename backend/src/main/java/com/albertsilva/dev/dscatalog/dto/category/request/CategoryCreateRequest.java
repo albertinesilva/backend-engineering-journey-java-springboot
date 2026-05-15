@@ -1,5 +1,7 @@
 package com.albertsilva.dev.dscatalog.dto.category.request;
 
+import com.albertsilva.dev.dscatalog.validation.category.annotation.CategoryCreateValid;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -29,6 +31,7 @@ import jakarta.validation.constraints.Size;
  * @param name        nome da categoria
  * @param description descrição da categoria
  */
+@CategoryCreateValid
 public record CategoryCreateRequest(
 
     @NotBlank(message = "O nome da categoria é obrigatório") 
