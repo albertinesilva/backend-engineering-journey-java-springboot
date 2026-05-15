@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerMapping;
 
 import com.albertsilva.dev.dscatalog.dto.user.request.UserUpdateRequest;
@@ -16,7 +15,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-@Component
 public class UserUpdateValidator implements ConstraintValidator<UserUpdateValid, UserUpdateRequest> {
 
   private final UserRepository repository;

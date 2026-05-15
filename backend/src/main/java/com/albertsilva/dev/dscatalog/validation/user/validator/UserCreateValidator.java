@@ -3,8 +3,6 @@ package com.albertsilva.dev.dscatalog.validation.user.validator;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.stereotype.Component;
-
 import com.albertsilva.dev.dscatalog.dto.user.request.UserCreateRequest;
 import com.albertsilva.dev.dscatalog.validation.user.annotation.UserCreateValid;
 import com.albertsilva.dev.dscatalog.web.exception.response.FieldMessage;
@@ -12,7 +10,6 @@ import com.albertsilva.dev.dscatalog.web.exception.response.FieldMessage;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-@Component
 public class UserCreateValidator implements ConstraintValidator<UserCreateValid, UserCreateRequest> {
 
     private static final int MIN_TOKEN_LENGTH = 3;

@@ -3,8 +3,6 @@ package com.albertsilva.dev.dscatalog.validation.category.validator;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.stereotype.Component;
-
 import com.albertsilva.dev.dscatalog.dto.category.request.CategoryCreateRequest;
 import com.albertsilva.dev.dscatalog.repository.CategoryRepository;
 import com.albertsilva.dev.dscatalog.validation.category.annotation.CategoryCreateValid;
@@ -13,7 +11,6 @@ import com.albertsilva.dev.dscatalog.web.exception.response.FieldMessage;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-@Component
 public class CategoryCreateValidator implements ConstraintValidator<CategoryCreateValid, CategoryCreateRequest> {
 
   private final CategoryRepository repository;

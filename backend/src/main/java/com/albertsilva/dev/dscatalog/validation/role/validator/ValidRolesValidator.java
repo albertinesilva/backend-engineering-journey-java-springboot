@@ -2,15 +2,12 @@ package com.albertsilva.dev.dscatalog.validation.role.validator;
 
 import java.util.Set;
 
-import org.springframework.stereotype.Component;
-
 import com.albertsilva.dev.dscatalog.repository.RoleRepository;
 import com.albertsilva.dev.dscatalog.validation.role.annotation.ValidRoles;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-@Component
 public class ValidRolesValidator implements ConstraintValidator<ValidRoles, Set<Long>> {
 
   private final RoleRepository repository;

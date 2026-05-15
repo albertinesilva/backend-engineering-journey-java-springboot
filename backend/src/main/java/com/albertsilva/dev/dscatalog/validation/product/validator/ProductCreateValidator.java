@@ -3,8 +3,6 @@ package com.albertsilva.dev.dscatalog.validation.product.validator;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.stereotype.Component;
-
 import com.albertsilva.dev.dscatalog.dto.product.request.ProductCreateRequest;
 import com.albertsilva.dev.dscatalog.repository.CategoryRepository;
 import com.albertsilva.dev.dscatalog.repository.ProductRepository;
@@ -14,7 +12,6 @@ import com.albertsilva.dev.dscatalog.web.exception.response.FieldMessage;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-@Component
 public class ProductCreateValidator implements ConstraintValidator<ProductCreateValid, ProductCreateRequest> {
 
   private final ProductRepository productRepository;

@@ -4,14 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.springframework.stereotype.Component;
-
 import com.albertsilva.dev.dscatalog.validation.user.annotation.StrongPassword;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-@Component
 public class StrongPasswordValidator implements ConstraintValidator<StrongPassword, String> {
 
     private static final int MIN_LENGTH = 8;

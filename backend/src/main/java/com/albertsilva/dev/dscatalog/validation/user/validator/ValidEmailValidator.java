@@ -6,14 +6,11 @@ import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.InitialDirContext;
 
-import org.springframework.stereotype.Component;
-
 import com.albertsilva.dev.dscatalog.validation.user.annotation.ValidEmail;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-@Component
 public class ValidEmailValidator implements ConstraintValidator<ValidEmail, String> {
 
   private static final String EMAIL_PATTERN = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";

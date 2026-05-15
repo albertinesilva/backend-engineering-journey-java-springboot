@@ -1,5 +1,6 @@
 package com.albertsilva.dev.dscatalog.validation.role.annotation;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -10,6 +11,7 @@ import com.albertsilva.dev.dscatalog.validation.role.validator.ValidRolesValidat
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
+@Documented
 @Constraint(validatedBy = ValidRolesValidator.class)
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)

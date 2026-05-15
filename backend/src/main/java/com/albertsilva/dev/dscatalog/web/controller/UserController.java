@@ -177,10 +177,10 @@ public class UserController {
   }
 
   /**
-   * Endpoint para atualização parcial de um usuário.
+   * Endpoint para atualização completa de um usuário.
    *
    * <p>
-   * Utiliza o método PATCH, permitindo atualizar apenas os campos enviados.
+   * Utiliza o método PUT, permitindo atualizar todos os campos do usuário.
    * </p>
    *
    * <p>
@@ -195,12 +195,12 @@ public class UserController {
    * @param userUpdateRequest dados para atualização
    * @return usuário atualizado
    */
-  @Operation(summary = "Atualiza um usuário", description = "Atualização parcial dos dados do usuário. Apenas campos enviados são alterados.", responses = {
+  @Operation(summary = "Atualiza um usuário", description = "Atualização completa dos dados do usuário.", responses = {
       @ApiResponse(responseCode = "200", description = "Usuário atualizado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.class))),
       @ApiResponse(responseCode = "404", description = "Usuário não encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class))),
       @ApiResponse(responseCode = "400", description = "Dados inválidos", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))
   })
-  @PatchMapping(value = "/{id}")
+  @PutMapping(value = "/{id}")
   public ResponseEntity<UserResponse> update(@PathVariable Long id,
       @Valid @RequestBody UserUpdateRequest userUpdateRequest) {
 
