@@ -335,7 +335,7 @@ public class UserService {
    *          Optional, tratamento de exceções e busca segura de entidades.
    */
   @Transactional(readOnly = true)
-  public User findEntityById(Long id) {
+  private User findEntityById(Long id) {
     logger.debug("Buscando usuário por id: {}", id);
 
     return userRepository.findById(id).orElseThrow(() -> {
