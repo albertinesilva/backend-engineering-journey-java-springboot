@@ -38,5 +38,6 @@ public record UserDetailsResponse(
                 String firstName,
                 String lastName,
                 String email,
-                Set<RoleResponse> roles) {
+                Set<RoleResponse> roles,
+                boolean active) {
 }

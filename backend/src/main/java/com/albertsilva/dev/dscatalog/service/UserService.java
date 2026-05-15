@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.albertsilva.dev.dscatalog.dto.user.request.UserCreateRequest;
 import com.albertsilva.dev.dscatalog.dto.user.request.UserUpdateRequest;
@@ -108,32 +109,32 @@ public class UserService {
    */
   @Transactional(readOnly = true)
   public Page<UserResponse> search(String firstName, Pageable pageable) {
-    logger.debug("Buscando usuários. filtroNome: {}", firstName);
 
-    Page<User> users;
+    String filter = StringUtils.hasText(firstName) ? firstName.trim() : null;
 
-    if (hasText(firstName)) {
-      users = userRepository.findByFirstNameContainingIgnoreCase(firstName.trim(), pageable);
-    } else {
-      users = userRepository.findAll(pageable);
-    }
+    logger.debug("Buscando usuários | filtro={} | page={} | size={} | sort={}", filter, pageable.getPageNumber(),
+        pageable.getPageSize(), pageable.getSort());
 
-    logger.debug("Total de usuários encontrados: {}", users.getTotalElements());
+    Page<User> usersPage = (filter != null) ? userRepository.findByFirstNameContainingIgnoreCase(filter, pageable)
+        : userRepository.findAll(pageable);
 
-    return userMapper.toResponsePage(users);
+    logger.info("Busca concluída | totalElements={} | totalPages={}", usersPage.getTotalElements(),
+        usersPage.getTotalPages());
+
+    return userMapper.toResponsePage(usersPage);
   }
 
   /**
-   * Busca uma categoria pelo seu identificador.
+   * Busca um usuário pelo seu identificador.
    *
    * <p>
-   * Retorna os dados completos da categoria,
+   * Retorna os dados completos do usuário,
    * garantindo validação segura da existência do registro.
    * </p>
    *
-   * @param id identificador da categoria
-   * @return dados da categoria
-   * @throws ResourceNotFoundException caso a categoria não exista
+   * @param id identificador do usuário
+   * @return dados do usuário
+   * @throws ResourceNotFoundException caso o usuário não exista
    *
    * @implNote
    *           Utiliza {@code findById(id)}, realizando consulta imediata no
@@ -145,15 +146,7 @@ public class UserService {
    */
   @Transactional(readOnly = true)
   public UserDetailsResponse findById(Long id) {
-    logger.debug("Buscando usuário por id: {}", id);
-
-    User entity = userRepository.findById(id).orElseThrow(() -> {
-      logger.warn("Usuário não encontrado. id: {}", id);
-      return new ResourceNotFoundException("Entity not found id: " + id);
-    });
-
-    logger.debug("Usuário encontrado. id: {}", id);
-    return userMapper.toDetailsResponse(entity);
+    return userMapper.toDetailsResponse(findEntityById(id));
   }
 
   /**
@@ -183,6 +176,7 @@ public class UserService {
 
     User entity = userMapper.toEntity(request, roles);
     entity.setPassword(passwordEncoder.encode(request.password()));
+    entity.setActive(true);
 
     entity = userRepository.save(entity);
     logger.info("Usuário criado com sucesso. id: {}", entity.getId());
@@ -244,105 +238,110 @@ public class UserService {
   }
 
   /**
-   * Remove uma categoria existente do sistema.
+   * Ativa um usuário existente.
    *
    * <p>
-   * Valida previamente a existência da entidade
-   * antes da exclusão.
+   * Altera o status do usuário para ativo,
+   * permitindo que ele seja exibido e utilizado.
    * </p>
-   *
-   * <p>
-   * Possíveis cenários de erro:
-   * </p>
-   * <ul>
-   * <li>Usuário não encontrado →
-   * {@link ResourceNotFoundException}</li>
-   * <li>Violação de integridade referencial →
-   * tratada globalmente via {@code @RestControllerAdvice}</li>
-   * </ul>
    *
    * @param id identificador do usuário
    * @throws ResourceNotFoundException caso o usuário não exista
    *
    * @implNote
-   *           Utiliza {@code findById(id)} para validar existência
-   *           e carregar a entidade em uma única consulta,
-   *           evitando redundância de operações como {@code existsById(id)}.
-   *
-   *           <p>
-   *           Não utiliza {@code flush()} manual,
-   *           permitindo sincronização natural com o banco
-   *           durante o commit da transação.
-   *           </p>
-   *
-   *           <p>
-   *           Não utiliza {@code Propagation.SUPPORTS},
-   *           pois operações de escrita devem ocorrer
-   *           dentro de transação ativa para garantir
-   *           consistência e integridade dos dados.
-   *           </p>
-   *
-   *           <p>
-   *           O tratamento de exceções como
-   *           {@code DataIntegrityViolationException}
-   *           permanece centralizado globalmente,
-   *           garantindo padronização e confiabilidade
-   *           nas respostas da API.
-   *           </p>
+   *           Realiza atualização parcial do status do usuário,
+   *           mantendo as demais informações inalteradas.
    *
    * @apiNote
    *          Esta implementação reforça conceitos importantes como:
-   *          exclusão segura, integridade de dados,
-   *          controle transacional, otimização de consultas
-   *          e tratamento centralizado de exceções.
+   *          atualização parcial, status de entidade e regras de negócio.
+   */
+  @Transactional
+  public void activate(Long id) {
+    changeStatus(id, true);
+  }
+
+  /*
+   * Desativa um usuário existente.
+   *
+   * <p>
+   * Altera o status do usuário para inativo,
+   * ocultando-o de listagens e impedindo sua utilização.
+   * </p>
+   *
+   * @param id identificador do usuário
+   * 
+   * @throws ResourceNotFoundException caso o usuário não exista
+   *
+   * @implNote
+   * Realiza atualização parcial do status do usuário,
+   * mantendo as demais informações inalteradas.
+   *
+   * @apiNote
+   * Esta implementação reforça conceitos importantes como:
+   * atualização parcial, status de entidade e regras de negócio.
+   */
+  @Transactional
+  public void deactivate(Long id) {
+    changeStatus(id, false);
+  }
+
+  /**
+   * Deleta um usuário existente.
+   *
+   * <p>
+   * Remove o usuário do banco de dados,
+   * garantindo que ele não seja mais acessível.
+   * </p>
+   *
+   * @param id identificador do usuário
+   * @throws ResourceNotFoundException caso o usuário não exista
+   *
+   * @implNote
+   *           Realiza deleção física da entidade, removendo-a completamente
+   *           do banco de dados.
+   *
+   * @apiNote
+   *          Esta implementação reforça conceitos importantes como:
+   *          deleção de entidades, integridade referencial e regras de negócio.
    */
   @Transactional
   public void delete(Long id) {
     logger.debug("Deletando usuário. id: {}", id);
 
-    User entity = userRepository.findById(id).orElseThrow(() -> {
-      logger.warn("Falha ao deletar. Usuário não encontrado. id: {}", id);
-      return new ResourceNotFoundException("Entity not found id: " + id);
-    });
-
+    User entity = findEntityById(id);
     userRepository.delete(entity);
     logger.info("Usuário deletado com sucesso. id: {}", id);
   }
 
   /**
-   * Realiza busca paginada de usuários por nome.
+   * Busca um usuário pelo seu identificador.
    *
    * <p>
-   * Permite busca parcial e case insensitive,
-   * utilizando correspondência por conteúdo textual.
+   * Retorna os dados completos do usuário,
+   * garantindo validação segura da existência do registro.
    * </p>
    *
-   * @param name     termo de busca
-   * @param pageable informações de paginação
-   * @return página de usuários encontrados
+   * @param id identificador do usuário
+   * @return dados do usuário
+   * @throws ResourceNotFoundException caso o usuário não exista
    *
    * @implNote
-   *           Utiliza consulta derivada do Spring Data JPA:
-   *           {@code findByNameContainingIgnoreCase}.
-   *
-   *           <p>
-   *           Essa abordagem reduz necessidade
-   *           de implementação manual de queries.
-   *           </p>
+   *           Utiliza {@code findById(id)}, realizando consulta imediata no
+   *           banco.
    *
    * @apiNote
    *          Esta implementação reforça conceitos importantes como:
-   *          consultas derivadas, filtros dinâmicos,
-   *          paginação e busca textual eficiente.
+   *          Optional, tratamento de exceções e busca segura de entidades.
    */
   @Transactional(readOnly = true)
-  public Page<UserResponse> searchByName(String firstName, Pageable pageable) {
-    logger.debug("Buscando usuários por nome. termo: {}", firstName);
+  public User findEntityById(Long id) {
+    logger.debug("Buscando usuário por id: {}", id);
 
-    Page<User> users = userRepository.findByFirstNameContainingIgnoreCase(firstName, pageable);
-
-    logger.debug("Resultado da busca por nome '{}' - total encontrados: {}", firstName, users.getTotalElements());
-    return userMapper.toResponsePage(users);
+    return userRepository.findById(id).orElseThrow(() -> {
+      logger.warn("Usuário não encontrado. id: {}", id);
+      return new ResourceNotFoundException("Entity not found id: " + id);
+    });
   }
 
   /**
@@ -384,12 +383,36 @@ public class UserService {
   }
 
   /**
-   * Verifica se uma string possui texto (não é nula, vazia ou apenas espaços).
+   * Altera o status de um usuário para ativo ou inativo.
    *
-   * @param value string a ser verificada
-   * @return {@code true} se a string tiver texto, {@code false} caso contrário
+   * <p>
+   * Realiza a mudança de status do usuário, ativando ou desativando-o
+   * conforme o parâmetro fornecido.
+   * </p>
+   *
+   * @param id     identificador do usuário
+   * @param active novo status do usuário (true para ativo, false para inativo)
+   * @throws ResourceNotFoundException caso o usuário não exista
+   *
+   * @implNote
+   *           Centraliza a lógica de alteração de status em um método privado,
+   *           evitando duplicação de código entre os métodos de ativação e
+   *           desativação.
+   *
+   * @apiNote
+   *          Esta implementação reforça conceitos importantes como:
+   *          centralização de lógica, DRY Principle e manutenção facilitada.
    */
-  private boolean hasText(String value) {
-    return value != null && !value.trim().isEmpty();
+  private void changeStatus(Long id, boolean active) {
+    User entity = findEntityById(id);
+
+    if (entity.isActive() == active) {
+      logger.debug("Status já definido | id={} | active={}", id, active);
+      return;
+    }
+
+    entity.setActive(active);
+
+    logger.info("Status alterado | id={} | active={}", id, active);
   }
 }

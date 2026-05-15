@@ -213,6 +213,58 @@ public class UserController {
   }
 
   /**
+   * Endpoint para ativação de um usuário.
+   *
+   * <p>
+   * Altera o status do usuário para ativo, permitindo sua exibição
+   * e utilização no sistema.
+   * </p>
+   *
+   * @param id identificador do usuário
+   * @return resposta sem conteúdo
+   */
+  @Operation(summary = "Ativa um usuário", description = "Altera o status do usuário para ativo.", responses = {
+      @ApiResponse(responseCode = "204", description = "Usuário ativado com sucesso"),
+      @ApiResponse(responseCode = "404", description = "Usuário não encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))
+  })
+  @PatchMapping("/{id}/activate")
+  public ResponseEntity<Void> activate(@PathVariable Long id) {
+
+    logger.debug("Ativando usuário id={}", id);
+
+    userService.activate(id);
+
+    logger.info("Usuário ativado com sucesso. id={}", id);
+    return ResponseEntity.noContent().build();
+  }
+
+  /**
+   * Endpoint para desativação de um usuário.
+   *
+   * <p>
+   * Altera o status do usuário para inativo, ocultando-o das listagens
+   * e impedindo sua utilização no sistema.
+   * </p>
+   *
+   * @param id identificador do usuário
+   * @return resposta sem conteúdo
+   */
+  @Operation(summary = "Desativa um usuário", description = "Altera o status do usuário para inativo.", responses = {
+      @ApiResponse(responseCode = "204", description = "Usuário desativado com sucesso"),
+      @ApiResponse(responseCode = "404", description = "Usuário não encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))
+  })
+  @PatchMapping("/{id}/deactivate")
+  public ResponseEntity<Void> deactivate(@PathVariable Long id) {
+
+    logger.debug("Desativando usuário id={}", id);
+
+    userService.deactivate(id);
+
+    logger.info("Usuário desativado com sucesso. id={}", id);
+    return ResponseEntity.noContent().build();
+  }
+
+  /**
    * Endpoint para remoção de um usuário.
    *
    * <p>

@@ -30,6 +30,16 @@ public class User implements Serializable {
   private String email;
   private String password;
 
+   /**
+   * Indica se o usuário está ativo.
+   *
+   * <p>
+   * Usuários inativos podem ser desconsiderados em listagens ou operações
+   * de negócio.
+   * </p>
+   */
+  private boolean active;
+
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(name = "tb_user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
   private Set<Role> roles = new HashSet<>();
@@ -37,12 +47,13 @@ public class User implements Serializable {
   public User() {
   }
 
-  public User(Long id, String firstName, String lastName, String email, String password) {
+  public User(Long id, String firstName, String lastName, String email, String password, boolean active) {
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
     this.email = email;
     this.password = password;
+    this.active = active;
   }
 
   public Long getId() {
@@ -83,6 +94,14 @@ public class User implements Serializable {
 
   public void setPassword(String password) {
     this.password = password;
+  }
+
+  public boolean isActive() {
+    return active;
+  }
+
+  public void setActive(boolean active) {
+    this.active = active;
   }
 
   public Set<Role> getRoles() {

@@ -160,7 +160,7 @@ public class UserMapper {
         .collect(Collectors.toCollection(LinkedHashSet::new));
 
     return new UserDetailsResponse(entity.getId(), entity.getFirstName(), entity.getLastName(), entity.getEmail(),
-        roles);
+        roles, entity.isActive());
   }
 
   /**
