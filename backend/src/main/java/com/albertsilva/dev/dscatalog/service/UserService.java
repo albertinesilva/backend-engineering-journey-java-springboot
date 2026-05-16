@@ -11,7 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -68,7 +68,7 @@ public class UserService implements UserDetailsService {
   private final UserRepository userRepository;
   private final RoleRepository roleRepository;
   private final UserMapper userMapper;
-  private final BCryptPasswordEncoder passwordEncoder;
+  private final PasswordEncoder passwordEncoder;
 
   /**
    * Constrói o serviço de usuários com suas dependências principais.
@@ -79,7 +79,7 @@ public class UserService implements UserDetailsService {
    * @param passwordEncoder codificador de senhas
    */
   public UserService(UserRepository userRepository, RoleRepository roleRepository, UserMapper userMapper,
-      BCryptPasswordEncoder passwordEncoder) {
+      PasswordEncoder passwordEncoder) {
     this.userRepository = userRepository;
     this.roleRepository = roleRepository;
     this.userMapper = userMapper;
