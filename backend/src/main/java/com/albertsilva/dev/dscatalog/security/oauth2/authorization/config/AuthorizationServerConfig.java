@@ -153,7 +153,9 @@ public class AuthorizationServerConfig {
       List<String> authorities = user.getAuthorities().stream().map(x -> x.getAuthority()).toList();
       if (context.getTokenType().getValue().equals("access_token")) {
         // @formatter:off
-				context.getClaims().claim("authorities", authorities).claim("username", user.getUsername());
+				context.getClaims()
+          .claim("authorities", authorities)
+          .claim("username", user.getUsername());
 				// @formatter:on
       }
     };

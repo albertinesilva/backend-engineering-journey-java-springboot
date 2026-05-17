@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -128,6 +129,7 @@ public class ProductController {
       @ApiResponse(responseCode = "409", description = "Produto já existente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))
   })
   @PostMapping
+  @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<ProductResponse> create(@Valid @RequestBody ProductCreateRequest productCreateRequest) {
     logger.debug("Recebendo requisição para criar produto: {}", productCreateRequest);
 
@@ -204,6 +206,7 @@ public class ProductController {
       @ApiResponse(responseCode = "200", description = "Produto encontrado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductDetailsResponse.class))),
       @ApiResponse(responseCode = "404", description = "Produto não encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))
   })
+  @PreAuthorize("hasRole('ADMIN') or hasRole('OPERATOR')")
   @GetMapping(value = "/{id}")
   public ResponseEntity<ProductDetailsResponse> findById(@PathVariable Long id) {
     logger.debug("Buscando produto por id: {}", id);
@@ -250,6 +253,7 @@ public class ProductController {
       @ApiResponse(responseCode = "400", description = "Dados inválidos", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))
   })
   @PatchMapping(value = "/{id}")
+  @PreAuthorize("hasRole('ADMIN') or hasRole('OPERATOR')")
   public ResponseEntity<ProductResponse> update(@PathVariable Long id,
       @Valid @RequestBody ProductUpdateRequest productUpdateRequest) {
 
@@ -285,6 +289,7 @@ public class ProductController {
       @ApiResponse(responseCode = "404", description = "Produto não encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))
   })
   @PatchMapping("/{id}/activate")
+  @PreAuthorize("hasRole('ADMIN') or hasRole('OPERATOR')")
   public ResponseEntity<Void> activate(@PathVariable Long id) {
 
     logger.debug("Ativando produto id={}", id);
@@ -320,6 +325,7 @@ public class ProductController {
       @ApiResponse(responseCode = "404", description = "Produto não encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))
   })
   @PatchMapping("/{id}/deactivate")
+  @PreAuthorize("hasRole('ADMIN') or hasRole('OPERATOR')")
   public ResponseEntity<Void> deactivate(@PathVariable Long id) {
 
     logger.debug("Desativando produto id={}", id);
@@ -352,6 +358,7 @@ public class ProductController {
       @ApiResponse(responseCode = "400", description = "Violação de integridade - existem entidades relacionadas", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))
   })
   @DeleteMapping(value = "/{id}")
+  @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<Void> delete(@PathVariable Long id) {
     logger.debug("Deletando produto id={}", id);
 

@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -209,6 +210,40 @@ public class ControllerExceptionHandler {
   }
 
   /**
+   * Trata exceções de acesso negado do Spring Security.
+   *
+   * <p>
+   * Essa exceção ocorre quando um usuário autenticado tenta acessar
+   * um recurso sem possuir as permissões necessárias.
+   * </p>
+   *
+   * <p>
+   * Exemplos:
+   * </p>
+   * <ul>
+   * <li>Usuário comum acessando endpoint ADMIN</li>
+   * <li>Falha em regras do @PreAuthorize</li>
+   * <li>Permissões insuficientes para operação</li>
+   * </ul>
+   *
+   * <p>
+   * Retorna HTTP 403 (Forbidden).
+   * </p>
+   *
+   * @param e       exceção lançada
+   * @param request requisição HTTP atual
+   * @return resposta padronizada contendo detalhes do erro
+   */
+  @ExceptionHandler(AccessDeniedException.class)
+  public ResponseEntity<ProblemDetails> handleAccessDenied(AccessDeniedException e, HttpServletRequest request) {
+    HttpStatus status = HttpStatus.FORBIDDEN;
+    logger.warn("AccessDeniedException - path: {}, message: {}", request.getRequestURI(), e.getMessage());
+    ProblemDetails err = new ProblemDetails(Instant.now(), status.value(), "Access denied",
+        "Você não possui permissão para acessar este recurso", request.getRequestURI());
+    return ResponseEntity.status(status).body(err);
+  }
+
+  /**
    * Trata exceções genéricas (qualquer outra exceção não tratada
    * especificamente).
    *
@@ -231,13 +266,11 @@ public class ControllerExceptionHandler {
    * @return resposta padronizada contendo detalhes do erro
    */
   @ExceptionHandler(Exception.class)
-  public ResponseEntity<ProblemDetails> handleGeneric(Exception e,
-      HttpServletRequest request) {
+  public ResponseEntity<ProblemDetails> handleGeneric(Exception e, HttpServletRequest request) {
     HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
     logger.error("Unexpected error - path: {}", request.getRequestURI(), e);
     ProblemDetails err = new ProblemDetails(Instant.now(), status.value(), ErrorType.INTERNAL_SERVER_ERROR.getMessage(),
-        ErrorType.UNEXPECTED_ERROR_OCCURRED.getMessage(),
-        request.getRequestURI());
+        ErrorType.UNEXPECTED_ERROR_OCCURRED.getMessage(), request.getRequestURI());
     return ResponseEntity.status(status).body(err);
   }
 }

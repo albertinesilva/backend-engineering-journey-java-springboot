@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -167,6 +168,7 @@ public class UserController {
       @ApiResponse(responseCode = "404", description = "Usuário não encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))
   })
   @GetMapping(value = "/{id}")
+  @PreAuthorize("hasRole('ADMIN') OR ( hasRole('OPERATOR') AND #id == authentication.principal.id )")
   public ResponseEntity<UserDetailsResponse> findById(@PathVariable Long id) {
     logger.debug("Buscando usuário por id: {}", id);
 
@@ -201,6 +203,7 @@ public class UserController {
       @ApiResponse(responseCode = "400", description = "Dados inválidos", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))
   })
   @PutMapping(value = "/{id}")
+  @PreAuthorize("hasAnyRole('ADMIN', 'CLIENTE') AND (#id == authentication.principal.id)")
   public ResponseEntity<UserResponse> update(@PathVariable Long id,
       @Valid @RequestBody UserUpdateRequest userUpdateRequest) {
 
@@ -228,6 +231,7 @@ public class UserController {
       @ApiResponse(responseCode = "404", description = "Usuário não encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))
   })
   @PatchMapping("/{id}/activate")
+  @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<Void> activate(@PathVariable Long id) {
 
     logger.debug("Ativando usuário id={}", id);
@@ -254,6 +258,7 @@ public class UserController {
       @ApiResponse(responseCode = "404", description = "Usuário não encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))
   })
   @PatchMapping("/{id}/deactivate")
+  @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<Void> deactivate(@PathVariable Long id) {
 
     logger.debug("Desativando usuário id={}", id);
@@ -288,6 +293,7 @@ public class UserController {
       @ApiResponse(responseCode = "409", description = "Violação de integridade - existem entidades relacionadas", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))
   })
   @DeleteMapping(value = "/{id}")
+  @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<Void> delete(@PathVariable Long id) {
     logger.debug("Deletando usuário id={}", id);
 
