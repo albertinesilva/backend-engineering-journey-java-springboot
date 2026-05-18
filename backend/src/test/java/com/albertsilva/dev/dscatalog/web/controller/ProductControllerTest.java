@@ -160,8 +160,8 @@ class ProductControllerTest {
 
       when(productService.search(eq("pc"), any(Pageable.class))).thenReturn(page);
 
-      ResultActions resultActions = mockMvc
-          .perform(get(BASE_URL).param("name", "pc").accept(MediaType.APPLICATION_JSON));
+      ResultActions resultActions = mockMvc.perform(get(BASE_URL + "?page=0&size=12&sort=name,desc")
+          .param("name", "pc").accept(MediaType.APPLICATION_JSON));
 
       resultActions.andExpect(status().isOk()).andExpect(jsonPath("$.content").isArray());
 
