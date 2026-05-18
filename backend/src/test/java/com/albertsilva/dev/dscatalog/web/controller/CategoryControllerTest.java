@@ -3,6 +3,8 @@ package com.albertsilva.dev.dscatalog.web.controller;
 import static com.albertsilva.dev.dscatalog.factory.CategoryFactory.EXISTING_ID;
 import static com.albertsilva.dev.dscatalog.factory.CategoryFactory.NON_EXISTING_ID;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doNothing;
@@ -18,7 +20,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -27,6 +28,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 
@@ -36,7 +38,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import org.springframework.http.MediaType;
-
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -45,12 +46,13 @@ import com.albertsilva.dev.dscatalog.dto.category.request.CategoryCreateRequest;
 import com.albertsilva.dev.dscatalog.dto.category.request.CategoryUpdateRequest;
 import com.albertsilva.dev.dscatalog.dto.category.response.CategoryResponse;
 import com.albertsilva.dev.dscatalog.factory.CategoryFactory;
+import com.albertsilva.dev.dscatalog.repository.CategoryRepository;
 import com.albertsilva.dev.dscatalog.service.CategoryService;
 import com.albertsilva.dev.dscatalog.service.exception.ResourceNotFoundException;
 import com.albertsilva.dev.dscatalog.web.exception.handler.ControllerExceptionHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@WebMvcTest(CategoryController.class)
+@WebMvcTest(value = CategoryController.class, excludeAutoConfiguration = { SecurityAutoConfiguration.class })
 @Import(ControllerExceptionHandler.class)
 @DisplayName("Tests for CategoryController")
 class CategoryControllerTest {
@@ -66,22 +68,31 @@ class CategoryControllerTest {
   @MockitoBean
   private CategoryService categoryService;
 
+  @MockitoBean
+  private CategoryRepository categoryRepository;
+
   private Page<CategoryResponse> page;
   private CategoryResponse categoryResponse;
 
   @BeforeEach
   void setUp() {
+
     categoryResponse = CategoryFactory.createCategoryResponse();
+
     page = new PageImpl<>(List.of(categoryResponse), PageRequest.of(0, 10), 1);
+
+    when(categoryRepository.existsByNameIgnoreCase(anyString())).thenReturn(false);
+
+    when(categoryRepository.existsByNameIgnoreCaseAndIdNot(anyString(), anyLong())).thenReturn(false);
   }
 
   @Nested
   @DisplayName("POST /categories")
-  class InsertTests {
+  class CreateTests {
 
     @Test
-    @DisplayName("Should insert category successfully")
-    void insertShouldReturnCreatedCategory() throws Exception {
+    @DisplayName("Should create category successfully")
+    void createShouldReturnCreatedCategory() throws Exception {
 
       // Arrange
       CategoryCreateRequest request = CategoryFactory.createCategoryCreateRequest();
@@ -141,8 +152,8 @@ class CategoryControllerTest {
       when(categoryService.search(eq(name), any(Pageable.class))).thenReturn(page);
 
       // Act
-      ResultActions resultActions = mockMvc
-          .perform(get(BASE_URL).param("name", name).accept(MediaType.APPLICATION_JSON));
+      ResultActions resultActions = mockMvc.perform(get(BASE_URL).param("name", name)
+          .accept(MediaType.APPLICATION_JSON));
 
       // Assert
       resultActions
@@ -191,8 +202,8 @@ class CategoryControllerTest {
       when(categoryService.findById(EXISTING_ID)).thenReturn(categoryResponse);
 
       // Act
-      ResultActions resultActions = mockMvc
-          .perform(get(BASE_URL + "/{id}", EXISTING_ID).accept(MediaType.APPLICATION_JSON));
+      ResultActions resultActions = mockMvc.perform(get(BASE_URL + "/{id}", EXISTING_ID)
+          .accept(MediaType.APPLICATION_JSON));
 
       // Assert
       resultActions
@@ -266,7 +277,8 @@ class CategoryControllerTest {
       // Act
       ResultActions resultActions = mockMvc.perform(patch(BASE_URL + "/{id}", NON_EXISTING_ID)
           .content(jsonRequest)
-          .contentType(MediaType.APPLICATION_JSON));
+          .contentType(MediaType.APPLICATION_JSON)
+          .accept(MediaType.APPLICATION_JSON));
 
       // Assert
       resultActions.andExpect(status().isNotFound());

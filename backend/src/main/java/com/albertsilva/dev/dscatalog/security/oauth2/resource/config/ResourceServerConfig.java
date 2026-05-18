@@ -3,6 +3,7 @@ package com.albertsilva.dev.dscatalog.security.oauth2.resource.config;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -28,15 +29,16 @@ import org.springframework.web.filter.CorsFilter;
 @EnableMethodSecurity
 public class ResourceServerConfig {
 
-  private static final String[] DOCUMENTATION_OPENAPI = { "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html" };
+  private static final String[] DOCUMENTATION_OPENAPI = { "/docs-dscatalog", "/docs-dscatalog/**",
+      "/docs-dscatalog.html", "/swagger-ui/**" };
   private static final String[] PUBLIC_GET_ENDPOINTS = { "/api/v1/categories/**", "/api/v1/products/**" };
 
   @Value("${cors.origins}")
   private String corsOrigins;
 
   @Bean
-  @Profile("test")
   @Order(1)
+  @ConditionalOnProperty(prefix = "spring.h2.console", name = "enabled", havingValue = "true")
   public SecurityFilterChain h2SecurityFilterChain(HttpSecurity http) throws Exception {
 
     http.securityMatcher(PathRequest.toH2Console()).csrf(csrf -> csrf.disable())
