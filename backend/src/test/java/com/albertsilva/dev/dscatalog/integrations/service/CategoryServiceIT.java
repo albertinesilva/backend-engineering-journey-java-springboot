@@ -163,12 +163,12 @@ class CategoryServiceIT {
   }
 
   @Nested
-  @DisplayName("Insert Operations")
-  class InsertOperations {
+  @DisplayName("Create Operations")
+  class CreateOperations {
 
     @Test
-    @DisplayName("insert should create category successfully")
-    void insertShouldCreateCategorySuccessfully() {
+    @DisplayName("create should create category successfully")
+    void createShouldCreateCategorySuccessfully() {
 
       // Arrange
       CategoryCreateRequest request = CategoryFactory.createCategoryCreateRequest();

@@ -19,11 +19,11 @@ import java.util.Set;
  *
  * <pre>{@code
  * UserResponse user = new UserResponse(
- *                 1L,
- *                 "John",
- *                 "Doe",
- *                 "john.doe@example.com",
- *                 Set.of("ROLE_USER"));
+ *     1L,
+ *     "John",
+ *     "Doe",
+ *     "john.doe@example.com",
+ *     Set.of("ROLE_USER"));
  * }</pre>
  *
  * @param id        Identificador único do usuário
@@ -33,10 +33,10 @@ import java.util.Set;
  * @param roles     Conjunto de roles associadas ao usuário
  */
 public record UserResponse(
-                Long id,
-                String firstName,
-                String lastName,
-                String email,
-                Set<String> roles) {
+    Long id,
+    String firstName,
+    String lastName,
+    String email,
+    Set<String> roles) {
 
 }

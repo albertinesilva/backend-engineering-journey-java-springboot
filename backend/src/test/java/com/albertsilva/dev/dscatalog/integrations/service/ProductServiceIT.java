@@ -156,8 +156,8 @@ class ProductServiceIT {
   class CreateOperations {
 
     @Test
-    @DisplayName("insert should persist product when valid data")
-    void insertShouldPersistProductWhenValidData() {
+    @DisplayName("create should persist product when valid data")
+    void createShouldPersistProductWhenValidData() {
 
       // Arrange
       ProductCreateRequest request = ProductFactory.createProductCreateRequest();

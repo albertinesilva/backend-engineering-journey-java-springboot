@@ -125,8 +125,7 @@ class ProductControllerTest {
           .andExpect(jsonPath("$.description").value(productResponse.description()))
           .andExpect(jsonPath("$.price").value(productResponse.price()));
 
-      verify(productService)
-          .create(any(ProductCreateRequest.class));
+      verify(productService).create(any(ProductCreateRequest.class));
     }
   }
 

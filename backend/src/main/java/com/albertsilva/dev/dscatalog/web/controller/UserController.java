@@ -138,7 +138,6 @@ public class UserController {
       @ApiResponse(responseCode = "403", description = "Usuário sem permissão para acessar este recurso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))
   })
   @GetMapping
-  @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<Page<UserResponse>> findAll(@RequestParam(required = false) String firstName,
       Pageable pageable) {
 
@@ -205,7 +204,7 @@ public class UserController {
       @ApiResponse(responseCode = "400", description = "Dados inválidos", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))
   })
   @PutMapping(value = "/{id}")
- @PreAuthorize("hasRole('ADMIN')")
+  @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<UserResponse> update(@PathVariable Long id,
       @Valid @RequestBody UserUpdateRequest userUpdateRequest) {
 

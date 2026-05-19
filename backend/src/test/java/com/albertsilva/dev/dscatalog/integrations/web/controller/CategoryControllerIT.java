@@ -8,6 +8,9 @@ import static com.albertsilva.dev.dscatalog.factory.CategoryFactory.DEPENDENT_ID
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -18,45 +21,40 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.albertsilva.dev.dscatalog.dto.category.request.CategoryCreateRequest;
 import com.albertsilva.dev.dscatalog.dto.category.request.CategoryUpdateRequest;
 import com.albertsilva.dev.dscatalog.factory.CategoryFactory;
+import com.albertsilva.dev.dscatalog.integrations.common.AbstractIT;
 import com.albertsilva.dev.dscatalog.repository.CategoryRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-@SpringBootTest
-@AutoConfigureMockMvc
 @Transactional
 @DisplayName("CategoryController Integration Tests")
-class CategoryControllerIT {
+class CategoryControllerIT extends AbstractIT {
 
   private static final String BASE_URL = "/api/v1/categories";
 
   @Autowired
-  private MockMvc mockMvc;
-
-  @Autowired
-  private ObjectMapper objectMapper;
-
-  @Autowired
   private CategoryRepository categoryRepository;
 
+  private String username;
+  private String password;
   private long totalCategoriesCount;
 
   @BeforeEach
-  void setUp() {
+  void setUp() throws Exception {
     totalCategoriesCount = categoryRepository.count();
+
+    username = "maria@gmail.com";
+    password = "123456";
+    bearerToken = tokenUtil.obtainAccessToken(mockMvc, username, password);
   }
 
   @Nested
-  @DisplayName("Read Operations")
+  @DisplayName("READ Operations")
   class ReadOperations {
 
     @Nested
@@ -160,7 +158,7 @@ class CategoryControllerIT {
   }
 
   @Nested
-  @DisplayName("Create Operations")
+  @DisplayName("CREATE Operations")
   class CreateOperations {
 
     @Test
@@ -174,6 +172,7 @@ class CategoryControllerIT {
 
       // Act
       ResultActions resultActions = mockMvc.perform(post(BASE_URL)
+          .with(bearerToken())
           .content(jsonRequest)
           .contentType(MediaType.APPLICATION_JSON)
           .accept(MediaType.APPLICATION_JSON));
@@ -186,36 +185,12 @@ class CategoryControllerIT {
           .andExpect(jsonPath("$.name").value(request.name()))
           .andExpect(jsonPath("$.description").value(request.description()));
 
-      assert categoryRepository.count() == initialCount + 1;
-    }
-
-    @Test
-    @DisplayName("POST /categories should create category with valid data")
-    void insertShouldCreateCategoryWithValidData() throws Exception {
-
-      // Arrange
-      CategoryCreateRequest request = CategoryFactory.createCategoryCreateRequest();
-      String jsonRequest = asJson(request);
-      long initialCount = categoryRepository.count();
-
-      // Act
-      ResultActions resultActions = mockMvc.perform(post(BASE_URL)
-          .content(jsonRequest)
-          .contentType(MediaType.APPLICATION_JSON)
-          .accept(MediaType.APPLICATION_JSON));
-
-      // Assert
-      resultActions
-          .andExpect(status().isCreated())
-          .andExpect(header().exists("Location"))
-          .andExpect(jsonPath("$.name").value(request.name()));
-
-      assert categoryRepository.count() == initialCount + 1;
+      assertEquals(categoryRepository.count(), initialCount + 1);
     }
   }
 
   @Nested
-  @DisplayName("Update Operations")
+  @DisplayName("UPDATE Operations")
   class UpdateOperations {
 
     @Test
@@ -228,6 +203,7 @@ class CategoryControllerIT {
 
       // Act
       ResultActions resultActions = mockMvc.perform(patch(BASE_URL + "/{id}", EXISTING_ID)
+          .with(bearerToken())
           .content(jsonRequest)
           .contentType(MediaType.APPLICATION_JSON)
           .accept(MediaType.APPLICATION_JSON));
@@ -250,6 +226,7 @@ class CategoryControllerIT {
 
       // Act
       ResultActions resultActions = mockMvc.perform(patch(BASE_URL + "/{id}", NON_EXISTING_ID)
+          .with(bearerToken())
           .content(jsonRequest)
           .contentType(MediaType.APPLICATION_JSON)
           .accept(MediaType.APPLICATION_JSON));
@@ -260,7 +237,7 @@ class CategoryControllerIT {
   }
 
   @Nested
-  @DisplayName("Delete Operations")
+  @DisplayName("DELETE Operations")
   class DeleteOperations {
 
     @Test
@@ -269,16 +246,18 @@ class CategoryControllerIT {
 
       // Arrange
       long initialCount = categoryRepository.count();
-      assert categoryRepository.existsById(NON_DEPENDENT_ID);
+      assertEquals(categoryRepository.existsById(NON_DEPENDENT_ID), true);
 
       // Act
-      ResultActions resultActions = mockMvc.perform(delete(BASE_URL + "/{id}", NON_DEPENDENT_ID));
+      ResultActions resultActions = mockMvc.perform(delete(BASE_URL + "/{id}", NON_DEPENDENT_ID)
+          .with(bearerToken())
+          .accept(MediaType.APPLICATION_JSON));
 
       // Assert
       resultActions.andExpect(status().isNoContent());
 
-      assert categoryRepository.count() == initialCount - 1;
-      assert !categoryRepository.existsById(NON_DEPENDENT_ID);
+      assertEquals(categoryRepository.count(), initialCount - 1);
+      assertFalse(categoryRepository.existsById(NON_DEPENDENT_ID));
     }
 
     @Test
@@ -286,25 +265,32 @@ class CategoryControllerIT {
     void deleteShouldReturnNotFoundWhenIdDoesNotExist() throws Exception {
 
       // Act
-      ResultActions resultActions = mockMvc.perform(delete(BASE_URL + "/{id}", NON_EXISTING_ID));
+      ResultActions resultActions = mockMvc.perform(delete(BASE_URL + "/{id}", NON_EXISTING_ID)
+          .with(bearerToken())
+          .accept(MediaType.APPLICATION_JSON));
 
       // Assert
       resultActions.andExpect(status().isNotFound());
     }
 
+    // Esse teste não esta funcionando porque é necessario verificar a logica de
+    // negocio para deletar a categoria,
+    // ou seja, verificar a exceção lançada quando a categoria tem produtos
+    // associados. Verificar a possibilidade de usar o
+    // categoryRepository.flush() para forçar a execução da operação de delete e
+    // verificar a exceção lançada.
     @Test
     @DisplayName("DELETE /categories/{id} should return 409 when category has associated products")
     void deleteShouldReturnBadRequestWhenCategoryHasAssociatedProducts() throws Exception {
 
       // Act
-      ResultActions resultActions = mockMvc.perform(delete(BASE_URL + "/{id}", DEPENDENT_ID));
+      ResultActions resultActions = mockMvc.perform(delete(BASE_URL + "/{id}", DEPENDENT_ID)
+          .with(bearerToken())
+          .accept(MediaType.APPLICATION_JSON));
 
       // Assert
-      resultActions.andExpect(status().isConflict());
+      resultActions.andExpect(status().isConflict()).andExpect(jsonPath("$.error").value("Conflict"))
+          .andExpect(jsonPath("$.message").value("Cannot delete resource because it has related entities"));
     }
-  }
-
-  private String asJson(Object object) throws Exception {
-    return objectMapper.writeValueAsString(object);
   }
 }

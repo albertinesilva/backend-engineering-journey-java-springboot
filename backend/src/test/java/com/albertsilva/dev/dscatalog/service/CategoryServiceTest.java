@@ -47,13 +47,35 @@ class CategoryServiceTest {
   @Mock
   private CategoryMapper categoryMapper;
 
+  private Pageable pageable;
+  private Page<Category> categoryPage;
+  private Page<CategoryResponse> responsePage;
+
+  @BeforeEach
+  void setUp() {
+
+    pageable = PageRequest.of(0, 10);
+
+    Category category = CategoryFactory.createCategory();
+    category.setId(EXISTING_ID);
+
+    CategoryResponse response = Mockito.mock(CategoryResponse.class);
+
+    List<Category> categoryList = List.of(category);
+    List<CategoryResponse> responseList = List.of(response);
+
+    categoryPage = new PageImpl<>(categoryList, pageable, COUNT_TOTAL_CATEGORIES);
+
+    responsePage = new PageImpl<>(responseList, pageable, COUNT_TOTAL_CATEGORIES);
+  }
+
   @Nested
-  @DisplayName("Insert Operations")
-  class InsertOperations {
+  @DisplayName("Create Operations")
+  class CreateOperations {
 
     @Test
-    @DisplayName("insert should save category successfully")
-    void insertShouldSaveCategorySuccessfully() {
+    @DisplayName("create should save category successfully")
+    void createShouldSaveCategorySuccessfully() {
 
       CategoryCreateRequest request = Mockito.mock(CategoryCreateRequest.class);
 
@@ -121,28 +143,6 @@ class CategoryServiceTest {
   @Nested
   @DisplayName("Search Operations")
   class SearchOperations {
-
-    private Pageable pageable;
-    private Page<Category> categoryPage;
-    private Page<CategoryResponse> responsePage;
-
-    @BeforeEach
-    void setUp() {
-
-      pageable = PageRequest.of(0, 10);
-
-      Category category = CategoryFactory.createCategory();
-      category.setId(EXISTING_ID);
-
-      CategoryResponse response = Mockito.mock(CategoryResponse.class);
-
-      List<Category> categoryList = List.of(category);
-      List<CategoryResponse> responseList = List.of(response);
-
-      categoryPage = new PageImpl<>(categoryList, pageable, COUNT_TOTAL_CATEGORIES);
-
-      responsePage = new PageImpl<>(responseList, pageable, COUNT_TOTAL_CATEGORIES);
-    }
 
     @Test
     @DisplayName("search should return paged categories when filter is empty")
