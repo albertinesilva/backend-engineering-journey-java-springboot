@@ -39,21 +39,28 @@ A branch `main` funciona como hub central de documentação e navegação.
 
 ---
 
-# 🛠️ Tecnologias Utilizadas
+# 🛠️ Stack e Tecnologias Utilizadas
 
 - Java 17+
 - Spring Boot
+- Spring Web
 - Spring Data JPA
-- Hibernate
+- Hibernate ORM
 - Spring Security
-- JWT / OAuth2
+- OAuth2 / JWT
 - PostgreSQL
 - H2 Database
+- Flyway
 - JUnit 5
 - Mockito
 - MockMvc
+- AssertJ
 - Maven
 - Docker
+- JavaDoc Documentation
+- Swagger / OpenAPI
+- SLF4J / Logback
+- Git / GitHub
 
 ---
 
