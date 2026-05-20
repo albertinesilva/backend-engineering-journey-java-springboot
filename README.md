@@ -1,7 +1,33 @@
 # 🧩 Capítulo 01 — Operações CRUD com Spring Boot
 
-<p style="text-align: justify;">
+<p align="center">
 <em>Este capítulo apresenta a construção de uma API backend utilizando <code>Java</code> e <code>Spring Boot</code>, com foco na implementação de operações de <code>CRUD</code> (Create, Read, Update e Delete) para gerenciamento de produtos e categorias.</em>
+</p>
+
+<p align="center">
+
+<img src="https://img.shields.io/badge/Java-17+-orange?style=for-the-badge&logo=openjdk&logoColor=white" />
+
+<img src="https://img.shields.io/badge/Spring_Boot-3.x-6DB33F?style=for-the-badge&logo=springboot&logoColor=white" />
+
+<img src="https://img.shields.io/badge/API-RESTful-success?style=for-the-badge" />
+
+<img src="https://img.shields.io/badge/Architecture-Layered_Architecture-blue?style=for-the-badge" />
+
+<img src="https://img.shields.io/badge/Security-JWT%20%7C%20OAuth2-red?style=for-the-badge" />
+
+<img src="https://img.shields.io/badge/Database-PostgreSQL%20%7C%20H2-336791?style=for-the-badge&logo=postgresql&logoColor=white" />
+
+<img src="https://img.shields.io/badge/Tests-JUnit%20%7C%20Mockito-yellow?style=for-the-badge" />
+
+<img src="https://img.shields.io/badge/Container-Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" />
+
+<img src="https://img.shields.io/badge/Documentation-Swagger%20%7C%20JavaDoc-85EA2D?style=for-the-badge" />
+
+<img src="https://img.shields.io/github/license/Albertinesilva/backend-engineering-journey-java-springboot?style=for-the-badge" />
+
+<img src="https://img.shields.io/github/last-commit/Albertinesilva/backend-engineering-journey-java-springboot?style=for-the-badge" />
+
 </p>
 
 ---
