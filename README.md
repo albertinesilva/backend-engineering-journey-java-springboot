@@ -58,34 +58,179 @@ Ao longo desta jornada, os projetos exploram competências relevantes para o mer
 ## 🛠️ Stack Tecnológica
 
 <p align="justify">
-A stack utilizada nesta jornada foi selecionada com foco em desenvolvimento backend moderno, escalável e alinhado às práticas adotadas no mercado. O ecossistema contempla desde construção de APIs REST até testes, persistência, observabilidade e preparação para deploy.
+A stack utilizada nesta jornada foi selecionada com foco em desenvolvimento backend moderno, escalável e alinhado às práticas adotadas no mercado.  
+O ecossistema contempla construção de APIs REST, persistência de dados, autenticação segura, testes automatizados, observabilidade, documentação e preparação para deploy.
 </p>
 
-| Categoria | Tecnologias | Finalidade |
-|-----------|-------------|------------|
-| ☕ Linguagem | Java 17+ | Base principal do desenvolvimento, utilizando recursos modernos da linguagem e LTS amplamente adotado no mercado |
-| 🌱 Framework Principal | Spring Boot | Criação rápida e robusta de aplicações backend com configuração simplificada e produtividade elevada |
-| 🌐 APIs REST | Spring Web | Construção de endpoints RESTful, controllers, serialização JSON e comunicação HTTP |
-| 🗄️ Persistência | Spring Data JPA | Abstração para acesso a dados com repositories e integração com banco relacional |
-| 🧩 ORM | Hibernate | Mapeamento objeto-relacional (Entity ↔ Tabelas), gerenciamento de contexto e queries |
-| 🔐 Segurança | Spring Security | Controle de autenticação, autorização e proteção de rotas |
-| 🎫 Auth Tokens | OAuth2 / JWT | Implementação de login seguro e controle de acesso baseado em tokens |
-| 🐘 Banco Principal | PostgreSQL | Banco relacional robusto utilizado em ambiente de desenvolvimento e cenários reais |
-| ⚡ Banco de Testes | H2 Database | Banco em memória para testes rápidos, isolados e reproduzíveis |
-| 🔄 Migrations | Flyway | Versionamento e controle evolutivo do schema do banco de dados |
-| 🧪 Testes Unitários | JUnit 5 | Escrita de testes automatizados para regras de negócio e componentes isolados |
-| 🎭 Mocks | Mockito | Simulação de dependências para testes unitários desacoplados |
-| 🔬 Testes Spring | Spring Boot Test | Testes integrados com contexto Spring |
-| 🌍 Testes de API | MockMvc / Postman | Validação de endpoints REST, contratos HTTP e fluxo da aplicação |
-| 📦 Build Tool | Maven | Gerenciamento de dependências, empacotamento e ciclo de build |
-| 🐳 Containerização | Docker | Padronização de ambiente e preparação para deploy |
-| 🚀 Entrega Contínua | CI/CD (conceitos) | Automação de build, testes e deploy |
-| 📄 Documentação | Swagger / OpenAPI | Documentação interativa e explorável da API |
-| 📊 Logging | SLF4J / Logback | Logs estruturados para rastreabilidade e observabilidade |
-| 💻 IDE Principal | IntelliJ IDEA | Ambiente principal de desenvolvimento Java |
-| 📝 Editor Auxiliar | VS Code | Apoio para documentação, frontend e edição rápida |
-| 🧰 Banco / Queries | pgAdmin | Administração e inspeção de banco PostgreSQL |
-| 🌍 Versionamento | Git / GitHub | Controle de versão, branches e portfólio técnico |
+<table>
+  <thead>
+    <tr>
+      <th align="left">Categoria</th>
+      <th align="left">Tecnologias</th>
+      <th align="left">Finalidade</th>
+    </tr>
+  </thead>
+
+  <tbody>
+
+  <tr>
+    <td>☕ Linguagem</td>
+    <td><strong>Java 17+</strong></td>
+    <td>Base principal do desenvolvimento utilizando recursos modernos da linguagem e versão LTS amplamente adotada no mercado.</td>
+  </tr>
+
+  <tr>
+    <td>🌱 Framework Principal</td>
+    <td><strong>Spring Boot</strong></td>
+    <td>Criação rápida e robusta de aplicações backend com configuração simplificada e alta produtividade.</td>
+  </tr>
+
+  <tr>
+    <td>🌐 APIs REST</td>
+    <td><strong>Spring Web</strong></td>
+    <td>Construção de endpoints RESTful, controllers, serialização JSON e comunicação HTTP.</td>
+  </tr>
+
+  <tr>
+    <td>🗄️ Persistência</td>
+    <td><strong>Spring Data JPA</strong></td>
+    <td>Abstração de acesso a dados utilizando repositories e integração com bancos relacionais.</td>
+  </tr>
+
+  <tr>
+    <td>🧩 ORM</td>
+    <td><strong>Hibernate ORM</strong></td>
+    <td>Mapeamento objeto-relacional (Entity ↔ Tabelas), gerenciamento de contexto e consultas SQL.</td>
+  </tr>
+
+  <tr>
+    <td>✅ Validação</td>
+    <td><strong>Jakarta Bean Validation</strong></td>
+    <td>Validação declarativa de DTOs e regras de entrada utilizando annotations integradas ao Spring Boot.</td>
+  </tr>
+
+  <tr>
+    <td>🔐 Segurança</td>
+    <td><strong>Spring Security</strong></td>
+    <td>Controle de autenticação, autorização e proteção de rotas da aplicação.</td>
+  </tr>
+
+  <tr>
+    <td>🎫 Auth Tokens</td>
+    <td><strong>OAuth2 / JWT</strong></td>
+    <td>Implementação de autenticação segura baseada em tokens e controle de acesso.</td>
+  </tr>
+
+  <tr>
+    <td>🐘 Banco Principal</td>
+    <td><strong>PostgreSQL</strong></td>
+    <td>Banco relacional robusto utilizado em ambiente de desenvolvimento e cenários reais.</td>
+  </tr>
+
+  <tr>
+    <td>⚡ Banco de Testes</td>
+    <td><strong>H2 Database</strong></td>
+    <td>Banco em memória para execução de testes rápidos, isolados e reproduzíveis.</td>
+  </tr>
+
+  <tr>
+    <td>🔄 Migrations</td>
+    <td><strong>Flyway</strong></td>
+    <td>Versionamento e controle evolutivo do schema do banco de dados.</td>
+  </tr>
+
+  <tr>
+    <td>🧪 Testes Unitários</td>
+    <td><strong>JUnit 5</strong></td>
+    <td>Criação de testes automatizados para regras de negócio e componentes isolados.</td>
+  </tr>
+
+  <tr>
+    <td>🎭 Mocking</td>
+    <td><strong>Mockito</strong></td>
+    <td>Simulação de dependências para testes desacoplados e isolados.</td>
+  </tr>
+
+  <tr>
+    <td>🔍 Assertions</td>
+    <td><strong>AssertJ</strong></td>
+    <td>Assertions fluentes e legíveis para validação de cenários de teste.</td>
+  </tr>
+
+  <tr>
+    <td>🔬 Testes Spring</td>
+    <td><strong>Spring Boot Test</strong></td>
+    <td>Testes integrados utilizando contexto completo do ecossistema Spring.</td>
+  </tr>
+
+  <tr>
+    <td>🌍 Testes de API</td>
+    <td><strong>MockMvc / Postman</strong></td>
+    <td>Validação de endpoints REST, contratos HTTP e comportamento da aplicação.</td>
+  </tr>
+
+  <tr>
+    <td>📦 Build Tool</td>
+    <td><strong>Maven</strong></td>
+    <td>Gerenciamento de dependências, empacotamento e ciclo de build do projeto.</td>
+  </tr>
+
+  <tr>
+    <td>🐳 Containerização</td>
+    <td><strong>Docker</strong></td>
+    <td>Padronização de ambiente e preparação da aplicação para deploy.</td>
+  </tr>
+
+  <tr>
+    <td>🚀 Entrega Contínua</td>
+    <td><strong>CI/CD (conceitos)</strong></td>
+    <td>Automação de build, testes e processos de integração contínua.</td>
+  </tr>
+
+  <tr>
+    <td>📄 Documentação API</td>
+    <td><strong>Swagger / OpenAPI</strong></td>
+    <td>Documentação interativa e explorável dos endpoints REST.</td>
+  </tr>
+
+  <tr>
+    <td>📘&nbsp;Documentação&nbsp;Técnica</td>
+    <td><strong>JavaDoc</strong></td>
+    <td>Documentação técnica de classes, métodos e contratos da aplicação.</td>
+  </tr>
+
+  <tr>
+    <td>📊 Observabilidade</td>
+    <td><strong>SLF4J / Logback</strong></td>
+    <td>Logs estruturados para rastreabilidade, monitoramento e debugging.</td>
+  </tr>
+
+  <tr>
+    <td>💻 IDE Principal</td>
+    <td><strong>IntelliJ IDEA</strong></td>
+    <td>Ambiente principal de desenvolvimento para aplicações Java.</td>
+  </tr>
+
+  <tr>
+    <td>📝 Editor Auxiliar</td>
+    <td><strong>VS Code</strong></td>
+    <td>Apoio para documentação, frontend e edições rápidas.</td>
+  </tr>
+
+  <tr>
+    <td>🧰 Banco / Queries</td>
+    <td><strong>pgAdmin</strong></td>
+    <td>Administração, inspeção e gerenciamento do PostgreSQL.</td>
+  </tr>
+
+  <tr>
+    <td>🌍 Versionamento</td>
+    <td><strong>Git / GitHub</strong></td>
+    <td>Controle de versão, gerenciamento de branches e portfólio técnico.</td>
+  </tr>
+
+  </tbody>
+</table>
 
 ---
 
