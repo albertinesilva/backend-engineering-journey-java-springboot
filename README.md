@@ -160,6 +160,19 @@ Ferramentas aceleram produtividade. Conhecimento sólido gera valor real.
 
 ---
 
+## 🤝 Colaboração
+
+Este repositório também tem como objetivo incentivar aprendizado contínuo, troca de conhecimento e evolução colaborativa no ecossistema Java e Spring Boot.
+
+Sugestões, melhorias, correções e discussões técnicas são bem-vindas.
+
+Antes de contribuir, consulte:
+
+- [CONTRIBUTING.md](./CONTRIBUTING.md)
+- [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
+
+---
+
 ## 📚 Referências Técnicas Oficiais
 
 ### 🔹 Java Documentation
