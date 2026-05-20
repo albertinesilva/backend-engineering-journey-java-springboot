@@ -1,7 +1,7 @@
 # 🧩 Capítulo 01 — Operações CRUD com Spring Boot
 
 <p align="center">
-<em>Este capítulo apresenta a construção de uma API backend utilizando <code>Java</code> e <code>Spring Boot</code>, com foco na implementação de operações de <code>CRUD</code> (Create, Read, Update e Delete) para gerenciamento de produtos e categorias.</em>
+<em>Building RESTful backend applications with layered architecture, clean code practices, and scalable CRUD operations using Java and Spring Boot.</em>
 </p>
 
 <p align="center">
@@ -29,8 +29,6 @@
 <img src="https://img.shields.io/github/last-commit/Albertinesilva/backend-engineering-journey-java-springboot?style=for-the-badge" />
 
 </p>
-
----
 
 O projeto **DSCatalog** foi estruturado seguindo boas práticas de desenvolvimento, adotando **arquitetura em camadas** e separação clara de responsabilidades. Além das operações básicas de CRUD, foram implementados conceitos importantes como:
 
