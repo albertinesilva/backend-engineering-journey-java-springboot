@@ -1,15 +1,37 @@
-<h1 align="center">🚀 Backend Development Journey — Java | Spring Boot</h1>
+<h1 align="center">🚀 Backend Engineering Journey — Java | Spring Boot</h1>
 
 <p align="center">
 <em>Continuous learning focused on scalable systems, clean architecture, and production-ready backend solutions.</em>
 </p>
 
 <p align="center">
-<img src="https://img.shields.io/badge/Java-17+-orange" />
-<img src="https://img.shields.io/badge/Spring_Boot-3.x-brightgreen" />
-<img src="https://img.shields.io/badge/Backend-Java-success" />
-<img src="https://img.shields.io/badge/Status-In_Progress-blue" />
-<img src="https://img.shields.io/badge/Focus-Clean_Architecture-lightgrey" />
+Scalable Backend Systems • REST APIs • Clean Architecture • Security • Testing • DevOps
+</p>
+
+<p align="center">
+
+<img src="https://img.shields.io/badge/Java-17+-orange?style=for-the-badge&logo=openjdk&logoColor=white" />
+
+<img src="https://img.shields.io/badge/Spring_Boot-3.x-6DB33F?style=for-the-badge&logo=springboot&logoColor=white" />
+
+<img src="https://img.shields.io/badge/Architecture-Layered_Architecture-blue?style=for-the-badge" />
+
+<img src="https://img.shields.io/badge/Security-JWT%20%7C%20OAuth2-red?style=for-the-badge" />
+
+<img src="https://img.shields.io/badge/Database-PostgreSQL%20%7C%20H2-336791?style=for-the-badge&logo=postgresql&logoColor=white" />
+
+<img src="https://img.shields.io/badge/Tests-JUnit%20%7C%20Mockito-yellow?style=for-the-badge" />
+
+<img src="https://img.shields.io/badge/Container-Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" />
+
+<img src="https://img.shields.io/badge/Documentation-Swagger%20%7C%20JavaDoc-85EA2D?style=for-the-badge" />
+
+<img src="https://img.shields.io/github/license/Albertinesilva/backend-engineering-journey-java-springboot?style=for-the-badge" />
+
+<img src="https://img.shields.io/github/last-commit/Albertinesilva/backend-engineering-journey-java-springboot?style=for-the-badge" />
+
+<img src="https://img.shields.io/github/stars/Albertinesilva/backend-engineering-journey-java-springboot?style=for-the-badge" />
+
 </p>
 
 <p align="justify">
