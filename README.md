@@ -1,9 +1,7 @@
 <h1 align="center">🧪 Capítulo 02 — Testes Automatizados no Back-End | Spring Boot</h1>
 
 <p align="center">
-<em>
-Estratégias profissionais de testes automatizados utilizando JUnit 5, Mockito, MockMvc e Spring Boot.
-</em>
+<em>Applying professional automated testing strategies with JUnit, Mockito, MockMvc, integration testing, and testable software architecture in Spring Boot applications.</em>
 </p>
 
 <p align="center">
