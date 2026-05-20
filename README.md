@@ -1,4 +1,4 @@
-<h1 align="center">🛡️Capítulo 03 — Validação e Segurança com Spring Boot | OAuth2 | JWT</h1>
+<h1 align="center">🛡️Capítulo 03 — Validação e Segurança com Spring Boot OAuth2 | JWT</h1>
 
 <p align="center">
 <em>Implementing secure REST APIs with Spring Security, OAuth2, JWT authentication, Bean Validation, and role-based access control in modern Spring Boot applications.</em>
