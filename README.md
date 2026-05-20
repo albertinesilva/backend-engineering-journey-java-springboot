@@ -1,9 +1,49 @@
-<h1 align="center">  🧪 Capítulo 02 — Testes Automatizados no Back-End | Spring Boot</h1>
+<h1 align="center">🧪 Capítulo 02 — Testes Automatizados no Back-End | Spring Boot</h1>
 
-<p align="text-align: justify;">
-<em>Este capítulo apresenta a construção de uma estratégia profissional de testes automatizados aplicada ao projeto <strong>DSCatalog</strong>, utilizando <code>Java</code>, <code>Spring Boot 3</code>, <code>JUnit 5</code>, <code>Mockito</code>, <code>MockMvc</code> e princípios sólidos de engenharia de software para garantir qualidade, previsibilidade, segurança evolutiva e manutenção sustentável.</em>em>
+<p align="center">
+<em>
+Estratégias profissionais de testes automatizados utilizando JUnit 5, Mockito, MockMvc e Spring Boot.
+</em>
+</p>
 
-<em>Dentro desse contexto, teste de unidade é o processo de verificar o funcionamento de um módulo de software de forma isolada, validando se ele atende às suas especificações. A partir desse fundamento, o capítulo evolui para abordagens mais amplas de validação, contemplando testes de integração, persistência e camada web, formando uma base robusta de qualidade para aplicações back-end profissionais.</em>
+<p align="center">
+
+<img src="https://img.shields.io/badge/Java-17+-orange?style=for-the-badge&logo=openjdk&logoColor=white" />
+
+<img src="https://img.shields.io/badge/Spring_Boot-3.x-6DB33F?style=for-the-badge&logo=springboot&logoColor=white" />
+
+<img src="https://img.shields.io/badge/Testing-JUnit5%20%7C%20Mockito-yellow?style=for-the-badge" />
+
+<img src="https://img.shields.io/badge/Web_Testing-MockMvc-blue?style=for-the-badge" />
+
+<img src="https://img.shields.io/badge/Repository_Testing-DataJpaTest-success?style=for-the-badge" />
+
+<img src="https://img.shields.io/badge/Architecture-SOLID%20%7C%20TDD-black?style=for-the-badge" />
+
+<img src="https://img.shields.io/badge/Test_Strategy-Unit%20%7C%20Integration%20%7C%20Functional-purple?style=for-the-badge" />
+
+<img src="https://img.shields.io/badge/Coverage-Service%20%7C%20Repository%20%7C%20Controller-9cf?style=for-the-badge" />
+
+<img src="https://img.shields.io/badge/Quality-Regression_Safe-brightgreen?style=for-the-badge" />
+
+<img src="https://img.shields.io/badge/Focus-Testability%20%7C%20Maintainability-informational?style=for-the-badge" />
+
+<img src="https://img.shields.io/github/license/Albertinesilva/backend-engineering-journey-java-springboot?style=for-the-badge" />
+
+<img src="https://img.shields.io/github/last-commit/Albertinesilva/backend-engineering-journey-java-springboot?style=for-the-badge" />
+
+</p>
+
+<p align="justify">
+<em>
+Este capítulo apresenta a construção de uma estratégia profissional de testes automatizados aplicada ao projeto <strong>DSCatalog</strong>, utilizando <code>Java</code>, <code>Spring Boot 3</code>, <code>JUnit 5</code>, <code>Mockito</code>, <code>MockMvc</code> e princípios sólidos de engenharia de software para garantir qualidade, previsibilidade, segurança evolutiva e manutenção sustentável.
+</em>
+</p>
+
+<p align="justify">
+<em>
+Dentro desse contexto, teste de unidade é o processo de verificar o funcionamento de um módulo de software de forma isolada, validando se ele atende às suas especificações. A partir desse fundamento, o capítulo evolui para abordagens mais amplas de validação, contemplando testes de integração, persistência e camada web, formando uma base robusta de qualidade para aplicações back-end profissionais.
+</em>
 </p>
 
 ---
