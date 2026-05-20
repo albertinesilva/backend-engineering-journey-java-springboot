@@ -230,6 +230,68 @@ class ProductControllerIT extends AbstractIT {
   }
 
   @Nested
+  @DisplayName("ACTIVATE Operations")
+  class ActivateOperations {
+
+    @Test
+    @DisplayName("PATCH /products/{id}/activate should activate product when id exists")
+    void activateShouldActivateProductWhenIdExists() throws Exception {
+
+      // Act
+      ResultActions resultActions = mockMvc.perform(patch(BASE_URL + "/{id}/activate", EXISTING_ID)
+          .with(bearerToken()));
+
+      // Assert
+      resultActions.andExpect(status().isNoContent());
+
+      assertEquals(true, productRepository.findById(EXISTING_ID).get().isActive());
+    }
+
+    @Test
+    @DisplayName("PATCH /products/{id}/activate should return 404 when id does not exist")
+    void activateShouldReturnNotFoundWhenIdDoesNotExist() throws Exception {
+
+      // Act
+      ResultActions resultActions = mockMvc.perform(patch(BASE_URL + "/{id}/activate", NON_EXISTING_ID)
+          .with(bearerToken()));
+
+      // Assert
+      resultActions.andExpect(status().isNotFound());
+    }
+  }
+
+  @Nested
+  @DisplayName("DEACTIVATE Operations")
+  class DeactivateOperations {
+
+    @Test
+    @DisplayName("PATCH /products/{id}/deactivate should deactivate product when id exists")
+    void deactivateShouldDeactivateProductWhenIdExists() throws Exception {
+
+      // Act
+      ResultActions resultActions = mockMvc.perform(patch(BASE_URL + "/{id}/deactivate", EXISTING_ID)
+          .with(bearerToken()));
+
+      // Assert
+      resultActions.andExpect(status().isNoContent());
+
+      assertEquals(false, productRepository.findById(EXISTING_ID).get().isActive());
+    }
+
+    @Test
+    @DisplayName("PATCH /products/{id}/deactivate should return 404 when id does not exist")
+    void deactivateShouldReturnNotFoundWhenIdDoesNotExist() throws Exception {
+
+      // Act
+      ResultActions resultActions = mockMvc.perform(patch(BASE_URL + "/{id}/deactivate", NON_EXISTING_ID)
+          .with(bearerToken()));
+
+      // Assert
+      resultActions.andExpect(status().isNotFound());
+    }
+  }
+
+  @Nested
   @DisplayName("DELETE Operations")
   class DeleteOperations {
 

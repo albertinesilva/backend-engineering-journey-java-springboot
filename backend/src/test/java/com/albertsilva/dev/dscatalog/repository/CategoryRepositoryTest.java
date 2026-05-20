@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -115,11 +116,9 @@ class CategoryRepositoryTest {
     void shouldReturnCategoriesContainingNameIgnoringCase() {
 
       // Arrange
-      Category electronics = CategoryFactory.createCategory();
-      electronics.setName("Electronics");
+      Category electronics = CategoryFactory.createCategory("Electronics-Test");
 
-      Category books = CategoryFactory.createCategory();
-      books.setName("Books");
+      Category books = CategoryFactory.createCategory("Books-Test");
 
       categoryRepository.saveAndFlush(electronics);
       categoryRepository.saveAndFlush(books);
@@ -130,8 +129,12 @@ class CategoryRepositoryTest {
       Page<Category> result = categoryRepository.findByNameContainingIgnoreCase("elec", pageable);
 
       // Assert
-      assertThat(result.getContent()).as("Should return matching categories").isNotEmpty().extracting(Category::getName)
-          .contains("Electronics");
+      List<String> names = result.getContent().stream().map(Category::getName).toList();
+
+      assertThat(names)
+          .as("Should return categories containing 'elec' ignoring case")
+          .contains("Electronics-Test")
+          .doesNotContain("Books-Test");
     }
 
     @Test
@@ -155,14 +158,9 @@ class CategoryRepositoryTest {
     void shouldReturnCategoriesOrderedAlphabeticallyWhenSortedByName() {
 
       // Arrange
-      Category c1 = CategoryFactory.createCategory();
-      c1.setName("Zebra");
-
-      Category c2 = CategoryFactory.createCategory();
-      c2.setName("Apple");
-
-      Category c3 = CategoryFactory.createCategory();
-      c3.setName("Books");
+      Category c1 = CategoryFactory.createCategory("Zebra-Test");
+      Category c2 = CategoryFactory.createCategory("Apple-Test");
+      Category c3 = CategoryFactory.createCategory("Books-Test");
 
       categoryRepository.saveAndFlush(c1);
       categoryRepository.saveAndFlush(c2);

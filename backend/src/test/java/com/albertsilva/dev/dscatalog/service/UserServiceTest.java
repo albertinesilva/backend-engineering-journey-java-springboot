@@ -305,6 +305,7 @@ class UserServiceTest {
 
       // Assert
       Assertions.assertTrue(user.isActive());
+      verify(repository, times(1)).findById(existingId);
     }
 
     @Test
@@ -342,6 +343,7 @@ class UserServiceTest {
 
       // Assert
       Assertions.assertFalse(user.isActive());
+      verify(repository, times(1)).findById(existingId);
     }
 
     @Test

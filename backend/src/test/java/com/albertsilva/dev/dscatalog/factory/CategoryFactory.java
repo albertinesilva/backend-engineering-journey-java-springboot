@@ -18,6 +18,10 @@ public class CategoryFactory {
     return category;
   }
 
+  public static Category createCategory(String name) {
+    return new Category(name, "Description-" + name, true);
+  }
+
   public static CategoryResponse createCategoryResponse() {
     return new CategoryResponse(EXISTING_ID, "Eletrônicos", "Produtos eletrônicos, como TVs, smartphones e laptops.",
         true);

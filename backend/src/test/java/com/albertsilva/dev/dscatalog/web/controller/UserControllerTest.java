@@ -19,7 +19,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 import java.util.List;
 
@@ -206,20 +205,27 @@ class UserControllerTest {
 
       // Arrange
       UserUpdateRequest request = UserFactory.createUserUpdateRequest();
+
       UserResponse updatedResponse = UserFactory.createUpdatedUserResponse();
+
+      when(roleRepository.existsById(anyLong())).thenReturn(true);
+
+      when(userRepository.existsByEmailIgnoreCaseAndIdNot(anyString(), anyLong())).thenReturn(false);
 
       when(userService.update(eq(EXISTING_ID), any(UserUpdateRequest.class))).thenReturn(updatedResponse);
 
-      String requestBody = objectMapper.writeValueAsString(request);
-
       // Act
-      ResultActions resultActions = mockMvc.perform(put(BASE_URL + "/{id}", EXISTING_ID).with(csrf())
-          .contentType(MediaType.APPLICATION_JSON).content(requestBody));
+      ResultActions resultActions = mockMvc.perform(put(BASE_URL + "/{id}", EXISTING_ID)
+          .with(csrf())
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(asJson(request)));
 
       // Assert
-      resultActions.andExpect(status().isOk())
+      resultActions
+          .andExpect(status().isOk())
           .andExpect(jsonPath("$.id").value(EXISTING_ID))
-          .andExpect(jsonPath("$.firstName").value(updatedResponse.firstName()));
+          .andExpect(jsonPath("$.firstName")
+              .value(updatedResponse.firstName()));
     }
 
     @Test
@@ -265,6 +271,7 @@ class UserControllerTest {
 
       // Assert
       resultActions.andExpect(status().isNoContent());
+      verify(userService).activate(EXISTING_ID);
     }
 
     @Test
@@ -281,6 +288,7 @@ class UserControllerTest {
 
       // Assert
       resultActions.andExpect(status().isNotFound());
+      verify(userService).activate(NON_EXISTING_ID);
     }
   }
 
@@ -302,6 +310,7 @@ class UserControllerTest {
 
       // Assert
       resultActions.andExpect(status().isNoContent());
+      verify(userService).deactivate(EXISTING_ID);
     }
 
     @Test
@@ -318,6 +327,7 @@ class UserControllerTest {
 
       // Assert
       resultActions.andExpect(status().isNotFound());
+      verify(userService).deactivate(NON_EXISTING_ID);
     }
   }
 
@@ -334,8 +344,8 @@ class UserControllerTest {
       doNothing().when(userService).delete(EXISTING_ID);
 
       // Act
-      ResultActions resultActions = mockMvc
-          .perform(delete(BASE_URL + "/{id}", EXISTING_ID).with(csrf()));
+      ResultActions resultActions = mockMvc.perform(delete(BASE_URL + "/{id}", EXISTING_ID)
+          .with(csrf()));
 
       // Assert
       resultActions.andExpect(status().isNoContent());
@@ -356,6 +366,7 @@ class UserControllerTest {
       // Assert
       resultActions.andExpect(status().isNotFound());
     }
+
   }
 
   private String asJson(Object object) throws Exception {

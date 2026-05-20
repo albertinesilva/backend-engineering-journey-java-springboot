@@ -277,6 +277,94 @@ class ProductServiceTest {
   }
 
   @Nested
+  @DisplayName("Activate Operations")
+  class ActivateOperations {
+
+    @Test
+    @DisplayName("activate should set active to true when id exists")
+    void activateShouldSetActiveToTrueWhenIdExists() {
+
+      // Arrange
+      Product product = ProductFactory.createProduct();
+      product.setId(existingId);
+      product.setActive(false);
+
+      Mockito.when(repository.findById(existingId)).thenReturn(Optional.of(product));
+
+      // Act
+      Assertions.assertDoesNotThrow(() -> service.activate(existingId));
+
+      // Assert
+      Assertions.assertTrue(product.isActive());
+
+      // Verify
+      Mockito.verify(repository).findById(existingId);
+    }
+
+    @Test
+    @DisplayName("activate should throw ResourceNotFoundException when id does not exist")
+    void activateShouldThrowResourceNotFoundExceptionWhenIdDoesNotExist() {
+
+      // Arrange
+      Mockito.when(repository.findById(nonExistingId)).thenReturn(Optional.empty());
+
+      // Act
+      ResourceNotFoundException exception = Assertions.assertThrows(ResourceNotFoundException.class,
+          () -> service.activate(nonExistingId));
+
+      // Assert
+      Assertions.assertEquals("Entity not found id: " + nonExistingId, exception.getMessage());
+
+      // Verify
+      Mockito.verify(repository).findById(nonExistingId);
+    }
+  }
+
+  @Nested
+  @DisplayName("Deactivate Operations")
+  class DeactivateOperations {
+
+    @Test
+    @DisplayName("deactivate should set active to false when id exists")
+    void deactivateShouldSetActiveToFalseWhenIdExists() {
+
+      // Arrange
+      Product product = ProductFactory.createProduct();
+      product.setId(existingId);
+      product.setActive(true);
+
+      Mockito.when(repository.findById(existingId)).thenReturn(Optional.of(product));
+
+      // Act
+      Assertions.assertDoesNotThrow(() -> service.deactivate(existingId));
+
+      // Assert
+      Assertions.assertFalse(product.isActive());
+
+      // Verify
+      Mockito.verify(repository).findById(existingId);
+    }
+
+    @Test
+    @DisplayName("deactivate should throw ResourceNotFoundException when id does not exist")
+    void deactivateShouldThrowResourceNotFoundExceptionWhenIdDoesNotExist() {
+
+      // Arrange
+      Mockito.when(repository.findById(nonExistingId)).thenReturn(Optional.empty());
+
+      // Act
+      ResourceNotFoundException exception = Assertions.assertThrows(ResourceNotFoundException.class,
+          () -> service.deactivate(nonExistingId));
+
+      // Assert
+      Assertions.assertEquals("Entity not found id: " + nonExistingId, exception.getMessage());
+
+      // Verify
+      Mockito.verify(repository).findById(nonExistingId);
+    }
+  }
+
+  @Nested
   @DisplayName("Delete Operations")
   class DeleteOperations {
 

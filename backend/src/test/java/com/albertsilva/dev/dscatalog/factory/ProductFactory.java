@@ -17,7 +17,7 @@ public class ProductFactory {
   public static final String EXISTING_NAME = "Macbook";
 
   public static Product createProduct() {
-    return new Product("Smart TV",
+    return new Product("Smart TV-Test",
         "Smart TV com alta resolução, acesso a streaming e conectividade Wi-Fi.", 2190.0,
         "https://raw.githubusercontent.com/devsuperior/dscatalog-resources/master/backend/img/2-big.jpg",
         Instant.parse("2023-01-01T00:00:00Z"), true);
