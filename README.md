@@ -281,7 +281,7 @@ Cada capítulo está isolado em uma branch específica, representando a evoluç�
 |---------|------|-----------|--------|
 | 01 | CRUD | Operações básicas e estrutura inicial da API | [Acessar](../../tree/chapter-01-crud) |
 | 02 | Testes | Testes automatizados (unitários e integração) | [Acessar](../../tree/chapter-02-tests) |
-| 03 | Segurança | Validação, autenticação e autorização | [Acessar](../../tree/chapter-03-security) |
+| 03 | Segurança | Validação, autenticação e autorização | [Acessar](../../tree/chapter-03-validation-security) |
 | 04 | Domínio | Modelagem de domínio e ORM | [Acessar](../../tree/chapter-04-domain) |
 | 05 | Consultas | Queries complexas e performance | [Acessar](../../tree/chapter-05-queries) |
 | 06 | Docker & Deploy | Containerização, deploy e CI/CD | [Acessar](../../tree/chapter-06-docker) |
