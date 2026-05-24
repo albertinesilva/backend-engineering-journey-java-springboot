@@ -1,6 +1,6 @@
 <h1 align="center">🛡️Capítulo 03 — Validation & Security with Spring Boot | OAuth2 | JWT</h1>
 
-<p align="center">
+<p align="justify">
 <em>
 This chapter focuses on building secure, production-ready backend APIs using <strong>Spring Security</strong>, <strong>OAuth2</strong>, <strong>JWT</strong>, and <strong>Bean Validation</strong>, applying modern authentication, authorization, and data validation strategies aligned with real-world enterprise applications.
 </em>
