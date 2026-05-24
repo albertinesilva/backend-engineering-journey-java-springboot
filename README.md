@@ -292,7 +292,7 @@ O projeto passou a possuir um modelo de autenticação baseado em:
 [!NOTE]
 Adicione aqui a imagem da modelagem de usuários, roles e relacionamentos da aplicação.
 
-<img src="https://raw.githubusercontent.com/Albertinesilva/devsuperior-java-springboot-bootcamp/chapter-01-crud/docs/assets/imgs/modelo-conceitual.png" width="100%">
+<img src="https://raw.githubusercontent.com/Albertinesilva/backend-engineering-journey-java-springboot/chapter-03-validation-security/docs/assets/imgs/modelo-conceitual.png" width="100%">
 
 # 🔐 Fluxo de Autenticação
 
