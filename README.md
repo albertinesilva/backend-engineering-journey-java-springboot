@@ -287,16 +287,13 @@ O projeto passou a possuir um modelo de autenticação baseado em:
 
 ---
 
-# 🖼️ Modelagem de Usuários e Perfis
+## 🖼️ Modelagem de Usuários e Perfis
 
-[!NOTE]
-Adicione aqui a imagem da modelagem de usuários, roles e relacionamentos da aplicação.
+<img src="https://raw.githubusercontent.com/Albertinesilva/backend-engineering-journey-java-springboot/chapter-03-validation-security/docs/assets/imgs/modelo-conceitual.png" width="80%">
 
-<img src="https://raw.githubusercontent.com/Albertinesilva/backend-engineering-journey-java-springboot/chapter-03-validation-security/docs/assets/imgs/modelo-conceitual.png" width="100%">
+## 🔐 Fluxo de Autenticação
 
-# 🔐 Fluxo de Autenticação
-
-## 📌 Processo de Login
+### 📌 Processo de Login
 
 1. Cliente envia credenciais
 2. Authorization Server autentica usuário
@@ -329,7 +326,7 @@ grant_type=password
 
 ---
 
-# 🎫 Estrutura JWT
+## 🎫 Estrutura JWT
 
 Os tokens JWT utilizados carregam informações importantes como:
 
@@ -339,7 +336,7 @@ Os tokens JWT utilizados carregam informações importantes como:
 - Issuer
 - Audience
 
-## 📌 Benefícios do JWT
+### 📌 Benefícios do JWT
 
 - Stateless
 - Escalável
@@ -349,9 +346,9 @@ Os tokens JWT utilizados carregam informações importantes como:
 
 ---
 
-# ⚙️ Configurações da Aplicação
+## ⚙️ Configurações da Aplicação
 
-## 📌 Properties de Segurança
+### 📌 Properties de Segurança
 
 ```properties
 security.client-id=${CLIENT_ID:myclientid}
@@ -362,7 +359,7 @@ cors.origins=${CORS_ORIGINS:http://localhost:3000,http://localhost:5173}
 
 ---
 
-# 🛡️ Authorization Server
+## 🛡️ Authorization Server
 
 O Authorization Server é responsável por:
 
@@ -372,7 +369,7 @@ O Authorization Server é responsável por:
 - Registrar aplicações clientes
 - Gerenciar autenticação OAuth2
 
-## 📌 Responsabilidades implementadas
+### 📌 Responsabilidades implementadas
 
 - Habilitação do Authorization Server
 - Configuração de assinatura JWT
@@ -383,7 +380,7 @@ O Authorization Server é responsável por:
 
 ---
 
-# 🔐 Resource Server
+## 🔐 Resource Server
 
 O Resource Server é responsável por:
 
@@ -392,7 +389,7 @@ O Resource Server é responsável por:
 - Aplicar regras de autorização
 - Proteger recursos da API
 
-## 📌 Configurações aplicadas
+### 📌 Configurações aplicadas
 
 - Controle de acesso por rota
 - Configuração de CORS
@@ -403,9 +400,9 @@ O Resource Server é responsável por:
 
 ---
 
-# 🌐 Segurança de Rotas
+## 🌐 Segurança de Rotas
 
-## 📌 Estratégia aplicada
+### 📌 Estratégia aplicada
 
 | Tipo de rota              | Acesso      |
 | ------------------------- | ----------- |
@@ -427,9 +424,9 @@ O Resource Server é responsável por:
 
 ---
 
-# 🧾 Bean Validation
+## 🧾 Bean Validation
 
-## 📌 Validações implementadas
+### 📌 Validações implementadas
 
 ### Exemplos
 
@@ -445,11 +442,11 @@ O Resource Server é responsável por:
 
 ---
 
-# 🔄 Tratamento Global de Validações
+## 🔄 Tratamento Global de Validações
 
 A aplicação possui um mecanismo centralizado para tratamento de exceções e erros de validação.
 
-## 📌 Benefícios
+### 📌 Benefícios
 
 - Padronização das respostas
 - Melhor integração frontend/backend
@@ -459,7 +456,7 @@ A aplicação possui um mecanismo centralizado para tratamento de exceções e e
 
 ---
 
-## 📄 Exemplo de resposta de validação
+### 📄 Exemplo de resposta de validação
 
 ```json
 {
@@ -519,7 +516,7 @@ A aplicação possui um mecanismo centralizado para tratamento de exceções e e
 
 ---
 
-# 📂 Organização dos Packages
+## 📂 Organização dos Packages
 
 A estrutura da camada de segurança foi organizada seguindo princípios de separação de responsabilidades, modularidade e baixo acoplamento, permitindo maior clareza arquitetural, facilidade de manutenção e escalabilidade evolutiva.
 
@@ -528,9 +525,6 @@ O objetivo foi estruturar cada responsabilidade de segurança de forma isolada e
 ---
 
 ## 🖼️ Organização da Camada de Segurança
-
-> [!NOTE]
-> Adicione aqui a imagem da estrutura de packages da camada de segurança.
 
 ```text
 security
@@ -600,7 +594,7 @@ A camada de segurança foi projetada para centralizar autenticação, autorizaç
 
 Cada package possui uma responsabilidade bem definida dentro do fluxo de autenticação e segurança da aplicação.
 
-## 🔐 `security.config`
+### 🔐 `security.config`
 
 Responsável pelas configurações globais de segurança da aplicação.
 
@@ -615,7 +609,7 @@ Responsável pelas configurações globais de segurança da aplicação.
 | --------------------- | ------------------------------------------------------ |
 | `SecurityBeansConfig` | Configuração central de beans relacionados à segurança |
 
-## 🎫 `security.oauth2.authorization`
+### 🎫 `security.oauth2.authorization`
 
 Responsável pela configuração do `Authorization Server` da aplicação.
 
@@ -633,7 +627,7 @@ O **Authorization Server** é encarregado da autenticação dos usuários e emis
 | --------------------------- | ----------------------------------------------------------------------- |
 | `AuthorizationServerConfig` | Configuração do servidor OAuth2 responsável pela emissão dos tokens JWT |
 
-## 🔑 security.oauth2.resource
+### 🔑 security.oauth2.resource
 
 Responsável pela configuração do `Resource Server`.
 
@@ -651,7 +645,7 @@ O **Resource Server** protege os endpoints da API e valida os `tokens JWT` receb
 | ---------------------- | ----------------------------------------------------------- |
 | `ResourceServerConfig` | Configuração de segurança da API e validação dos tokens JWT |
 
-## 👤 security.oauth2.grant_password
+### 👤 security.oauth2.grant_password
 
 Implementa o fluxo customizado de autenticação utilizando Password Grant.
 
@@ -670,7 +664,7 @@ Embora versões modernas do OAuth2 desencorajem esse fluxo em cenários público
 | `CustomPasswordAuthenticationProvider`  | Processa autenticação do usuário                             |
 | `CustomPasswordAuthenticationToken`     | Representa token autenticado durante o fluxo                 |
 
-## 👥 security.routes
+### 👥 security.routes
 
 Responsável por armazenar informações relacionadas ao usuário autenticado.
 
@@ -763,7 +757,7 @@ A organização da camada de segurança segue princípios importantes de engenha
 | Manutenibilidade                      | Código mais organizado e sustentável                        |
 
 ---
-# 📊 Integração com Swagger/OpenAPI
+## 📊 Integração com Swagger/OpenAPI
 
 A documentação da API foi integrada com autenticação JWT.
 
@@ -776,7 +770,7 @@ A documentação da API foi integrada com autenticação JWT.
 
 ---
 
-## 🔗 Acesso
+### 🔗 Acesso
 
 ```text
 http://localhost:8080/swagger-ui.html
@@ -790,11 +784,11 @@ http://localhost:8080/swagger-ui/index.html
 
 ---
 
-# 🧪 Testes de Segurança
+## 🧪 Testes de Segurança
 
 A aplicação evolui também em termos de testes automatizados de autenticação e autorização.
 
-## 📌 Cenários testados
+### 📌 Cenários testados
 
 - Usuário autenticado
 - Usuário não autenticado
@@ -805,7 +799,7 @@ A aplicação evolui também em termos de testes automatizados de autenticação
 
 ---
 
-## 📌 Ferramentas utilizadas
+### 📌 Ferramentas utilizadas
 
 | Ferramenta           | Finalidade                |
 | -------------------- | ------------------------- |
@@ -816,7 +810,7 @@ A aplicação evolui também em termos de testes automatizados de autenticação
 
 ---
 
-# 🧱 Boas Práticas Aplicadas
+## 🧱 Boas Práticas Aplicadas
 
 - Separação entre autenticação e autorização
 - Uso de JWT stateless
@@ -831,7 +825,7 @@ A aplicação evolui também em termos de testes automatizados de autenticação
 
 ---
 
-# 🔄 Fluxo Geral de Segurança
+## 🔄 Fluxo Geral de Segurança
 
 ```text
 Cliente
@@ -853,7 +847,7 @@ Controller protegido
 
 ---
 
-# 🚀 Evolução Arquitetural do Projeto
+## 🚀 Evolução Arquitetural do Projeto
 
 Com este capítulo, o projeto DSCatalog deixa de representar apenas uma API CRUD tradicional e passa a incorporar fundamentos essenciais de aplicações enterprise modernas:
 
@@ -866,7 +860,7 @@ Com este capítulo, o projeto DSCatalog deixa de representar apenas uma API CRUD
 
 ---
 
-# 🧠 Aprendizados Consolidados
+## 🧠 Aprendizados Consolidados
 
 Durante este capítulo foram consolidados conhecimentos fundamentais sobre:
 
@@ -885,7 +879,7 @@ Durante este capítulo foram consolidados conhecimentos fundamentais sobre:
 
 ---
 
-# 🚧 Melhorias Futuras
+## 🚧 Melhorias Futuras
 
 - Refresh Token
 - Revogação de tokens
@@ -899,7 +893,7 @@ Durante este capítulo foram consolidados conhecimentos fundamentais sobre:
 
 ---
 
-# 🎓 Conclusão
+## 🎓 Conclusão
 
 Este capítulo marca uma evolução significativa na maturidade arquitetural do projeto DSCatalog.
 
@@ -918,9 +912,9 @@ A implementação de OAuth2, JWT e Spring Security consolida competências extre
 
 ---
 
-# 📚 Referências Técnicas
+## 📚 Referências Técnicas
 
-## 🔹 Bean Validation
+### 🔹 Bean Validation
 
 - https://beanvalidation.org/
 - https://docs.jboss.org/hibernate/beanvalidation/spec/2.0/api/overview-summary.html
@@ -929,7 +923,7 @@ A implementação de OAuth2, JWT e Spring Security consolida competências extre
 
 ---
 
-## 🔹 Segurança e JWT
+### 🔹 Segurança e JWT
 
 - https://jwt.io
 - https://oauth.net/2/
@@ -938,21 +932,21 @@ A implementação de OAuth2, JWT e Spring Security consolida competências extre
 
 ---
 
-## 🔹 Regex e validações
+### 🔹 Regex e validações
 
 - https://regexr.com/
 - https://regexlib.com/
 
 ---
 
-# 👨‍💻 Autor
+## 👨‍💻 Autor
 
 **Albert Silva de Jesus**  
 Desenvolvedor Backend Java | Spring Boot
 
 ---
 
-# 📎 Contato
+## 📎 Contato
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-%230077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/albert-backend-java-spring-boot/)
 
