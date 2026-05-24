@@ -1,158 +1,824 @@
+<h1 align="center">🛡️Capítulo 03 — Validation & Security with Spring Boot | OAuth2 | JWT</h1>
+
+<p align="justify">
+<em>
+This chapter focuses on building secure, production-ready backend APIs using <strong>Spring Security</strong>, <strong>OAuth2</strong>, <strong>JWT</strong>, and <strong>Bean Validation</strong>, applying modern authentication, authorization, and data validation strategies aligned with real-world enterprise applications.
+</em>
+</p>
+
+<p align="center">
+
+<img src="https://img.shields.io/badge/Java-17+-orange?style=for-the-badge&logo=openjdk&logoColor=white" />
+
+<img src="https://img.shields.io/badge/Spring_Boot-3.x-6DB33F?style=for-the-badge&logo=springboot&logoColor=white" />
+
+<img src="https://img.shields.io/badge/Security-Spring_Security-red?style=for-the-badge" />
+
+<img src="https://img.shields.io/badge/Auth-OAuth2%20%7C%20JWT-critical?style=for-the-badge" />
+
+<img src="https://img.shields.io/badge/Validation-Bean_Validation-blue?style=for-the-badge" />
+
+<img src="https://img.shields.io/badge/Authorization-RBAC-success?style=for-the-badge" />
+
+<img src="https://img.shields.io/badge/API_Security-Resource_Server-informational?style=for-the-badge" />
+
+<img src="https://img.shields.io/badge/Architecture-Authorization_Server-black?style=for-the-badge" />
+
+<img src="https://img.shields.io/badge/Testing-Spring_Security_Test-yellow?style=for-the-badge" />
+
+<img src="https://img.shields.io/badge/Documentation-Swagger%20%7C%20OpenAPI-85EA2D?style=for-the-badge" />
+
+<img src="https://img.shields.io/github/license/Albertinesilva/backend-engineering-journey-java-springboot?style=for-the-badge" />
+
+<img src="https://img.shields.io/github/last-commit/Albertinesilva/backend-engineering-journey-java-springboot?style=for-the-badge" />
+
+</p>
+
+<p align="justify">
+<em>
+Neste capítulo, o projeto <strong>DSCatalog</strong> evolui para um cenário muito mais próximo de aplicações corporativas reais, incorporando mecanismos robustos de autenticação, autorização e validação de dados utilizando o ecossistema moderno do <strong>Spring Security 6</strong>.
+
+Além da proteção de endpoints REST, foram aplicados conceitos fundamentais de segurança backend moderna, incluindo <strong>OAuth2 Authorization Server</strong>, <strong>Resource Server</strong>, autenticação stateless com <strong>JWT</strong>, controle de acesso baseado em roles, tratamento global de erros de validação e integração segura com Swagger/OpenAPI.
+</em>
+
+</p>
+
 ---
+
+# 📚 Contexto do Projeto
+
+Após a consolidação da arquitetura em camadas e da estratégia de testes automatizados nos capítulos anteriores, o projeto evolui para uma nova etapa focada em segurança, autenticação e validação robusta.
+
+Nesta fase, a aplicação passa a incorporar:
+
+- 🔐 Segurança de APIs REST
+- 🎫 Autenticação baseada em JWT
+- 👥 Controle de acesso por roles
+- 🛡️ Proteção de endpoints
+- ⚙️ OAuth2 Authorization Server
+- 🔑 OAuth2 Resource Server
+- 🧾 Bean Validation
+- 🌐 Configuração de CORS e CSRF
+- 📄 Integração segura com Swagger/OpenAPI
+- 🧪 Testes de segurança
+- 📦 Estrutura profissional de autenticação/autorização
+
 ---
 
-# 🛡️ Capítulo 03 — Validation & Security with Spring Boot (OAuth2 | JWT)
+# 🎯 Objetivos do Capítulo
 
-Resumo curto
+Este capítulo tem como objetivo transformar a API DSCatalog em uma aplicação backend preparada para cenários reais de autenticação e segurança corporativa.
 
-- Objetivo: documentar de forma clara e concisa as decisões, localização e uso das funcionalidades de validação (Bean Validation) e segurança (OAuth2/JWT) implementadas no projeto DSCatalog.
-- Público: desenvolvedores que irão manter, testar ou implantar a aplicação.
+---
 
-## ✅ Quick Start
+## 🔹 1. Aplicar validação robusta com Bean Validation
 
-Pré-requisitos: Java 17, Maven
+A aplicação passou a utilizar validações declarativas para garantir integridade e previsibilidade dos dados recebidos pela API.
 
-Rodar em modo local (profile `dev` recomendado):
+## 📌 Principais validações aplicadas
 
-```bash
-./mvnw -f backend spring-boot:run -Dspring-boot.run.profiles=dev
-```
+- `@NotBlank`
+- `@NotNull`
+- `@Size`
+- `@Email`
+- `@Positive`
+- `@PastOrPresent`
+- Validações customizadas
+- Integração com banco de dados
+- Mensagens personalizadas
+- Tratamento global de erros
 
-Executar testes:
+### 📌 Benefícios
 
-```bash
-./mvnw -f backend test
-```
+- Integridade dos dados
+- Contratos HTTP previsíveis
+- Redução de inconsistências
+- Segurança contra entradas inválidas
+- Melhor experiência para consumidores da API
 
-## **Visão Geral**
+---
 
-O capítulo integra duas frentes complementares:
+### ⚠️ Observações e recomendações — Validação
 
-- Validação: regras declarativas e customizadas com Bean Validation (Jakarta Validation + Hibernate Validator) e mensagens centralizadas em `src/main/resources/ValidationMessages.properties`.
-- Segurança: arquitetura OAuth2 com Authorization Server e Resource Server; tokens JWT assinados; autenticação stateless; controle por roles e segurança em nível de método.
+- **Centralizar mensagens:** mover todas as mensagens de validação para `ValidationMessages.properties` e usar chaves (`user.password.length`, `user.email.invalid`, etc.) nos validators/annotations em vez de strings hardcoded.
+- **Remover duplicações:** alguns validadores e annotations (ex.: `StrongPassword`, `UniqueEmail`, `UserCreateValidator`) retornam mensagens em código; padronize para usar mensagens do properties para evitar inconsistências.
+- **Padronizar chaves:** seguir um prefixo consistente (`user.`, `product.`, `category.`) e documentar os nomes das chaves para facilitar manutenção e i18n.
+- **Internacionalização (i18n):** preparar arquivos `ValidationMessages_{locale}.properties` quando suportar múltiplos idiomas.
+- **Testes de validação:** adicionar testes unitários para validators customizados (ex.: `StrongPasswordValidator`, `UserCreateValidator`, `ValidRolesValidator`) cobrindo casos limites.
 
-## **Estrutura relevante**
 
-- `backend/src/main/java/com/albertsilva/dev/dscatalog/security` — configurações e componentes de segurança.
-- `backend/src/main/java/com/albertsilva/dev/dscatalog/validation` — annotations e validators customizados por domínio (`user`, `role`, `product`, `category`).
-- `backend/src/main/resources/ValidationMessages.properties` — mensagens de validação centralizadas.
-- `backend/src/main/resources/application-*.properties` — propriedades por profile (CORS, secrets, etc.).
+## 🔹 2. Implementar autenticação moderna com OAuth2 e JWT
 
-**Recomendações de leitura rápida:**
+A autenticação da aplicação foi construída utilizando uma arquitetura baseada em:
 
-- Authorization Server: `security/oauth2/authorization/config/AuthorizationServerConfig.java`
-- Resource Server: `security/oauth2/resource/config/ResourceServerConfig.java`
-- Validators de senha/email: `validation/user/validator/StrongPasswordValidator.java`, `ValidEmailValidator.java`
-- Validador de criação de usuário: `validation/user/validator/UserCreateValidator.java`
+- Spring Security 6
+- OAuth2 Authorization Server
+- OAuth2 Resource Server
+- JWT (JSON Web Token)
+- BCrypt Password Encoder
+- Controle de autenticação Stateless Authentication
 
-## **Validação (Bean Validation)**
+### 📌 Recursos implementados
 
-Visão:
+- Geração segura de tokens JWT
+- Assinatura de tokens
+- Expiração configurável
+- Login via OAuth2 Password Flow
+- Registro de aplicações clientes
+- Controle de acesso baseado em roles
 
-- Usa validations padrão (`@NotBlank`, `@Size`, etc.) e anotações customizadas (`@StrongPassword`, `@UniqueEmail`, `@ValidRoles`, `@UserCreateValid`).
+### ⚠️ Observações e recomendações — Segurança
 
-Mensagens:
+- **Reavaliar uso do Password Flow:** o fluxo Resource Owner Password Credentials (password grant) está implementado com custom provider (`CustomPasswordAuthenticationProvider`). Esse fluxo é legado para clientes públicos; prefira Authorization Code + PKCE para aplicações móveis/web públicas.
+- **Gerenciamento de chaves:** evite gerar chaves RSA em memória na inicialização; utilize keystores ou serviços de segredo (Vault, Azure Key Vault) e não armazene chaves em repositório.
+- **Persistência de autorizações:** o uso de `InMemoryOAuth2AuthorizationService` é adequado para desenvolvimento; para produção, persista autorizações/tokens em banco para suportar revogação e múltiplas instâncias.
+- **Segurança do H2 Console e CORS:** mantenha o H2 Console somente em `dev/test` (já condicional) e restrinja CORS a origins conhecidos em `application-*.properties`.
+- **Segredos em ambiente:** garanta que `security.client-secret` e variáveis sensíveis sejam fornecidas via variáveis de ambiente ou secret manager (evite valores padrão em código/repo).
+- **Políticas adicionais:** adicionar proteção contra força bruta, política de bloqueio de contas, rotação de chaves e logging/auditoria para operações sensíveis.
 
-- Centralizadas em `ValidationMessages.properties`. Ex.:
-  - `user.password.length` — senha mínima
-  - `user.password.common` — senhas comuns bloqueadas
-  - `user.email.invalid` / `user.email.unique`
+## 🔹 3. Proteger endpoints da API
 
-Boas práticas aplicadas e faltantes (recomendado):
+A API passou a possuir controle de acesso com autenticação e autorização baseada em perfis.
 
-- Centralizar todas as mensagens no `ValidationMessages.properties` (evitar strings hardcoded nos validators).
-- Padronizar chaves com prefixos por domínio: `user.*`, `product.*`, `category.*`.
-- Criar testes unitários para cada validator customizado (cobertura de casos limite).
-- Preparar arquivos `ValidationMessages_pt_BR.properties` e versões futuras para i18n.
+- Rotas públicas
+- Rotas autenticadas
+- Rotas restritas por perfil
+- Segurança em nível de método
+- Controle granular de autorização
 
-Exemplo de uso em DTO (`UserCreateRequest`):
+## 📌 Estratégia aplicada
+
+| Tipo de rota               | Acesso              |
+| -------------------------- | ------------------- |
+| Swagger/OpenAPI            | Público             |
+| GET de produtos/categorias | Público             |
+| Endpoints autenticados     | Usuário autenticado |
+| Endpoints administrativos  | `ROLE_ADMIN`        |
+
+### 📌 Segurança em nível de método, Anotações utilizadas
 
 ```java
-@UserCreateValid
-public record UserCreateRequest(
-  @NotBlank(message = "{user.firstName.notBlank}") @Size(...)
-  String firstName,
-  @StrongPassword
-  String password, ...)
+@PreAuthorize("hasRole('ROLE_ADMIN')")
+
+@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_OPERATOR')")
 ```
 
-### Tratamento de respostas de validação
+---
 
-O `ControllerExceptionHandler` formata respostas padronizadas com `ValidationError` e array `fieldErrors` no formato:
+## 🔹 4. Aplicar boas práticas modernas de segurança
+
+Foram implementadas estratégias utilizadas em APIs REST modernas e ambientes corporativos.
+
+### 📌 Práticas aplicadas
+
+- Stateless Authentication
+- JWT assinado
+- Controle de acesso por roles
+- Configuração de CORS
+- Desabilitação controlada de CSRF
+- Separação entre Authorization Server e Resource Server
+- Configuração por perfis (`dev`, `test`, `prod`)
+- Proteção da documentação Swagger
+- Externalização de variáveis sensíveis
+
+---
+
+# 🧠 Conceitos Fundamentais Trabalhados
+
+| Conceito             | Objetivo                                 |
+| -------------------- | ---------------------------------------- |
+| Authentication       | Verificar identidade do usuário          |
+| Authorization        | Verificar permissões do usuário          |
+| OAuth2               | Protocolo de autorização                 |
+| JWT                  | Token seguro para autenticação stateless |
+| Bean Validation      | Validação declarativa de dados           |
+| Method Security      | Proteção em nível de métodos             |
+| Resource Server      | Proteção dos recursos da API             |
+| Authorization Server | Emissão e gerenciamento de tokens        |
+
+---
+
+# 🛠️ Tecnologias Utilizadas
+
+## 🔐 Segurança
+
+| Tecnologia                  | Função                                     |
+| --------------------------- | ------------------------------------------ |
+| Spring Security             | Framework principal de segurança           |
+| OAuth2 Authorization Server | Emissão de tokens JWT                      |
+| OAuth2 Resource Server      | Validação de tokens e proteção de recursos |
+| JWT                         | Autenticação stateless baseada em token    |
+| BCryptPasswordEncoder       | Criptografia segura de senhas              |
+
+---
+
+## 🧾 Validação
+
+| Tecnologia          | Função                                         |
+| ------------------- | ---------------------------------------------- |
+| Bean Validation     | Validação declarativa                          |
+| Hibernate Validator | Implementação da especificação Bean Validation |
+| Jakarta Validation  | API padrão de validação                        |
+
+---
+
+## 📄 Documentação
+
+| Tecnologia        | Função                      |
+| ----------------- | --------------------------- |
+| SpringDoc OpenAPI | Documentação automática     |
+| Swagger UI        | Interface interativa da API |
+
+---
+
+## 🧪 Testes
+
+| Tecnologia           | Função                             |
+| -------------------- | ---------------------------------- |
+| Spring Security Test | Testes de autenticação/autorização |
+| MockMvc              | Testes de endpoints protegidos     |
+| JUnit 5              | Testes automatizados               |
+| Mockito              | Mocking de dependências            |
+
+---
+
+# 📦 Dependências Adicionadas
+
+## 🔐 Spring Security
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+```
+
+---
+
+## 🎫 OAuth2 Authorization Server
+
+```xml
+<dependency>
+    <groupId>org.springframework.security</groupId>
+    <artifactId>spring-security-oauth2-authorization-server</artifactId>
+</dependency>
+```
+
+### 🛡️ OAuth2 Resource Server
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+</dependency>
+```
+
+---
+
+## 🧪 Spring Security Test
+
+```xml
+<dependency>
+    <groupId>org.springframework.security</groupId>
+    <artifactId>spring-security-test</artifactId>
+    <scope>test</scope>
+</dependency>
+```
+
+---
+
+# 👥 Modelo de Usuários e Perfis
+
+O projeto passou a possuir um modelo de autenticação baseado em:
+
+- Usuários
+- Perfis (roles)
+- Relacionamentos entre usuários e permissões
+
+## 📌 Perfis utilizados
+
+| Perfil        | Responsabilidade         |
+| ------------- | ------------------------ |
+| ROLE_ADMIN    | Controle total da API    |
+| ROLE_OPERATOR | Operações intermediárias |
+
+---
+
+## 🖼️ Modelagem de Usuários e Perfis
+
+<img src="https://raw.githubusercontent.com/Albertinesilva/backend-engineering-journey-java-springboot/chapter-03-validation-security/docs/assets/imgs/modelo-conceitual.png" width="80%">
+
+## 🔐 Fluxo de Autenticação
+
+### 📌 Processo de Login
+
+1. Cliente envia credenciais
+2. Authorization Server autentica usuário
+3. Token JWT é gerado
+4. Cliente recebe token
+5. Requisições utilizam Bearer Token
+6. Resource Server valida JWT
+7. Spring Security verifica permissões
+8. API libera ou bloqueia acesso
+
+---
+
+## 🔄 Requisição de Login
+
+### Authorization
+
+```text
+Type: Basic Auth
+Username: client-id
+Password: client-secret
+```
+
+### Body (x-www-form-urlencoded)
+
+```text
+username=alex@gmail.com
+password=123456
+grant_type=password
+```
+
+---
+
+## 🎫 Estrutura JWT
+
+Os tokens JWT utilizados carregam informações importantes como:
+
+- Usuário autenticado
+- Authorities/Roles
+- Tempo de expiração
+- Issuer
+- Audience
+
+### 📌 Benefícios do JWT
+
+- Stateless
+- Escalável
+- Seguro
+- Amplamente utilizado no mercado
+- Ideal para APIs REST
+
+---
+
+## ⚙️ Configurações da Aplicação
+
+### 📌 Properties de Segurança
+
+```properties
+security.client-id=${CLIENT_ID:myclientid}
+security.client-secret=${CLIENT_SECRET:myclientsecret}
+security.jwt.duration=${JWT_DURATION:86400}
+cors.origins=${CORS_ORIGINS:http://localhost:3000,http://localhost:5173}
+```
+
+---
+
+## 🛡️ Authorization Server
+
+O Authorization Server é responsável por:
+
+- Autenticar usuários
+- Gerar tokens JWT
+- Assinar tokens
+- Registrar aplicações clientes
+- Gerenciar autenticação OAuth2
+
+### 📌 Responsabilidades implementadas
+
+- Habilitação do Authorization Server
+- Configuração de assinatura JWT
+- Configuração de Password Encoder
+- Registro de client OAuth2
+- Configuração de token JWT
+- Definição de duração do token
+
+---
+
+## 🔐 Resource Server
+
+O Resource Server é responsável por:
+
+- Validar tokens JWT
+- Controlar acesso aos endpoints
+- Aplicar regras de autorização
+- Proteger recursos da API
+
+### 📌 Configurações aplicadas
+
+- Controle de acesso por rota
+- Configuração de CORS
+- Configuração de CSRF
+- Validação JWT
+- Liberação do Swagger/OpenAPI
+- Liberação do H2 Console em ambiente de teste
+
+---
+
+## 🌐 Segurança de Rotas
+
+### 📌 Estratégia aplicada
+
+| Tipo de rota              | Acesso      |
+| ------------------------- | ----------- |
+| Swagger/OpenAPI           | Público     |
+| Categorias (GET)          | Público     |
+| Produtos (GET)            | Público     |
+| Demais endpoints          | Autenticado |
+| Endpoints administrativos | ROLE_ADMIN  |
+
+---
+
+## 🔒 Exemplo de configuração
+
+```java
+.requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINTS).permitAll()
+.requestMatchers(DOCUMENTATION_OPENAPI).permitAll()
+.anyRequest().authenticated()
+```
+
+---
+
+## 🧾 Bean Validation
+
+### 📌 Validações implementadas
+
+### Exemplos
+
+```java
+@NotBlank(message = "Campo requerido")
+
+@Email(message = "Email inválido")
+
+@Size(min = 3, max = 80)
+
+@Positive(message = "Valor deve ser positivo")
+```
+
+---
+
+## 🔄 Tratamento Global de Validações
+
+A aplicação possui um mecanismo centralizado para tratamento de exceções e erros de validação.
+
+### 📌 Benefícios
+
+- Padronização das respostas
+- Melhor integração frontend/backend
+- Clareza de erros
+- Rastreabilidade
+- Melhor experiência de consumo da API
+
+---
+
+### 📄 Exemplo de resposta de validação
 
 ```json
 {
+  "timestamp": "2026-05-24T19:40:35.468801500Z",
   "status": 422,
+  "error": "Validation Error",
+  "message": "One or more fields are invalid",
   "path": "/api/v1/users",
-  "fieldErrors": [{ "fieldName": "password", "message": "Senha inválida" }]
+  "fieldErrors": [
+    {
+      "fieldName": "firstName",
+      "message": "Primeiro nome deve ter entre 2 e 80 caracteres"
+    },
+    {
+      "fieldName": "password",
+      "message": "Senha contém padrões muito comuns e inseguros"
+    },
+    {
+      "fieldName": "firstName",
+      "message": "Primeiro nome é obrigatório"
+    },
+    {
+      "fieldName": "password",
+      "message": "Senha deve possuir ao menos 10 caracteres"
+    },
+    {
+      "fieldName": "password",
+      "message": "Senha deve conter ao menos uma letra minúscula"
+    },
+    {
+      "fieldName": "email",
+      "message": "Email já existente"
+    },
+    {
+      "fieldName": "roleIds",
+      "message": "Usuário deve possuir ao menos uma role"
+    },
+    {
+      "fieldName": "lastName",
+      "message": "Sobrenome deve ter entre 2 e 80 caracteres"
+    },
+    {
+      "fieldName": "lastName",
+      "message": "Sobrenome é obrigatório"
+    },
+    {
+      "fieldName": "password",
+      "message": "Senha deve conter ao menos uma letra maiúscula"
+    },
+    {
+      "fieldName": "password",
+      "message": "Senha deve conter ao menos um caractere especial"
+    }
+  ]
 }
 ```
 
-Isso facilita o consumo no frontend e testes automatizados.
+---
 
-## **Segurança (OAuth2 + JWT)**
+## 📂 Organização dos Packages
 
-Arquitetura implementada
+A estrutura da camada de segurança foi organizada seguindo princípios de separação de responsabilidades, modularidade e baixo acoplamento, permitindo maior clareza arquitetural, facilidade de manutenção e escalabilidade evolutiva.
 
-- Authorization Server (em `security.oauth2.authorization`) — emite JWTs assinados (RSA) e registra clients.
-- Resource Server (em `security.oauth2.resource`) — valida JWTs, extrai claims e authorities.
-- Fluxo customizado: **Password Grant** com `CustomPasswordAuthenticationConverter` e `CustomPasswordAuthenticationProvider` (usado para fins didáticos).
-
-Como obter token (exemplo — password grant)
-
-```bash
-curl -u "${CLIENT_ID}:${CLIENT_SECRET}" \
-  -d "grant_type=password&username=alex@gmail.com&password=Secret123!" \
-  http://localhost:8080/oauth2/token
-```
-
-Resposta esperada: JSON com `access_token` e `expires_in`. Para acessar recursos:
-
-```http
-Authorization: Bearer <access_token>
-```
-
-Observações importantes e recomendações de produção
-
-- O fluxo ROPC (password grant) não é recomendado para clientes públicos; para apps web/mobile, prefira **Authorization Code + PKCE**.
-- Não gere chaves RSA em memória para produção; utilize keystores (JKS/PKCS12) ou secret managers (Vault, Azure Key Vault) e configure via variáveis/secret store.
-- `InMemoryOAuth2AuthorizationService` é adequado para dev/test — em produção persista autorizações/tokens (JDBC/DB) para revogação e replicação entre instâncias.
-- Restrinja o H2 Console a ambientes de desenvolvimento (`spring.h2.console.enabled=false` em prod) e limite CORS a origins confiáveis.
-- Forneça `security.client-secret` e demais segredos via variáveis de ambiente ou secret manager — não comite segredos no repositório.
-- Habilite monitoramento/audit logging, rotacionamento de chaves, proteção contra brute-force e políticas de bloqueio de conta.
-
-## **Configurações importantes**
-
-- `security.client-id` — client id (ex.: via env `CLIENT_ID`)
-- `security.client-secret` — client secret (ex.: via env `CLIENT_SECRET`)
-- `security.jwt.duration` — duração do token (segundos)
-- `cors.origins` — origins permitidos para CORS
-
-Definir em `application-*.properties` por ambiente.
-
-## **Testes e validação contínua**
-
-- Adicionar testes unitários para: `StrongPasswordValidator`, `UserCreateValidator`, `ValidRolesValidator`, `UniqueEmailValidator`.
-- Testes de integração de segurança: usar `spring-security-test` e `MockMvc` para validar fluxos de autenticação/autorização e endpoints protegidos.
-- Testes de contrato: validar formato de respostas de erro para facilitar integração frontend.
-
-## **Como contribuir / tarefas recomendadas**
-
-1. Centralizar todas as mensagens de validação em `ValidationMessages.properties` (criar chaves faltantes como `user.password.containsPersonalData`).
-2. Refatorar validators para usar chaves de mensagem em vez de strings literais.
-3. Adicionar testes unitários para validators customizados.
-4. Substituir `InMemoryOAuth2AuthorizationService` por persistência (JDBC) quando preparar deploy multi-instance.
-5. Documentar processo de provisionamento de keystore/secret manager para produção.
-
-## Referências e leitura adicional
-
-- Bean Validation: https://beanvalidation.org/
-- Spring Authorization Server: https://docs.spring.io/spring-authorization-server/
-- OWASP: Authorization and Authentication best practices
+O objetivo foi estruturar cada responsabilidade de segurança de forma isolada e coesa, aproximando a aplicação de arquiteturas utilizadas em projetos corporativos modernos com Spring Security.
 
 ---
 
-Se quiser, eu faço o próximo passo: 1) refatoro validators para usar `ValidationMessages.properties`; 2) adiciono chaves faltantes no arquivo de mensagens; 3) crio testes unitários para os validators — escolha uma opção e eu inicio a implementação.
+## 🖼️ Organização da Camada de Segurança
+
+```text
+security
+┣ config
+┃ ┗ SecurityBeansConfig.java
+┃
+┣ oauth2
+┃ ┣ authorization
+┃ ┃ ┗ config
+┃ ┃   ┗ AuthorizationServerConfig.java
+┃ ┃
+┃ ┣ grant_password
+┃ ┃ ┣ CustomPasswordAuthenticationConverter.java
+┃ ┃ ┣ CustomPasswordAuthenticationProvider.java
+┃ ┃ ┗ CustomPasswordAuthenticationToken.java
+┃ ┃
+┃ ┗ resource
+┃   ┗ ResourceServerConfig.java
+┃
+┣ routes
+┃ ┗ AuthenticatedUser.java
+┃
+┣ service
+┃ ┣ exception
+┃ ┣ CategoryService.java
+┃ ┣ ProductService.java
+┃ ┗ UserService.java
+┃
+┣ validation
+┃ ┣ category
+┃ ┃ ┣ annotation
+┃ ┃ ┗ validator
+┃ ┃
+┃ ┣ product
+┃ ┃ ┣ annotation
+┃ ┃ ┗ validator
+┃ ┃
+┃ ┣ role
+┃ ┃ ┣ annotation
+┃ ┃ ┗ validator
+┃ ┃
+┃ ┗ user
+┃   ┣ annotation
+┃   ┗ validator
+┃
+┗ web
+  ┣ controller
+  ┃ ┣ CategoryController.java
+  ┃ ┣ ProductController.java
+  ┃ ┗ UserController.java
+  ┃
+  ┣ exception
+  ┃ ┣ enums
+  ┃ ┣ ErrorType.java
+  ┃ ┗ handler
+  ┃   ┗ ControllerExceptionHandler.java
+  ┃
+  ┗ response
+    ┣ FieldMessage.java
+    ┗ ProblemDetails.java
+    ┗ ValidationError.java
+```
+
+## 🛡️ Estrutura da Camada de Segurança
+
+A camada de segurança foi projetada para centralizar autenticação, autorização, validação e proteção dos recursos da API, utilizando uma abordagem modular inspirada em arquiteturas enterprise modernas.
+
+Cada package possui uma responsabilidade bem definida dentro do fluxo de autenticação e segurança da aplicação.
+
+### 🔐 `security.config`
+
+Responsável pelas configurações globais de segurança da aplicação.
+
+### 📌 Responsabilidades
+
+- Registro de beans de segurança
+- Password Encoder
+- Configurações compartilhadas
+- Componentes reutilizáveis do Spring Security
+
+### 📄 Classe principal
+
+| Classe                | Responsabilidade                                       |
+| --------------------- | ------------------------------------------------------ |
+| `SecurityBeansConfig` | Configuração central de beans relacionados à segurança |
+
+### 🎫 `security.oauth2.authorization`
+
+Responsável pela configuração do `Authorization Server` da aplicação.
+
+O **Authorization Server** é encarregado da autenticação dos usuários e emissão dos tokens `JWT`.
+
+### 📌 Responsabilidades
+
+- Configuração do OAuth2 Authorization Server
+- Geração de JWT
+- Assinatura de tokens
+- Registro de clients OAuth2
+- Configuração do fluxo de autenticação
+
+### 📄 Classe principal
+
+| Classe                      | Responsabilidade                                                        |
+| --------------------------- | ----------------------------------------------------------------------- |
+| `AuthorizationServerConfig` | Configuração do servidor OAuth2 responsável pela emissão dos tokens JWT |
+
+### 🔑 security.oauth2.resource
+
+Responsável pela configuração do `Resource Server`.
+
+O **Resource Server** protege os endpoints da API e valida os `tokens JWT` recebidos nas requisições.
+
+### 📌 Responsabilidades
+
+- Proteção de endpoints REST
+- Validação de JWT
+- Configuração de autorização
+- Controle de acesso por roles
+- Configuração de CORS e CSRF
+
+### 📄 Classe principal
+
+| Classe                 | Responsabilidade                                            |
+| ---------------------- | ----------------------------------------------------------- |
+| `ResourceServerConfig` | Configuração de segurança da API e validação dos tokens JWT |
+
+### 👤 security.oauth2.grant_password
+
+Implementa o fluxo customizado de autenticação utilizando Password Grant.
+
+Embora versões modernas do OAuth2 desencorajem esse fluxo em cenários públicos, ele foi utilizado neste projeto com fins educacionais e compreensão profunda do processo de autenticação.
+
+### 📌 Responsabilidades
+
+- Conversão das credenciais
+- Processamento da autenticação
+- Criação de tokens autenticados
+- Integração com Spring Security
+
+### 📄 Classes principais
+
+| Classe                                  | Responsabilidade                                             |
+| --------------------------------------- | ------------------------------------------------------------ |
+| `CustomPasswordAuthenticationConverter` | Converte credenciais da requisição em objeto de autenticação |
+| `CustomPasswordAuthenticationProvider`  | Processa autenticação do usuário                             |
+| `CustomPasswordAuthenticationToken`     | Representa token autenticado durante o fluxo                 |
+
+### 👥 security.routes
+
+Responsável por armazenar informações relacionadas ao usuário autenticado.
+
+### 📌 Responsabilidades
+
+- Recuperar usuário autenticado
+- Centralizar contexto de autenticação
+- Facilitar acesso ao usuário logado
+
+### 📄 Classe principal
+
+| Classe              | Responsabilidade                                              |
+| ------------------- | ------------------------------------------------------------- |
+| `AuthenticatedUser` | Representação do usuário autenticado no contexto da aplicação |
+
+## 🧾 Camada de Validação
+
+A estrutura de validação foi organizada separando anotações customizadas e validadores específicos por domínio da aplicação.
+
+Essa abordagem melhora:
+
+- coesão;
+- reutilização;
+- clareza arquitetural;
+- manutenção evolutiva.
+
+### 📂 Estrutura
+
+```text
+validation
+┣ category
+┣ product
+┣ role
+┗ user
+```
+
+Cada domínio possui:
+| Estrutura | Responsabilidade |
+| ------------ | ------------------------------- |
+| `annotation` | Define annotations customizadas |
+| `validator` | Implementa regras de validação |
+
+### 📌 Benefícios da abordagem
+
+- Regras isoladas por domínio
+- Fácil manutenção
+- Reutilização de validações
+- Maior legibilidade
+- Melhor organização arquitetural
+
+## 🌐 Camada Web
+
+A camada web concentra os pontos de entrada da aplicação e o tratamento padronizado das respostas HTTP.
+
+### 📂 `web.controller`
+
+Responsável pelos endpoints REST da aplicação.
+
+### 📌 Controllers implementados
+
+| Controller           | Responsabilidade                               |
+| -------------------- | ---------------------------------------------- |
+| `CategoryController` | Endpoints de categorias                        |
+| `ProductController`  | Endpoints de produtos                          |
+| `UserController`     | Endpoints relacionados a usuários/autenticação |
+
+### ⚠️ web.exception
+
+Responsável pelo tratamento global de exceções da aplicação.
+
+### 📌 Objetivos
+
+- Padronizar respostas HTTP
+- Centralizar tratamento de erros
+- Melhorar rastreabilidade
+- Facilitar integração frontend/backend
+
+### 📄 Estruturas principais
+
+| Estrutura                    | Responsabilidade                            |
+| ---------------------------- | ------------------------------------------- |
+| `ControllerExceptionHandler` | Intercepta exceções globalmente             |
+| `ErrorType`                  | Enumeração de tipos de erro                 |
+| `ProblemDetails`             | Estrutura padronizada da resposta           |
+| `FieldMessage`               | Representa erros específicos de validação   |
+| `ValidationError`            | Resposta específica para erros de validação |
+
+---
+
+## 🏛️ Estratégia Arquitetural Aplicada
+
+A organização da camada de segurança segue princípios importantes de engenharia de software:
+
+| Princípio                             | Aplicação                                                   |
+| ------------------------------------- | ----------------------------------------------------------- |
+| SRP (Single Responsibility Principle) | Cada package possui responsabilidade única                  |
+| Desacoplamento                        | Separação clara entre autenticação, autorização e validação |
+| Modularidade                          | Estrutura preparada para evolução                           |
+| Escalabilidade                        | Facilidade para adicionar novos fluxos                      |
+| Manutenibilidade                      | Código mais organizado e sustentável                        |
+
+---
+
+## 📊 Integração com Swagger/OpenAPI
+
+A documentação da API foi integrada com autenticação JWT.
+
+## 📌 Recursos implementados
+
+- Autorização via Bearer Token
+- Teste de endpoints protegidos
+- Documentação automática
+- Exploração segura da API
+
+---
+
+### 🔗 Acesso
+
+```text
+http://localhost:8080/swagger-ui.html
+```
+
+ou
+
+```text
+http://localhost:8080/swagger-ui/index.html
+```
+
+---
 
 ## 🧪 Testes de Segurança
 
