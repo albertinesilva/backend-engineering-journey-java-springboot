@@ -72,7 +72,9 @@ Este capítulo tem como objetivo transformar a API DSCatalog em uma aplicação 
 
 ## 🔹 1. Aplicar validação robusta com Bean Validation
 
-Implementação de validações declarativas utilizando:
+A aplicação passou a utilizar validações declarativas para garantir integridade e previsibilidade dos dados recebidos pela API.
+
+## 📌 Principais validações aplicadas
 
 - `@NotBlank`
 - `@NotNull`
@@ -83,43 +85,43 @@ Implementação de validações declarativas utilizando:
 - Validações customizadas
 - Integração com banco de dados
 - Mensagens personalizadas
-- Tratamento global de erros de validação
+- Tratamento global de erros
 
 ### 📌 Benefícios
 
 - Integridade dos dados
-- Segurança contra entradas inválidas
 - Contratos HTTP previsíveis
-- Melhor experiência para consumidores da API
 - Redução de inconsistências
+- Segurança contra entradas inválidas
+- Melhor experiência para consumidores da API
 
 ---
 
 ## 🔹 2. Implementar autenticação moderna com OAuth2 e JWT
 
-A autenticação da API foi construída utilizando:
+A autenticação da aplicação foi construída utilizando uma arquitetura baseada em:
 
 - Spring Security 6
 - OAuth2 Authorization Server
-- Resource Server
+- OAuth2 Resource Server
 - JWT (JSON Web Token)
-- Password Encoder
-- Controle de autenticação stateless
+- BCrypt Password Encoder
+- Controle de autenticação Stateless Authentication
 
 ### 📌 Recursos implementados
 
-- Geração de token JWT
-- Assinatura segura de tokens
+- Geração segura de tokens JWT
+- Assinatura de tokens
 - Expiração configurável
 - Login via OAuth2 Password Flow
-- Registro de aplicação cliente
+- Registro de aplicações clientes
 - Controle de acesso baseado em roles
 
 ---
 
 ## 🔹 3. Proteger endpoints da API
 
-A API passou a possuir:
+A API passou a possuir controle de acesso com autenticação e autorização baseada em perfis.
 
 - Rotas públicas
 - Rotas autenticadas
@@ -127,7 +129,16 @@ A API passou a possuir:
 - Segurança em nível de método
 - Controle granular de autorização
 
-### 📌 Anotações utilizadas
+## 📌 Estratégia aplicada
+
+| Tipo de rota | Acesso |
+|---|---|
+| Swagger/OpenAPI | Público |
+| GET de produtos/categorias | Público |
+| Endpoints autenticados | Usuário autenticado |
+| Endpoints administrativos | `ROLE_ADMIN` |
+
+### 📌 Segurança em nível de método, Anotações utilizadas
 
 ```java
 @PreAuthorize("hasRole('ROLE_ADMIN')")
