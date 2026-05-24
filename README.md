@@ -40,6 +40,7 @@ Neste capítulo, o projeto <strong>DSCatalog</strong> evolui para um cenário mu
 
 Além da proteção de endpoints REST, foram aplicados conceitos fundamentais de segurança backend moderna, incluindo <strong>OAuth2 Authorization Server</strong>, <strong>Resource Server</strong>, autenticação stateless com <strong>JWT</strong>, controle de acesso baseado em roles, tratamento global de erros de validação e integração segura com Swagger/OpenAPI.
 </em>
+
 </p>
 
 ---
@@ -131,12 +132,12 @@ A API passou a possuir controle de acesso com autenticação e autorização bas
 
 ## 📌 Estratégia aplicada
 
-| Tipo de rota | Acesso |
-|---|---|
-| Swagger/OpenAPI | Público |
-| GET de produtos/categorias | Público |
-| Endpoints autenticados | Usuário autenticado |
-| Endpoints administrativos | `ROLE_ADMIN` |
+| Tipo de rota               | Acesso              |
+| -------------------------- | ------------------- |
+| Swagger/OpenAPI            | Público             |
+| GET de produtos/categorias | Público             |
+| Endpoints autenticados     | Usuário autenticado |
+| Endpoints administrativos  | `ROLE_ADMIN`        |
 
 ### 📌 Segurança em nível de método, Anotações utilizadas
 
@@ -460,57 +461,57 @@ A aplicação possui um mecanismo centralizado para tratamento de exceções e e
 
 ```json
 {
-    "timestamp": "2026-05-24T19:40:35.468801500Z",
-    "status": 422,
-    "error": "Validation Error",
-    "message": "One or more fields are invalid",
-    "path": "/api/v1/users",
-    "fieldErrors": [
-        {
-            "fieldName": "firstName",
-            "message": "Primeiro nome deve ter entre 2 e 80 caracteres"
-        },
-        {
-            "fieldName": "password",
-            "message": "Senha contém padrões muito comuns e inseguros"
-        },
-        {
-            "fieldName": "firstName",
-            "message": "Primeiro nome é obrigatório"
-        },
-        {
-            "fieldName": "password",
-            "message": "Senha deve possuir ao menos 10 caracteres"
-        },
-        {
-            "fieldName": "password",
-            "message": "Senha deve conter ao menos uma letra minúscula"
-        },
-        {
-            "fieldName": "email",
-            "message": "Email já existente"
-        },
-        {
-            "fieldName": "roleIds",
-            "message": "Usuário deve possuir ao menos uma role"
-        },
-        {
-            "fieldName": "lastName",
-            "message": "Sobrenome deve ter entre 2 e 80 caracteres"
-        },
-        {
-            "fieldName": "lastName",
-            "message": "Sobrenome é obrigatório"
-        },
-        {
-            "fieldName": "password",
-            "message": "Senha deve conter ao menos uma letra maiúscula"
-        },
-        {
-            "fieldName": "password",
-            "message": "Senha deve conter ao menos um caractere especial"
-        }
-    ]
+  "timestamp": "2026-05-24T19:40:35.468801500Z",
+  "status": 422,
+  "error": "Validation Error",
+  "message": "One or more fields are invalid",
+  "path": "/api/v1/users",
+  "fieldErrors": [
+    {
+      "fieldName": "firstName",
+      "message": "Primeiro nome deve ter entre 2 e 80 caracteres"
+    },
+    {
+      "fieldName": "password",
+      "message": "Senha contém padrões muito comuns e inseguros"
+    },
+    {
+      "fieldName": "firstName",
+      "message": "Primeiro nome é obrigatório"
+    },
+    {
+      "fieldName": "password",
+      "message": "Senha deve possuir ao menos 10 caracteres"
+    },
+    {
+      "fieldName": "password",
+      "message": "Senha deve conter ao menos uma letra minúscula"
+    },
+    {
+      "fieldName": "email",
+      "message": "Email já existente"
+    },
+    {
+      "fieldName": "roleIds",
+      "message": "Usuário deve possuir ao menos uma role"
+    },
+    {
+      "fieldName": "lastName",
+      "message": "Sobrenome deve ter entre 2 e 80 caracteres"
+    },
+    {
+      "fieldName": "lastName",
+      "message": "Sobrenome é obrigatório"
+    },
+    {
+      "fieldName": "password",
+      "message": "Senha deve conter ao menos uma letra maiúscula"
+    },
+    {
+      "fieldName": "password",
+      "message": "Senha deve conter ao menos um caractere especial"
+    }
+  ]
 }
 ```
 
@@ -599,12 +600,14 @@ Cada package possui uma responsabilidade bem definida dentro do fluxo de autenti
 Responsável pelas configurações globais de segurança da aplicação.
 
 ### 📌 Responsabilidades
+
 - Registro de beans de segurança
 - Password Encoder
 - Configurações compartilhadas
 - Componentes reutilizáveis do Spring Security
 
 ### 📄 Classe principal
+
 | Classe                | Responsabilidade                                       |
 | --------------------- | ------------------------------------------------------ |
 | `SecurityBeansConfig` | Configuração central de beans relacionados à segurança |
@@ -616,6 +619,7 @@ Responsável pela configuração do `Authorization Server` da aplicação.
 O **Authorization Server** é encarregado da autenticação dos usuários e emissão dos tokens `JWT`.
 
 ### 📌 Responsabilidades
+
 - Configuração do OAuth2 Authorization Server
 - Geração de JWT
 - Assinatura de tokens
@@ -623,6 +627,7 @@ O **Authorization Server** é encarregado da autenticação dos usuários e emis
 - Configuração do fluxo de autenticação
 
 ### 📄 Classe principal
+
 | Classe                      | Responsabilidade                                                        |
 | --------------------------- | ----------------------------------------------------------------------- |
 | `AuthorizationServerConfig` | Configuração do servidor OAuth2 responsável pela emissão dos tokens JWT |
@@ -634,6 +639,7 @@ Responsável pela configuração do `Resource Server`.
 O **Resource Server** protege os endpoints da API e valida os `tokens JWT` recebidos nas requisições.
 
 ### 📌 Responsabilidades
+
 - Proteção de endpoints REST
 - Validação de JWT
 - Configuração de autorização
@@ -641,6 +647,7 @@ O **Resource Server** protege os endpoints da API e valida os `tokens JWT` receb
 - Configuração de CORS e CSRF
 
 ### 📄 Classe principal
+
 | Classe                 | Responsabilidade                                            |
 | ---------------------- | ----------------------------------------------------------- |
 | `ResourceServerConfig` | Configuração de segurança da API e validação dos tokens JWT |
@@ -652,12 +659,14 @@ Implementa o fluxo customizado de autenticação utilizando Password Grant.
 Embora versões modernas do OAuth2 desencorajem esse fluxo em cenários públicos, ele foi utilizado neste projeto com fins educacionais e compreensão profunda do processo de autenticação.
 
 ### 📌 Responsabilidades
+
 - Conversão das credenciais
 - Processamento da autenticação
 - Criação de tokens autenticados
 - Integração com Spring Security
 
 ### 📄 Classes principais
+
 | Classe                                  | Responsabilidade                                             |
 | --------------------------------------- | ------------------------------------------------------------ |
 | `CustomPasswordAuthenticationConverter` | Converte credenciais da requisição em objeto de autenticação |
@@ -669,11 +678,13 @@ Embora versões modernas do OAuth2 desencorajem esse fluxo em cenários público
 Responsável por armazenar informações relacionadas ao usuário autenticado.
 
 ### 📌 Responsabilidades
+
 - Recuperar usuário autenticado
 - Centralizar contexto de autenticação
 - Facilitar acesso ao usuário logado
 
 ### 📄 Classe principal
+
 | Classe              | Responsabilidade                                              |
 | ------------------- | ------------------------------------------------------------- |
 | `AuthenticatedUser` | Representação do usuário autenticado no contexto da aplicação |
@@ -683,12 +694,14 @@ Responsável por armazenar informações relacionadas ao usuário autenticado.
 A estrutura de validação foi organizada separando anotações customizadas e validadores específicos por domínio da aplicação.
 
 Essa abordagem melhora:
+
 - coesão;
 - reutilização;
 - clareza arquitetural;
 - manutenção evolutiva.
 
 ### 📂 Estrutura
+
 ```text
 validation
 ┣ category
@@ -696,13 +709,15 @@ validation
 ┣ role
 ┗ user
 ```
+
 Cada domínio possui:
-| Estrutura    | Responsabilidade                |
+| Estrutura | Responsabilidade |
 | ------------ | ------------------------------- |
 | `annotation` | Define annotations customizadas |
-| `validator`  | Implementa regras de validação  |
+| `validator` | Implementa regras de validação |
 
 ### 📌 Benefícios da abordagem
+
 - Regras isoladas por domínio
 - Fácil manutenção
 - Reutilização de validações
@@ -726,21 +741,25 @@ Responsável pelos endpoints REST da aplicação.
 | `UserController`     | Endpoints relacionados a usuários/autenticação |
 
 ### ⚠️ web.exception
+
 Responsável pelo tratamento global de exceções da aplicação.
 
 ### 📌 Objetivos
+
 - Padronizar respostas HTTP
 - Centralizar tratamento de erros
 - Melhorar rastreabilidade
 - Facilitar integração frontend/backend
 
 ### 📄 Estruturas principais
-| Estrutura                    | Responsabilidade                          |
-| ---------------------------- | ----------------------------------------- |
-| `ControllerExceptionHandler` | Intercepta exceções globalmente           |
-| `ErrorType`                  | Enumeração de tipos de erro               |
-| `ProblemDetails`             | Estrutura padronizada da resposta         |
-| `FieldMessage`               | Representa erros específicos de validação |
+
+| Estrutura                    | Responsabilidade                            |
+| ---------------------------- | ------------------------------------------- |
+| `ControllerExceptionHandler` | Intercepta exceções globalmente             |
+| `ErrorType`                  | Enumeração de tipos de erro                 |
+| `ProblemDetails`             | Estrutura padronizada da resposta           |
+| `FieldMessage`               | Representa erros específicos de validação   |
+| `ValidationError`            | Resposta específica para erros de validação |
 
 ---
 
@@ -757,6 +776,7 @@ A organização da camada de segurança segue princípios importantes de engenha
 | Manutenibilidade                      | Código mais organizado e sustentável                        |
 
 ---
+
 ## 📊 Integração com Swagger/OpenAPI
 
 A documentação da API foi integrada com autenticação JWT.
