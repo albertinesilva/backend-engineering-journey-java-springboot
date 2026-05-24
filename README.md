@@ -150,16 +150,19 @@ A API passou a possuir controle de acesso com autenticação e autorização bas
 
 ## 🔹 4. Aplicar boas práticas modernas de segurança
 
-Foram implementadas configurações importantes para APIs REST modernas:
+Foram implementadas estratégias utilizadas em APIs REST modernas e ambientes corporativos.
 
-- Stateless Authentication
-- Configuração de CORS
-- Desabilitação controlada de CSRF
-- Separação entre Authorization Server e Resource Server
-- JWT assinado
-- Proteção de documentação Swagger
-- Segurança baseada em roles
-- Configuração por perfis (`dev`, `test`, `prod`)
+### 📌 Práticas aplicadas
+
+Stateless Authentication
+JWT assinado
+Controle de acesso por roles
+Configuração de CORS
+Desabilitação controlada de CSRF
+Separação entre Authorization Server e Resource Server
+Configuração por perfis (`dev`, `test`, `prod`)
+Proteção da documentação Swagger
+Externalização de variáveis sensíveis
 
 ---
 
@@ -235,18 +238,6 @@ Foram implementadas configurações importantes para APIs REST modernas:
 
 ---
 
-## 🧪 Testes de Segurança
-
-```xml
-<dependency>
-    <groupId>org.springframework.security</groupId>
-    <artifactId>spring-security-test</artifactId>
-    <scope>test</scope>
-</dependency>
-```
-
----
-
 ## 🎫 OAuth2 Authorization Server
 
 ```xml
@@ -256,14 +247,24 @@ Foram implementadas configurações importantes para APIs REST modernas:
 </dependency>
 ```
 
----
-
-## 🛡️ OAuth2 Resource Server
+### 🛡️ OAuth2 Resource Server
 
 ```xml
 <dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+</dependency>
+```
+
+---
+
+## 🧪 Spring Security Test
+
+```xml
+<dependency>
+    <groupId>org.springframework.security</groupId>
+    <artifactId>spring-security-test</artifactId>
+    <scope>test</scope>
 </dependency>
 ```
 
@@ -286,6 +287,13 @@ O projeto passou a possuir um modelo de autenticação baseado em:
 
 ---
 
+# 🖼️ Modelagem de Usuários e Perfis
+
+[!NOTE]
+Adicione aqui a imagem da modelagem de usuários, roles e relacionamentos da aplicação.
+
+<img src="https://raw.githubusercontent.com/Albertinesilva/devsuperior-java-springboot-bootcamp/chapter-01-crud/docs/assets/imgs/modelo-conceitual.png" width="100%">
+
 # 🔐 Fluxo de Autenticação
 
 ## 📌 Processo de Login
@@ -293,9 +301,11 @@ O projeto passou a possuir um modelo de autenticação baseado em:
 1. Cliente envia credenciais
 2. Authorization Server autentica usuário
 3. Token JWT é gerado
-4. Cliente utiliza token nas próximas requisições
-5. Resource Server valida token
-6. API libera ou bloqueia acesso conforme roles
+4. Cliente recebe token
+5. Requisições utilizam Bearer Token
+6. Resource Server valida JWT
+7. Spring Security verifica permissões
+8. API libera ou bloqueia acesso
 
 ---
 
@@ -321,7 +331,7 @@ grant_type=password
 
 # 🎫 Estrutura JWT
 
-Os tokens JWT utilizados possuem informações como:
+Os tokens JWT utilizados carregam informações importantes como:
 
 - Usuário autenticado
 - Authorities/Roles
@@ -354,7 +364,7 @@ cors.origins=${CORS_ORIGINS:http://localhost:3000,http://localhost:5173}
 
 # 🛡️ Authorization Server
 
-O projeto implementa um Authorization Server responsável por:
+O Authorization Server é responsável por:
 
 - Autenticar usuários
 - Gerar tokens JWT
@@ -442,10 +452,10 @@ A aplicação possui um mecanismo centralizado para tratamento de exceções e e
 ## 📌 Benefícios
 
 - Padronização das respostas
-- Melhor experiência para frontend
+- Melhor integração frontend/backend
 - Clareza de erros
 - Rastreabilidade
-- Facilidade de integração
+- Melhor experiência de consumo da API
 
 ---
 
@@ -453,53 +463,142 @@ A aplicação possui um mecanismo centralizado para tratamento de exceções e e
 
 ```json
 {
-  "timestamp": "2026-05-20T10:15:30Z",
-  "status": 422,
-  "error": "Validation exception",
-  "errors": [
-    {
-      "field": "email",
-      "message": "Email inválido"
-    }
-  ],
-  "path": "/api/v1/users"
+    "timestamp": "2026-05-24T19:40:35.468801500Z",
+    "status": 422,
+    "error": "Validation Error",
+    "message": "One or more fields are invalid",
+    "path": "/api/v1/users",
+    "fieldErrors": [
+        {
+            "fieldName": "firstName",
+            "message": "Primeiro nome deve ter entre 2 e 80 caracteres"
+        },
+        {
+            "fieldName": "password",
+            "message": "Senha contém padrões muito comuns e inseguros"
+        },
+        {
+            "fieldName": "firstName",
+            "message": "Primeiro nome é obrigatório"
+        },
+        {
+            "fieldName": "password",
+            "message": "Senha deve possuir ao menos 10 caracteres"
+        },
+        {
+            "fieldName": "password",
+            "message": "Senha deve conter ao menos uma letra minúscula"
+        },
+        {
+            "fieldName": "email",
+            "message": "Email já existente"
+        },
+        {
+            "fieldName": "roleIds",
+            "message": "Usuário deve possuir ao menos uma role"
+        },
+        {
+            "fieldName": "lastName",
+            "message": "Sobrenome deve ter entre 2 e 80 caracteres"
+        },
+        {
+            "fieldName": "lastName",
+            "message": "Sobrenome é obrigatório"
+        },
+        {
+            "fieldName": "password",
+            "message": "Senha deve conter ao menos uma letra maiúscula"
+        },
+        {
+            "fieldName": "password",
+            "message": "Senha deve conter ao menos um caractere especial"
+        }
+    ]
 }
 ```
 
 ---
 
-# 📂 Estrutura da Camada de Segurança
+# 📂 Organização dos Packages
 
-```text
-config
-┣ SecurityConfig.java
-┣ AuthorizationServerConfig.java
-┣ ResourceServerConfig.java
-┗ SpringDocOpenApiConfig.java
+A estrutura da camada de segurança foi organizada seguindo princípios de separação de responsabilidades, modularidade e baixo acoplamento, permitindo maior clareza arquitetural, facilidade de manutenção e escalabilidade evolutiva.
 
-entities
-┣ User.java
-┣ Role.java
-┗ TokenData.java
-
-services
-┣ UserService.java
-┣ AuthService.java
-┗ TokenService.java
-
-web
-┣ controller
-┣ exceptions
-┗ security
-```
+O objetivo foi estruturar cada responsabilidade de segurança de forma isolada e coesa, aproximando a aplicação de arquiteturas utilizadas em projetos corporativos modernos com Spring Security.
 
 ---
+
+## 🖼️ Organização da Camada de Segurança
+
+> [!NOTE]
+> Adicione aqui a imagem da estrutura de packages da camada de segurança.
+
+```text
+security
+┣ config
+┃ ┗ SecurityBeansConfig.java
+┃
+┣ oauth2
+┃ ┣ authorization
+┃ ┃ ┗ config
+┃ ┃   ┗ AuthorizationServerConfig.java
+┃ ┃
+┃ ┣ grant_password
+┃ ┃ ┣ CustomPasswordAuthenticationConverter.java
+┃ ┃ ┣ CustomPasswordAuthenticationProvider.java
+┃ ┃ ┗ CustomPasswordAuthenticationToken.java
+┃ ┃
+┃ ┗ resource
+┃   ┗ ResourceServerConfig.java
+┃
+┣ routes
+┃ ┗ AuthenticatedUser.java
+┃
+┣ service
+┃ ┣ exception
+┃ ┣ CategoryService.java
+┃ ┣ ProductService.java
+┃ ┗ UserService.java
+┃
+┣ validation
+┃ ┣ category
+┃ ┃ ┣ annotation
+┃ ┃ ┗ validator
+┃ ┃
+┃ ┣ product
+┃ ┃ ┣ annotation
+┃ ┃ ┗ validator
+┃ ┃
+┃ ┣ role
+┃ ┃ ┣ annotation
+┃ ┃ ┗ validator
+┃ ┃
+┃ ┗ user
+┃   ┣ annotation
+┃   ┗ validator
+┃
+┗ web
+  ┣ controller
+  ┃ ┣ CategoryController.java
+  ┃ ┣ ProductController.java
+  ┃ ┗ UserController.java
+  ┃
+  ┣ exception
+  ┃ ┣ enums
+  ┃ ┣ ErrorType.java
+  ┃ ┗ handler
+  ┃   ┗ ControllerExceptionHandler.java
+  ┃
+  ┗ response
+    ┣ FieldMessage.java
+    ┗ ProblemDetails.java
+    ┗ ValidationError.java
+```
 
 # 📊 Integração com Swagger/OpenAPI
 
 A documentação da API foi integrada com autenticação JWT.
 
-## 📌 Recursos
+## 📌 Recursos implementados
 
 - Autorização via Bearer Token
 - Teste de endpoints protegidos
@@ -524,7 +623,7 @@ http://localhost:8080/swagger-ui/index.html
 
 # 🧪 Testes de Segurança
 
-A aplicação também evolui em termos de testes automatizados de segurança.
+A aplicação evolui também em termos de testes automatizados de autenticação e autorização.
 
 ## 📌 Cenários testados
 
@@ -550,7 +649,7 @@ A aplicação também evolui em termos de testes automatizados de segurança.
 
 # 🧱 Boas Práticas Aplicadas
 
-- Separação clara entre autenticação e autorização
+- Separação entre autenticação e autorização
 - Uso de JWT stateless
 - Configuração baseada em perfis
 - Segurança em nível de método
@@ -609,38 +708,11 @@ Durante este capítulo foram consolidados conhecimentos fundamentais sobre:
 - Resource Server
 - Bean Validation
 - Segurança de APIs REST
-- Controle de acesso por perfil
+- Controle de acesso por roles
 - Configuração de filtros de segurança
 - CORS e CSRF
 - Method Security
 - Tratamento de exceções de validação
-
----
-
-# 📚 Referências Técnicas
-
-## 🔹 Bean Validation
-
-- https://beanvalidation.org/
-- https://docs.jboss.org/hibernate/beanvalidation/spec/2.0/api/overview-summary.html
-- https://www.baeldung.com/java-bean-validation-not-null-empty-blank
-- https://www.baeldung.com/spring-custom-validation-message-source
-
----
-
-## 🔹 Segurança e JWT
-
-- https://jwt.io
-- https://oauth.net/2/
-- https://spring.io/projects/spring-security
-- https://docs.spring.io/spring-security/reference/
-
----
-
-## 🔹 Regex e validações
-
-- https://regexr.com/
-- https://regexlib.com/
 
 ---
 
@@ -673,7 +745,34 @@ Mais do que apenas proteger endpoints, a aplicação passa a incorporar conceito
 
 A implementação de OAuth2, JWT e Spring Security consolida competências extremamente relevantes para o desenvolvimento backend moderno com Java e Spring Boot.
 
-> 🚀 Este capítulo representa um passo importante rumo à construção de APIs seguras, escaláveis e alinhadas às práticas utilizadas no mercado profissional.
+> [!IMPORTANT] Este capítulo representa um passo importante rumo à construção de APIs seguras, escaláveis e alinhadas às práticas utilizadas no mercado profissional.
+
+---
+
+# 📚 Referências Técnicas
+
+## 🔹 Bean Validation
+
+- https://beanvalidation.org/
+- https://docs.jboss.org/hibernate/beanvalidation/spec/2.0/api/overview-summary.html
+- https://www.baeldung.com/java-bean-validation-not-null-empty-blank
+- https://www.baeldung.com/spring-custom-validation-message-source
+
+---
+
+## 🔹 Segurança e JWT
+
+- https://jwt.io
+- https://oauth.net/2/
+- https://spring.io/projects/spring-security
+- https://docs.spring.io/spring-security/reference/
+
+---
+
+## 🔹 Regex e validações
+
+- https://regexr.com/
+- https://regexlib.com/
 
 ---
 
