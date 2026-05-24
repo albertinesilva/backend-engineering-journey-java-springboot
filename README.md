@@ -1,4 +1,4 @@
-<h1 align="center">🛡️Capítulo 03 — Validação e Segurança com Spring Boot OAuth2 | JWT</h1>
+<h1 align="center">🛡️Capítulo 03 — Validation & Security with Spring Boot | OAuth2 | JWT</h1>
 
 <p align="center">
 <em>Implementing secure REST APIs with Spring Security, OAuth2, JWT authentication, Bean Validation, and role-based access control in modern Spring Boot applications.</em>
@@ -12,23 +12,19 @@
 
 <img src="https://img.shields.io/badge/Security-Spring_Security-red?style=for-the-badge" />
 
-<img src="https://img.shields.io/badge/Auth-OAuth2%20%7C%20JWT-darkred?style=for-the-badge" />
+<img src="https://img.shields.io/badge/Auth-OAuth2%20%7C%20JWT-critical?style=for-the-badge" />
 
 <img src="https://img.shields.io/badge/Validation-Bean_Validation-blue?style=for-the-badge" />
 
-<img src="https://img.shields.io/badge/Authorization-Role_Based_Access-success?style=for-the-badge" />
+<img src="https://img.shields.io/badge/Authorization-RBAC-success?style=for-the-badge" />
 
-<img src="https://img.shields.io/badge/Architecture-Authorization_Server%20%7C%20Resource_Server-black?style=for-the-badge" />
+<img src="https://img.shields.io/badge/API_Security-Resource_Server-informational?style=for-the-badge" />
 
-<img src="https://img.shields.io/badge/API-RESTful-success?style=for-the-badge" />
+<img src="https://img.shields.io/badge/Architecture-Authorization_Server-black?style=for-the-badge" />
+
+<img src="https://img.shields.io/badge/Testing-Spring_Security_Test-yellow?style=for-the-badge" />
 
 <img src="https://img.shields.io/badge/Documentation-Swagger%20%7C%20OpenAPI-85EA2D?style=for-the-badge" />
-
-<img src="https://img.shields.io/badge/Testing-Spring_Security_Test%20%7C%20MockMvc-yellow?style=for-the-badge" />
-
-<img src="https://img.shields.io/badge/Database-PostgreSQL%20%7C%20H2-336791?style=for-the-badge&logo=postgresql&logoColor=white" />
-
-<img src="https://img.shields.io/badge/Focus-Authentication%20%7C%20Authorization-informational?style=for-the-badge" />
 
 <img src="https://img.shields.io/github/license/Albertinesilva/backend-engineering-journey-java-springboot?style=for-the-badge" />
 
@@ -38,13 +34,9 @@
 
 <p align="justify">
 <em>
-Este capítulo representa a evolução do projeto <strong>DSCatalog</strong> para um cenário mais próximo de aplicações corporativas reais, incorporando mecanismos robustos de <strong>validação de dados</strong>, <strong>autenticação</strong>, <strong>autorização</strong> e <strong>segurança de APIs REST</strong> utilizando <code>Spring Security</code>, <code>OAuth2</code>, <code>JWT</code> e <code>Bean Validation</code>.
-</em>
-</p>
+Neste capítulo, o projeto <strong>DSCatalog</strong> evolui para um cenário muito mais próximo de aplicações corporativas reais, incorporando mecanismos robustos de autenticação, autorização e validação de dados utilizando o ecossistema moderno do <strong>Spring Security 6</strong>.
 
-<p align="justify">
-<em>
-Além da implementação de controle de acesso baseado em perfis (<code>ROLE_ADMIN</code>, <code>ROLE_OPERATOR</code>), este capítulo também introduz conceitos fundamentais de segurança backend moderna, como configuração de <strong>Authorization Server</strong>, <strong>Resource Server</strong>, geração e validação de tokens JWT, proteção de rotas, tratamento customizado de erros de validação e integração segura com documentação Swagger/OpenAPI.
+Além da proteção de endpoints REST, foram aplicados conceitos fundamentais de segurança backend moderna, incluindo <strong>OAuth2 Authorization Server</strong>, <strong>Resource Server</strong>, autenticação stateless com <strong>JWT</strong>, controle de acesso baseado em roles, tratamento global de erros de validação e integração segura com Swagger/OpenAPI.
 </em>
 </p>
 
@@ -52,19 +44,21 @@ Além da implementação de controle de acesso baseado em perfis (<code>ROLE_ADM
 
 # 📚 Contexto do Projeto
 
-Após a consolidação da arquitetura em camadas e da estratégia de testes automatizados nos capítulos anteriores, o projeto evolui para uma camada essencial em aplicações modernas:
+Após a consolidação da arquitetura em camadas e da estratégia de testes automatizados nos capítulos anteriores, o projeto evolui para uma nova etapa focada em segurança, autenticação e validação robusta.
+
+Nesta fase, a aplicação passa a incorporar:
 
 - 🔐 Segurança de APIs REST
-- 🧾 Validação robusta de dados
-- 👥 Controle de acesso por perfis
-- 🎫 Autenticação baseada em token JWT
+- 🎫 Autenticação baseada em JWT
+- 👥 Controle de acesso por roles
 - 🛡️ Proteção de endpoints
-- ⚙️ Configuração de OAuth2 Authorization Server
-- 🔑 Resource Server com JWT
-- 📄 Integração segura com Swagger/OpenAPI
+- ⚙️ OAuth2 Authorization Server
+- 🔑 OAuth2 Resource Server
+- 🧾 Bean Validation
 - 🌐 Configuração de CORS e CSRF
-- 🧪 Testes de segurança com Spring Security Test
-- 📦 Estruturação profissional de autenticação/autorização
+- 📄 Integração segura com Swagger/OpenAPI
+- 🧪 Testes de segurança
+- 📦 Estrutura profissional de autenticação/autorização
 
 ---
 
@@ -158,16 +152,16 @@ Foram implementadas configurações importantes para APIs REST modernas:
 
 # 🧠 Conceitos Fundamentais Trabalhados
 
-| Conceito | Objetivo |
-|---|---|
-| Authentication | Verificar identidade do usuário |
-| Authorization | Verificar permissões do usuário |
-| OAuth2 | Protocolo de autorização |
-| JWT | Token seguro para autenticação stateless |
-| Bean Validation | Validação declarativa de dados |
-| Method Security | Proteção em nível de métodos |
-| Resource Server | Proteção dos recursos da API |
-| Authorization Server | Emissão e gerenciamento de tokens |
+| Conceito             | Objetivo                                 |
+| -------------------- | ---------------------------------------- |
+| Authentication       | Verificar identidade do usuário          |
+| Authorization        | Verificar permissões do usuário          |
+| OAuth2               | Protocolo de autorização                 |
+| JWT                  | Token seguro para autenticação stateless |
+| Bean Validation      | Validação declarativa de dados           |
+| Method Security      | Proteção em nível de métodos             |
+| Resource Server      | Proteção dos recursos da API             |
+| Authorization Server | Emissão e gerenciamento de tokens        |
 
 ---
 
@@ -175,43 +169,43 @@ Foram implementadas configurações importantes para APIs REST modernas:
 
 ## 🔐 Segurança
 
-| Tecnologia | Função |
-|---|---|
-| Spring Security | Framework principal de segurança |
-| OAuth2 Authorization Server | Emissão de tokens JWT |
-| OAuth2 Resource Server | Validação de tokens e proteção de recursos |
-| JWT | Autenticação stateless baseada em token |
-| BCryptPasswordEncoder | Criptografia segura de senhas |
+| Tecnologia                  | Função                                     |
+| --------------------------- | ------------------------------------------ |
+| Spring Security             | Framework principal de segurança           |
+| OAuth2 Authorization Server | Emissão de tokens JWT                      |
+| OAuth2 Resource Server      | Validação de tokens e proteção de recursos |
+| JWT                         | Autenticação stateless baseada em token    |
+| BCryptPasswordEncoder       | Criptografia segura de senhas              |
 
 ---
 
 ## 🧾 Validação
 
-| Tecnologia | Função |
-|---|---|
-| Bean Validation | Validação declarativa |
+| Tecnologia          | Função                                         |
+| ------------------- | ---------------------------------------------- |
+| Bean Validation     | Validação declarativa                          |
 | Hibernate Validator | Implementação da especificação Bean Validation |
-| Jakarta Validation | API padrão de validação |
+| Jakarta Validation  | API padrão de validação                        |
 
 ---
 
 ## 📄 Documentação
 
-| Tecnologia | Função |
-|---|---|
-| SpringDoc OpenAPI | Documentação automática |
-| Swagger UI | Interface interativa da API |
+| Tecnologia        | Função                      |
+| ----------------- | --------------------------- |
+| SpringDoc OpenAPI | Documentação automática     |
+| Swagger UI        | Interface interativa da API |
 
 ---
 
 ## 🧪 Testes
 
-| Tecnologia | Função |
-|---|---|
+| Tecnologia           | Função                             |
+| -------------------- | ---------------------------------- |
 | Spring Security Test | Testes de autenticação/autorização |
-| MockMvc | Testes de endpoints protegidos |
-| JUnit 5 | Testes automatizados |
-| Mockito | Mocking de dependências |
+| MockMvc              | Testes de endpoints protegidos     |
+| JUnit 5              | Testes automatizados               |
+| Mockito              | Mocking de dependências            |
 
 ---
 
@@ -272,9 +266,9 @@ O projeto passou a possuir um modelo de autenticação baseado em:
 
 ## 📌 Perfis utilizados
 
-| Perfil | Responsabilidade |
-|---|---|
-| ROLE_ADMIN | Controle total da API |
+| Perfil        | Responsabilidade         |
+| ------------- | ------------------------ |
+| ROLE_ADMIN    | Controle total da API    |
 | ROLE_OPERATOR | Operações intermediárias |
 
 ---
@@ -390,13 +384,13 @@ O Resource Server é responsável por:
 
 ## 📌 Estratégia aplicada
 
-| Tipo de rota | Acesso |
-|---|---|
-| Swagger/OpenAPI | Público |
-| Categorias (GET) | Público |
-| Produtos (GET) | Público |
-| Demais endpoints | Autenticado |
-| Endpoints administrativos | ROLE_ADMIN |
+| Tipo de rota              | Acesso      |
+| ------------------------- | ----------- |
+| Swagger/OpenAPI           | Público     |
+| Categorias (GET)          | Público     |
+| Produtos (GET)            | Público     |
+| Demais endpoints          | Autenticado |
+| Endpoints administrativos | ROLE_ADMIN  |
 
 ---
 
@@ -532,12 +526,12 @@ A aplicação também evolui em termos de testes automatizados de segurança.
 
 ## 📌 Ferramentas utilizadas
 
-| Ferramenta | Finalidade |
-|---|---|
-| MockMvc | Teste de endpoints |
+| Ferramenta           | Finalidade                |
+| -------------------- | ------------------------- |
+| MockMvc              | Teste de endpoints        |
 | Spring Security Test | Simulação de autenticação |
-| Mockito | Mock de serviços |
-| JUnit 5 | Estrutura de testes |
+| Mockito              | Mock de serviços          |
+| JUnit 5              | Estrutura de testes       |
 
 ---
 
