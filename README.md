@@ -198,7 +198,66 @@ Foram implementadas estratégias utilizadas em APIs REST modernas e ambientes co
 
 ---
 
-# 🛠️ Tecnologias Utilizadas
+## 🏛️ Arquitetura Geral de Segurança
+
+A estratégia de segurança da aplicação foi construída utilizando uma arquitetura baseada em separação clara entre autenticação, autorização e proteção de recursos, seguindo padrões modernos utilizados em APIs REST corporativas.
+
+A aplicação foi dividida em dois componentes principais:
+
+- **Authorization Server**
+- **Resource Server**
+
+Essa separação permite maior desacoplamento, escalabilidade e aderência ao ecossistema OAuth2 moderno.
+
+---
+
+### 🔐 Fluxo Arquitetural da Segurança
+
+```text
+┌──────────────────────┐
+│      Client App      │
+│  Frontend / Postman  │
+└──────────┬───────────┘
+           │
+           │ Login Request
+           ▼
+┌────────────────────────────┐
+│   Authorization Server     │
+│ OAuth2 + Spring Security   │
+│ JWT Generation             │
+└──────────┬─────────────────┘
+           │
+           │ JWT Token
+           ▼
+┌────────────────────────────┐
+│      Resource Server       │
+│ JWT Validation             │
+│ Route Protection           │
+│ Method Security            │
+└──────────┬─────────────────┘
+           │
+           ▼
+┌────────────────────────────┐
+│     Protected Endpoints    │
+│ Products | Categories      │
+│ Users | Roles              │
+└────────────────────────────┘
+```
+
+---
+
+### 📌 Benefícios da Arquitetura
+
+- Separação entre autenticação e autorização
+- Maior modularidade
+- Segurança stateless
+- Escalabilidade horizontal
+- Melhor manutenção evolutiva
+- Estrutura próxima de ambientes enterprise reais
+
+---
+
+## 🛠️ Tecnologias Utilizadas
 
 ## 🔐 Segurança
 
@@ -352,6 +411,40 @@ Os tokens JWT utilizados carregam informações importantes como:
 - Tempo de expiração
 - Issuer
 - Audience
+
+### 📄 Exemplo de Payload JWT
+
+```json
+{
+  "sub": "alex@gmail.com",
+  "scope": "ROLE_ADMIN ROLE_OPERATOR",
+  "iat": 1716562000,
+  "exp": 1716648400,
+  "iss": "Spring Authorization Server"
+}
+```
+
+### 📌 Significado dos campos
+
+| Campo | Descrição |
+|---|---|
+| `sub` | Usuário autenticado |
+| `scope` | Roles/permissões do usuário |
+| `iat` | Data de emissão do token |
+| `exp` | Data de expiração |
+| `iss` | Emissor do token |
+
+---
+
+### 🔐 Características do Token
+
+- Assinado digitalmente
+- Stateless
+- Seguro para APIs REST
+- Compatível com OAuth2
+- Validado pelo Resource Server
+
+---
 
 ### 📌 Benefícios do JWT
 
