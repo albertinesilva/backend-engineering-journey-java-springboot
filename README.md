@@ -6,7 +6,7 @@ This chapter focuses on building secure, production-ready backend APIs using <st
 </em>
 </p>
 
-<p align="center">
+<p align="justify">
 
 <img src="https://img.shields.io/badge/Java-17+-orange?style=for-the-badge&logo=openjdk&logoColor=white" />
 
