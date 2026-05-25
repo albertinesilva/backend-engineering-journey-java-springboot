@@ -40,6 +40,7 @@ Neste capítulo, o projeto <strong>DSCatalog</strong> evolui para um cenário mu
 
 Além da proteção de endpoints REST, foram aplicados conceitos fundamentais de segurança backend moderna, incluindo <strong>OAuth2 Authorization Server</strong>, <strong>Resource Server</strong>, autenticação stateless com <strong>JWT</strong>, controle de acesso baseado em roles, tratamento global de erros de validação e integração segura com Swagger/OpenAPI.
 </em>
+
 </p>
 
 ---
@@ -185,6 +186,7 @@ A API passou a possuir controle de acesso baseado em autenticação e autorizaç
 ```
 
 ### 📌 Exemplo de configuração de autorização
+
 ```java
 .requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINTS).permitAll()
 .requestMatchers(DOCUMENTATION_OPENAPI).permitAll()
@@ -192,6 +194,7 @@ A API passou a possuir controle de acesso baseado em autenticação e autorizaç
 ```
 
 ### 📌 Fluxo de autorização da requisição
+
 1. Cliente envia Bearer Token
 2. Resource Server intercepta a requisição
 3. JWT é validado
@@ -479,23 +482,22 @@ Os tokens JWT utilizados carregam informações importantes como:
   "exp": 1779748547,
   "iat": 1779662147,
   "jti": "c86d494c-43b0-4ce4-83bf-e3f6355da3bb",
-  "authorities": [
-    "ROLE_OPERATOR"
-  ],
+  "authorities": ["ROLE_OPERATOR"],
   "username": "albert@gmail.com"
 }
 ```
+
 As claims podem variar conforme a configuração do JWT Converter utilizado na aplicação.
 
 ### 📌 Significado dos campos
 
-| Campo | Descrição |
-|---|---|
-| `sub` | Usuário autenticado |
+| Campo         | Descrição                   |
+| ------------- | --------------------------- |
+| `sub`         | Usuário autenticado         |
 | `authorities` | Roles/permissões do usuário |
-| `iat` | Data de emissão do token |
-| `exp` | Data de expiração |
-| `iss` | Emissor do token |
+| `iat`         | Data de emissão do token    |
+| `exp`         | Data de expiração           |
+| `iss`         | Emissor do token            |
 
 ---
 
@@ -568,51 +570,51 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
 
 ```json
 {
-    "content": [
-        {
-            "id": 1,
-            "name": "The Lord of the Rings",
-            "description": "Classico da literatura de fantasia que narra a jornada épica na Terra Média.",
-            "price": 90.5,
-            "imgUrl": "https://raw.githubusercontent.com/devsuperior/dscatalog-resources/master/backend/img/1-big.jpg",
-            "date": "2020-07-13T20:50:07.123450Z",
-            "categories": []
-        },
-        {
-            "id": 2,
-            "name": "Smart TV",
-            "description": "Smart TV com alta resolução, acesso a streaming e conectividade Wi-Fi.",
-            "price": 2190.0,
-            "imgUrl": "https://raw.githubusercontent.com/devsuperior/dscatalog-resources/master/backend/img/2-big.jpg",
-            "date": "2020-07-14T10:00:00Z",
-            "categories": []
-        }
-    ],
-    "pageable": {
-        "pageNumber": 0,
-        "pageSize": 2,
-        "sort": {
-            "empty": false,
-            "sorted": true,
-            "unsorted": false
-        },
-        "offset": 0,
-        "paged": true,
-        "unpaged": false
+  "content": [
+    {
+      "id": 1,
+      "name": "The Lord of the Rings",
+      "description": "Classico da literatura de fantasia que narra a jornada épica na Terra Média.",
+      "price": 90.5,
+      "imgUrl": "https://raw.githubusercontent.com/devsuperior/dscatalog-resources/master/backend/img/1-big.jpg",
+      "date": "2020-07-13T20:50:07.123450Z",
+      "categories": []
     },
-    "totalElements": 25,
-    "totalPages": 13,
-    "last": false,
-    "size": 2,
-    "number": 0,
+    {
+      "id": 2,
+      "name": "Smart TV",
+      "description": "Smart TV com alta resolução, acesso a streaming e conectividade Wi-Fi.",
+      "price": 2190.0,
+      "imgUrl": "https://raw.githubusercontent.com/devsuperior/dscatalog-resources/master/backend/img/2-big.jpg",
+      "date": "2020-07-14T10:00:00Z",
+      "categories": []
+    }
+  ],
+  "pageable": {
+    "pageNumber": 0,
+    "pageSize": 2,
     "sort": {
-        "empty": false,
-        "sorted": true,
-        "unsorted": false
+      "empty": false,
+      "sorted": true,
+      "unsorted": false
     },
-    "numberOfElements": 2,
-    "first": true,
-    "empty": false
+    "offset": 0,
+    "paged": true,
+    "unpaged": false
+  },
+  "totalElements": 25,
+  "totalPages": 13,
+  "last": false,
+  "size": 2,
+  "number": 0,
+  "sort": {
+    "empty": false,
+    "sorted": true,
+    "unsorted": false
+  },
+  "numberOfElements": 2,
+  "first": true,
+  "empty": false
 }
 ```
 
@@ -650,15 +652,15 @@ A estratégia adotada combina validações declarativas, validações customizad
 
 ### 📌 Principais validações utilizadas
 
-| Validação | Objetivo |
-|---|---|
-| `@NotBlank` | Garantir campos textuais obrigatórios |
-| `@NotNull` | Impedir valores nulos |
-| `@Size` | Restringir tamanho mínimo e máximo |
-| `@Email` | Validar formato de email |
-| `@Positive` | Garantir valores numéricos positivos |
-| `@PastOrPresent` | Validar datas válidas |
-| Custom Validators | Regras específicas da aplicação |
+| Validação         | Objetivo                              |
+| ----------------- | ------------------------------------- |
+| `@NotBlank`       | Garantir campos textuais obrigatórios |
+| `@NotNull`        | Impedir valores nulos                 |
+| `@Size`           | Restringir tamanho mínimo e máximo    |
+| `@Email`          | Validar formato de email              |
+| `@Positive`       | Garantir valores numéricos positivos  |
+| `@PastOrPresent`  | Validar datas válidas                 |
+| Custom Validators | Regras específicas da aplicação       |
 
 ---
 
@@ -914,6 +916,7 @@ O objetivo foi estruturar cada responsabilidade de segurança de forma isolada e
 ```
 
 ---
+
 ## 🛡️ Estrutura da Camada de Segurança
 
 A camada de segurança foi projetada para centralizar autenticação, autorização, validação e proteção dos recursos da API, utilizando uma abordagem modular inspirada em arquiteturas desacopladas e aplicações robustas.
@@ -1154,6 +1157,7 @@ A aplicação evolui também em termos de testes automatizados de autenticação
 | JUnit 5              | Estrutura de testes       |
 
 ---
+
 ## 🧱 Boas Práticas Aplicadas
 
 - Stateless authentication com JWT
@@ -1307,6 +1311,7 @@ Mais do que apenas proteger endpoints, a aplicação passa a incorporar conceito
 A implementação de OAuth2, JWT e Spring Security consolida competências extremamente relevantes para o desenvolvimento backend moderno com Java e Spring Boot.
 
 > [!IMPORTANT] Este capítulo representa um passo importante rumo à construção de APIs escaláveis, sistemas seguros e arquiteturas desacopladas alinhadas às práticas utilizadas no mercado profissional.
+
 ---
 
 ## 📚 Referências Técnicas
