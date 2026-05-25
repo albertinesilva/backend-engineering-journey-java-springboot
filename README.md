@@ -393,7 +393,7 @@ sequenceDiagram
 
 ---
 
-# 👥 Modelo de Usuários e Perfis
+## 👥 Modelo de Usuários e Perfis
 
 O projeto passou a possuir um modelo de autenticação baseado em:
 
