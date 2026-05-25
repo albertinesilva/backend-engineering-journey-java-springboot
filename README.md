@@ -66,13 +66,13 @@ Além da proteção de endpoints REST, foram aplicados conceitos fundamentais de
 
 Após a consolidação da arquitetura em camadas e da estratégia de testes automatizados nos capítulos anteriores, o projeto evolui para uma nova etapa focada em autenticação, autorização e validação robusta.
 
-Neste capítulo, a API DSCatalog passa a incorporar mecanismos modernos de segurança utilizando Spring Security 6, OAuth2, JWT e Bean Validation, aproximando a aplicação de cenários reais utilizados em ambientes corporativos.
+Neste capítulo, a API DSCatalog evolui para suportar aplicações robustas, incorporando mecanismos modernos de segurança utilizando Spring Security 6, OAuth2, JWT e Bean Validation, aproximando a aplicação de cenários reais utilizados em ambientes corporativos.
 
 ---
 
 # 🎯 Objetivos do Capítulo
 
-Este capítulo tem como objetivo transformar a API DSCatalog em uma aplicação backend preparada para cenários reais de autenticação e segurança corporativa.
+Este capítulo tem como objetivo transformar a API DSCatalog em uma aplicação backend preparada para APIs escaláveis, autenticação moderna e sistemas seguros.
 
 Para atingir esse objetivo, foram implementados os seguintes pilares:
 
@@ -224,7 +224,7 @@ Foram implementadas estratégias utilizadas em APIs REST modernas e ambientes co
 
 ## 🏛️ Arquitetura Geral de Segurança
 
-A estratégia de segurança da aplicação foi construída utilizando uma arquitetura baseada em separação clara entre autenticação, autorização e proteção de recursos, seguindo padrões modernos utilizados em APIs REST corporativas.
+A estratégia de segurança da aplicação foi construída utilizando uma arquitetura baseada em separação clara entre autenticação, autorização e proteção de recursos, seguindo padrões modernos utilizados em APIs escaláveis e arquiteturas desacopladas.
 
 A aplicação foi dividida em dois componentes principais:
 
@@ -274,9 +274,9 @@ Essa separação permite maior desacoplamento, escalabilidade e aderência ao ec
 
 - Separação entre autenticação e autorização
 - Maior modularidade
-- Escalabilidade horizontal
+- Suporte a ambientes distribuídos
 - Melhor manutenção evolutiva
-- Estrutura próxima de ambientes enterprise reais
+- Estrutura preparada para arquiteturas desacopladas
 
 ---
 
@@ -747,7 +747,7 @@ A aplicação possui um mecanismo centralizado para tratamento de exceções e e
 
 A estrutura da camada de segurança foi organizada seguindo princípios de separação de responsabilidades, modularidade e baixo acoplamento, permitindo maior clareza arquitetural, facilidade de manutenção e escalabilidade evolutiva.
 
-O objetivo foi estruturar cada responsabilidade de segurança de forma isolada e coesa, aproximando a aplicação de arquiteturas utilizadas em projetos corporativos modernos com Spring Security.
+O objetivo foi estruturar cada responsabilidade de segurança de forma isolada e coesa, aproximando a aplicação de arquiteturas desacopladas utilizadas em projetos modernos com Spring Security.
 
 ---
 
@@ -883,7 +883,7 @@ O objetivo foi estruturar cada responsabilidade de segurança de forma isolada e
 ---
 ## 🛡️ Estrutura da Camada de Segurança
 
-A camada de segurança foi projetada para centralizar autenticação, autorização, validação e proteção dos recursos da API, utilizando uma abordagem modular inspirada em arquiteturas enterprise modernas.
+A camada de segurança foi projetada para centralizar autenticação, autorização, validação e proteção dos recursos da API, utilizando uma abordagem modular inspirada em arquiteturas desacopladas e aplicações robustas.
 
 Cada package possui uma responsabilidade bem definida dentro do fluxo de autenticação e segurança da aplicação.
 
@@ -1136,14 +1136,18 @@ A aplicação evolui também em termos de testes automatizados de autenticação
 
 ## 🚀 Evolução Arquitetural do Projeto
 
-Com este capítulo, o projeto DSCatalog deixa de representar apenas uma API CRUD tradicional e passa a incorporar fundamentos essenciais de aplicações enterprise modernas:
+Com este capítulo, o projeto DSCatalog deixa de representar apenas uma API CRUD tradicional e evolui para uma arquitetura backend mais próxima de cenários reais de mercado, incorporando fundamentos essenciais para construção de APIs escaláveis, sistemas seguros e aplicações robustas.
 
-- Segurança robusta
-- APIs protegidas
-- Controle de acesso profissional
-- Autenticação moderna
-- Validação consistente
-- Estrutura preparada para produção
+### 📌 Principais evoluções arquiteturais
+
+- Autenticação stateless com JWT
+- Autorização baseada em roles (RBAC)
+- Proteção centralizada de endpoints
+- Validação consistente de dados
+- Tratamento padronizado de exceções
+- Estrutura modular e desacoplada
+- Configuração orientada a ambientes
+- Arquitetura preparada para evolução e manutenção
 
 ---
 
@@ -1250,7 +1254,7 @@ Este capítulo consolida competências importantes relacionadas ao desenvolvimen
 - Segurança baseada em ambiente
 - Documentação técnica avançada
 - Swagger/OpenAPI
-- Estrutura preparada para produção
+- Estrutura preparada para ambientes distribuídos e produção
 
 ---
 
@@ -1268,8 +1272,7 @@ Mais do que apenas proteger endpoints, a aplicação passa a incorporar conceito
 
 A implementação de OAuth2, JWT e Spring Security consolida competências extremamente relevantes para o desenvolvimento backend moderno com Java e Spring Boot.
 
-> [!IMPORTANT] Este capítulo representa um passo importante rumo à construção de APIs seguras, escaláveis e alinhadas às práticas utilizadas no mercado profissional.
-
+> [!IMPORTANT] Este capítulo representa um passo importante rumo à construção de APIs escaláveis, sistemas seguros e arquiteturas desacopladas alinhadas às práticas utilizadas no mercado profissional.
 ---
 
 ## 📚 Referências Técnicas
