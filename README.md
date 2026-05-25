@@ -40,7 +40,6 @@ Neste capítulo, o projeto <strong>DSCatalog</strong> evolui para um cenário mu
 
 Além da proteção de endpoints REST, foram aplicados conceitos fundamentais de segurança backend moderna, incluindo <strong>OAuth2 Authorization Server</strong>, <strong>Resource Server</strong>, autenticação stateless com <strong>JWT</strong>, controle de acesso baseado em roles, tratamento global de erros de validação e integração segura com Swagger/OpenAPI.
 </em>
-
 </p>
 
 ---
@@ -49,16 +48,29 @@ Além da proteção de endpoints REST, foram aplicados conceitos fundamentais de
 
 - [📚 Contexto do Projeto](#-contexto-do-projeto)
 - [🎯 Objetivos do Capítulo](#-objetivos-do-capítulo)
+  - [1. Aplicar validação robusta com Bean Validation](#1-aplicar-validação-robusta-com-bean-validation)
+  - [2. Implementar autenticação moderna com OAuth2 e JWT](#2-implementar-autenticação-moderna-com-oauth2-e-jwt)
+  - [3. Implementar controle de acesso e proteção de endpoints](#3-implementar-controle-de-acesso-e-proteção-de-endpoints)
+  - [4. Aplicar boas práticas modernas de segurança](#4-aplicar-boas-práticas-modernas-de-segurança)
+- [🧠 Conceitos Fundamentais Trabalhados](#-conceitos-fundamentais-trabalhados)
 - [🏛️ Arquitetura Geral de Segurança](#️-arquitetura-geral-de-segurança)
 - [🛠️ Tecnologias Utilizadas](#️-tecnologias-utilizadas)
 - [📦 Dependências Adicionadas](#-dependências-adicionadas)
 - [👥 Modelo de Usuários e Perfis](#-modelo-de-usuários-e-perfis)
 - [🔐 Fluxo de Autenticação](#-fluxo-de-autenticação)
+- [⚙️ Configurações da Aplicação](#️-configurações-da-aplicação)
 - [🧾 Bean Validation](#-bean-validation)
 - [📂 Organização dos Packages](#-organização-dos-packages)
+- [📊 Integração com Swagger/OpenAPI](#-integração-com-swaggeropenapi)
 - [🧪 Testes de Segurança](#-testes-de-segurança)
+- [🧱 Boas Práticas Aplicadas](#-boas-práticas-aplicadas)
 - [🚀 Evolução Arquitetural do Projeto](#-evolução-arquitetural-do-projeto)
+- [🚧 Principais Desafios Encontrados](#-principais-desafios-encontrados)
+- [🧠 Aprendizados Consolidados](#-aprendizados-consolidados)
+- [🚧 Melhorias Futuras](#-melhorias-futuras)
+- [💼 Competências Demonstradas](#-competências-demonstradas)
 - [🎓 Conclusão](#-conclusão)
+- [📚 Referências Técnicas](#-referências-técnicas)
 
 ---
 
@@ -78,11 +90,11 @@ Para atingir esse objetivo, foram implementados os seguintes pilares:
 
 ---
 
-## 🔹 1. Aplicar validação robusta com Bean Validation
+## 1. Aplicar validação robusta com Bean Validation
 
 A aplicação passou a utilizar validações declarativas para garantir integridade e previsibilidade dos dados recebidos pela API.
 
-## Principais validações aplicadas
+### Principais validações aplicadas
 
 - `@NotBlank`
 - `@NotNull`
@@ -103,20 +115,19 @@ A aplicação passou a utilizar validações declarativas para garantir integrid
 - Segurança contra entradas inválidas
 - Melhor experiência para consumidores da API
 
----
-
 ### ⚠️ Observações e recomendações — Validação
 
-- **Centralizar mensagens:** mover todas as mensagens de validação para `ValidationMessages.properties` e usar chaves (`user.password.length`, `user.email.invalid`, etc.) nos validators/annotations em vez de strings hardcoded.
-- **Remover duplicações:** alguns validadores e annotations (ex.: `StrongPassword`, `UniqueEmail`, `UserCreateValidator`) retornam mensagens em código; padronize para usar mensagens do properties para evitar inconsistências.
-- **Padronizar chaves:** seguir um prefixo consistente (`user.`, `product.`, `category.`) e documentar os nomes das chaves para facilitar manutenção e i18n.
-- **Internacionalização (i18n):** preparar arquivos `ValidationMessages_{locale}.properties` quando suportar múltiplos idiomas.
-- **Testes de validação:** adicionar testes unitários para validators customizados (ex.: `StrongPasswordValidator`, `UserCreateValidator`, `ValidRolesValidator`) cobrindo casos limites.
+- Centralizar mensagens em `ValidationMessages.properties`
+- Remover mensagens hardcoded
+- Padronizar chaves de validação
+- Preparar estrutura para i18n
+- Adicionar testes para validadores customizados
 
+---
 
-## 🔹 2. Implementar autenticação moderna com OAuth2 e JWT
+## 2. Implementar autenticação moderna com OAuth2 e JWT
 
-A autenticação da aplicação foi construída utilizando uma arquitetura baseada em:
+A autenticação da aplicação foi construída utilizando:
 
 - Spring Security 6
 - OAuth2 Authorization Server
@@ -134,28 +145,28 @@ A autenticação da aplicação foi construída utilizando uma arquitetura basea
 
 ### ⚠️ Observações e recomendações — Segurança
 
-- **Reavaliar uso do Password Flow:** o fluxo Resource Owner Password Credentials (password grant) está implementado com custom provider (`CustomPasswordAuthenticationProvider`). Esse fluxo é legado para clientes públicos; prefira Authorization Code + PKCE para aplicações móveis/web públicas.
-- **Gerenciamento de chaves:** evite gerar chaves RSA em memória na inicialização; utilize keystores ou serviços de segredo (Vault, Azure Key Vault) e não armazene chaves em repositório.
-- **Persistência de autorizações:** o uso de `InMemoryOAuth2AuthorizationService` é adequado para desenvolvimento; para produção, persista autorizações/tokens em banco para suportar revogação e múltiplas instâncias.
-- **Segurança do H2 Console e CORS:** mantenha o H2 Console somente em `dev/test` (já condicional) e restrinja CORS a origins conhecidos em `application-*.properties`.
-- **Segredos em ambiente:** garanta que `security.client-secret` e variáveis sensíveis sejam fornecidas via variáveis de ambiente ou secret manager (evite valores padrão em código/repo).
-- **Políticas adicionais:** adicionar proteção contra força bruta, política de bloqueio de contas, rotação de chaves e logging/auditoria para operações sensíveis.
-
-## 🔹 3. Implementar controle de acesso e proteção de endpoints
-
-A API passou a possuir controle de acesso baseado em autenticação e autorização utilizando Spring Security e RBAC (Role-Based Access Control).
-
-A estratégia aplicada combina:
-
-- rotas públicas;
-- rotas autenticadas;
-- controle por roles;
-- segurança em nível de método;
-- autorização granular por endpoint.
+- Preferir Authorization Code + PKCE em aplicações públicas
+- Utilizar secret manager para chaves RSA
+- Persistir tokens em produção
+- Restringir CORS adequadamente
+- Externalizar segredos
+- Implementar políticas adicionais de segurança
 
 ---
 
-### 📌 Estratégia de acesso aplicada
+## 3. Implementar controle de acesso e proteção de endpoints
+
+A API passou a possuir controle de acesso baseado em autenticação e autorização utilizando Spring Security e RBAC.
+
+### Estratégia aplicada
+
+- Rotas públicas
+- Rotas autenticadas
+- Controle por roles
+- Segurança em nível de método
+- Autorização granular
+
+### Estratégia de acesso aplicada
 
 | Tipo de rota              | Acesso      |
 | ------------------------- | ----------- |
@@ -164,8 +175,6 @@ A estratégia aplicada combina:
 | Produtos (GET)            | Público     |
 | Demais endpoints          | Autenticado |
 | Endpoints administrativos | ROLE_ADMIN  |
-
----
 
 ### Segurança em nível de método
 
@@ -191,7 +200,7 @@ A estratégia aplicada combina:
 
 ---
 
-## 🔹 4. Aplicar boas práticas modernas de segurança
+## 4. Aplicar boas práticas modernas de segurança
 
 Foram implementadas estratégias utilizadas em APIs REST modernas e ambientes corporativos.
 
