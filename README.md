@@ -45,6 +45,23 @@ Além da proteção de endpoints REST, foram aplicados conceitos fundamentais de
 
 ---
 
+# 📑 Sumário
+
+- [📚 Contexto do Projeto](#-contexto-do-projeto)
+- [🎯 Objetivos do Capítulo](#-objetivos-do-capítulo)
+- [🏛️ Arquitetura Geral de Segurança](#️-arquitetura-geral-de-segurança)
+- [🛠️ Tecnologias Utilizadas](#️-tecnologias-utilizadas)
+- [📦 Dependências Adicionadas](#-dependências-adicionadas)
+- [👥 Modelo de Usuários e Perfis](#-modelo-de-usuários-e-perfis)
+- [🔐 Fluxo de Autenticação](#-fluxo-de-autenticação)
+- [🧾 Bean Validation](#-bean-validation)
+- [📂 Organização dos Packages](#-organização-dos-packages)
+- [🧪 Testes de Segurança](#-testes-de-segurança)
+- [🚀 Evolução Arquitetural do Projeto](#-evolução-arquitetural-do-projeto)
+- [🎓 Conclusão](#-conclusão)
+
+---
+
 # 📚 Contexto do Projeto
 
 Após a consolidação da arquitetura em camadas e da estratégia de testes automatizados nos capítulos anteriores, o projeto evolui para uma nova etapa focada em autenticação, autorização e validação robusta.
@@ -56,6 +73,8 @@ Neste capítulo, a API DSCatalog passa a incorporar mecanismos modernos de segur
 # 🎯 Objetivos do Capítulo
 
 Este capítulo tem como objetivo transformar a API DSCatalog em uma aplicação backend preparada para cenários reais de autenticação e segurança corporativa.
+
+Para atingir esse objetivo, foram implementados os seguintes pilares:
 
 ---
 
@@ -122,7 +141,7 @@ A autenticação da aplicação foi construída utilizando uma arquitetura basea
 - **Segredos em ambiente:** garanta que `security.client-secret` e variáveis sensíveis sejam fornecidas via variáveis de ambiente ou secret manager (evite valores padrão em código/repo).
 - **Políticas adicionais:** adicionar proteção contra força bruta, política de bloqueio de contas, rotação de chaves e logging/auditoria para operações sensíveis.
 
-## 🔹 3. Proteger endpoints da API
+## 🔹 3. Implementar controle de acesso e proteção de endpoints
 
 A API passou a possuir controle de acesso baseado em autenticação e autorização utilizando Spring Security e RBAC (Role-Based Access Control).
 
@@ -420,13 +439,20 @@ Os tokens JWT utilizados carregam informações importantes como:
 
 ```json
 {
-  "sub": "alex@gmail.com",
-  "scope": "ROLE_ADMIN ROLE_OPERATOR",
-  "iat": 1716562000,
-  "exp": 1716648400,
-  "iss": "Spring Authorization Server"
+  "sub": "myclientid",
+  "aud": "myclientid",
+  "nbf": 1779662147,
+  "iss": "http://localhost:8080",
+  "exp": 1779748547,
+  "iat": 1779662147,
+  "jti": "c86d494c-43b0-4ce4-83bf-e3f6355da3bb",
+  "authorities": [
+    "ROLE_OPERATOR"
+  ],
+  "username": "albert@gmail.com"
 }
 ```
+As claims podem variar conforme a configuração do JWT Converter utilizado na aplicação.
 
 ### 📌 Significado dos campos
 
@@ -728,67 +754,133 @@ O objetivo foi estruturar cada responsabilidade de segurança de forma isolada e
 ## 🖼️ Organização da Camada de Segurança
 
 ```text
-security
-┣ config
-┃ ┗ SecurityBeansConfig.java
+📦 com.albertsilva.dev.dscatalog
+┣ 📂 config
+┃ ┗ 📄 SpringDocOpenApiConfig.java
 ┃
-┣ oauth2
-┃ ┣ authorization
-┃ ┃ ┗ config
-┃ ┃   ┗ AuthorizationServerConfig.java
+┣ 📂 dto
+┃ ┣ 📂 category
+┃ ┃ ┣ 📂 request
+┃ ┃ ┃ ┣ 📄 CategoryCreateRequest.java
+┃ ┃ ┃ ┗ 📄 CategoryUpdateRequest.java
+┃ ┃ ┗ 📂 response
+┃ ┃ ┃ ┗ 📄 CategoryResponse.java
 ┃ ┃
-┃ ┣ grant_password
-┃ ┃ ┣ CustomPasswordAuthenticationConverter.java
-┃ ┃ ┣ CustomPasswordAuthenticationProvider.java
-┃ ┃ ┗ CustomPasswordAuthenticationToken.java
+┃ ┣ 📂 product
+┃ ┃ ┣ 📂 request
+┃ ┃ ┃ ┣ 📄 ProductCreateRequest.java
+┃ ┃ ┃ ┗ 📄 ProductUpdateRequest.java
+┃ ┃ ┗ 📂 response
+┃ ┃ ┃ ┣ 📄 ProductDetailsResponse.java
+┃ ┃ ┃ ┗ 📄 ProductResponse.java
 ┃ ┃
-┃ ┗ resource
-┃   ┗ ResourceServerConfig.java
+┃ ┗ 📂 user
+┃   ┣ 📂 request
+┃   ┃ ┣ 📄 UserCreateRequest.java
+┃   ┃ ┗ 📄 UserUpdateRequest.java
+┃   ┗ 📂 response
+┃     ┗ 📄 UserResponse.java
 ┃
-┣ userdetails
-┃ ┗ AuthenticatedUser.java
+┣ 📂 entity
+┃ ┣ 📄 Category.java
+┃ ┣ 📄 Product.java
+┃ ┣ 📄 Role.java
+┃ ┗ 📄 User.java
 ┃
-┣ service
-┃ ┣ exception
-┃ ┣ CategoryService.java
-┃ ┣ ProductService.java
-┃ ┗ UserService.java
+┣ 📂 mapper
+┃ ┣ 📂 category
+┃ ┃ ┗ 📄 CategoryMapper.java
+┃ ┣ 📂 product
+┃ ┃ ┗ 📄 ProductMapper.java
+┃ ┗ 📂 user
+┃   ┗ 📄 UserMapper.java
 ┃
-┣ validation
-┃ ┣ category
-┃ ┃ ┣ annotation
-┃ ┃ ┗ validator
-┃ ┃
-┃ ┣ product
-┃ ┃ ┣ annotation
-┃ ┃ ┗ validator
-┃ ┃
-┃ ┣ role
-┃ ┃ ┣ annotation
-┃ ┃ ┗ validator
-┃ ┃
-┃ ┗ user
-┃   ┣ annotation
-┃   ┗ validator
+┣ 📂 repository
+┃ ┣ 📄 CategoryRepository.java
+┃ ┣ 📄 ProductRepository.java
+┃ ┣ 📄 RoleRepository.java
+┃ ┗ 📄 UserRepository.java
 ┃
-┗ web
-  ┣ controller
-  ┃ ┣ CategoryController.java
-  ┃ ┣ ProductController.java
-  ┃ ┗ UserController.java
-  ┃
-  ┣ exception
-  ┃ ┣ enums
-  ┃ ┣ ErrorType.java
-  ┃ ┗ handler
-  ┃   ┗ ControllerExceptionHandler.java
-  ┃
-  ┗ response
-    ┣ FieldMessage.java
-    ┣ ProblemDetails.java
-    ┗ ValidationError.java
+┣ 📂 security
+┃ ┣ 📂 config
+┃ ┃ ┗ 📄 SecurityBeansConfig.java
+┃ ┃
+┃ ┣ 📂 oauth2
+┃ ┃ ┣ 📂 authorization
+┃ ┃ ┃ ┗ 📂 config
+┃ ┃ ┃   ┗ 📄 AuthorizationServerConfig.java
+┃ ┃ ┃
+┃ ┃ ┣ 📂 grant_password
+┃ ┃ ┃ ┣ 📄 CustomPasswordAuthenticationConverter.java
+┃ ┃ ┃ ┣ 📄 CustomPasswordAuthenticationProvider.java
+┃ ┃ ┃ ┗ 📄 CustomPasswordAuthenticationToken.java
+┃ ┃ ┃
+┃ ┃ ┗ 📂 resource
+┃ ┃   ┗ 📄 ResourceServerConfig.java
+┃ ┃
+┃ ┗ 📂 userdetails
+┃   ┗ 📄 AuthenticatedUser.java
+┃
+┣ 📂 service
+┃ ┣ 📂 exceptions
+┃ ┃ ┣ 📄 DatabaseException.java
+┃ ┃ ┗ 📄 ResourceNotFoundException.java
+┃ ┣ 📄 CategoryService.java
+┃ ┣ 📄 ProductService.java
+┃ ┗ 📄 UserService.java
+┃
+┣ 📂 validation
+┃ ┣ 📂 category
+┃ ┃ ┣ 📂 annotation
+┃ ┃ ┗ 📂 validator
+┃ ┃
+┃ ┣ 📂 product
+┃ ┃ ┣ 📂 annotation
+┃ ┃ ┗ 📂 validator
+┃ ┃
+┃ ┣ 📂 role
+┃ ┃ ┣ 📂 annotation
+┃ ┃ ┗ 📂 validator
+┃ ┃
+┃ ┗ 📂 user
+┃   ┣ 📂 annotation
+┃   ┗ 📂 validator
+┃
+┣ 📂 web
+┃ ┣ 📂 controller
+┃ ┃ ┣ 📄 CategoryController.java
+┃ ┃ ┣ 📄 ProductController.java
+┃ ┃ ┗ 📄 UserController.java
+┃ ┃
+┃ ┗ 📂 exception
+┃   ┣ 📂 enums
+┃   ┃ ┗ 📄 ErrorType.java
+┃   ┣ 📂 handler
+┃   ┃ ┗ 📄 ControllerExceptionHandler.java
+┃   ┗ 📂 response
+┃     ┣ 📄 FieldMessage.java
+┃     ┣ 📄 ProblemDetails.java
+┃     ┗ 📄 ValidationError.java
+┃
+┣ 📄 DscatalogApplication.java
+┃
+┗ 📂 resources
+  ┣ 📂 db
+  ┃ ┣ 📂 data
+  ┃ ┣ 📂 migration
+  ┃ ┗ 📂 schema
+  ┣ 📂 static
+  ┣ 📂 templates
+  ┣ 📄 application-dev.properties
+  ┣ 📄 application-prod.properties
+  ┣ 📄 application-test.properties
+  ┣ 📄 application.properties
+  ┣ 📄 ValidationMessages.properties
+  ┣ 📄 banner-dev.txt
+  ┗ 📄 import.sql
 ```
 
+---
 ## 🛡️ Estrutura da Camada de Segurança
 
 A camada de segurança foi projetada para centralizar autenticação, autorização, validação e proteção dos recursos da API, utilizando uma abordagem modular inspirada em arquiteturas enterprise modernas.
