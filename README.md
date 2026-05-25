@@ -47,21 +47,9 @@ Além da proteção de endpoints REST, foram aplicados conceitos fundamentais de
 
 # 📚 Contexto do Projeto
 
-Após a consolidação da arquitetura em camadas e da estratégia de testes automatizados nos capítulos anteriores, o projeto evolui para uma nova etapa focada em segurança, autenticação e validação robusta.
+Após a consolidação da arquitetura em camadas e da estratégia de testes automatizados nos capítulos anteriores, o projeto evolui para uma nova etapa focada em autenticação, autorização e validação robusta.
 
-Nesta fase, a aplicação passa a incorporar:
-
-- 🔐 Segurança de APIs REST
-- 🎫 Autenticação baseada em JWT
-- 👥 Controle de acesso por roles
-- 🛡️ Proteção de endpoints
-- ⚙️ OAuth2 Authorization Server
-- 🔑 OAuth2 Resource Server
-- 🧾 Bean Validation
-- 🌐 Configuração de CORS e CSRF
-- 📄 Integração segura com Swagger/OpenAPI
-- 🧪 Testes de segurança
-- 📦 Estrutura profissional de autenticação/autorização
+Neste capítulo, a API DSCatalog passa a incorporar mecanismos modernos de segurança utilizando Spring Security 6, OAuth2, JWT e Bean Validation, aproximando a aplicação de cenários reais utilizados em ambientes corporativos.
 
 ---
 
@@ -113,10 +101,8 @@ A autenticação da aplicação foi construída utilizando uma arquitetura basea
 
 - Spring Security 6
 - OAuth2 Authorization Server
-- OAuth2 Resource Server
-- JWT (JSON Web Token)
+- JWT
 - BCrypt Password Encoder
-- Controle de autenticação Stateless Authentication
 
 ### 📌 Recursos implementados
 
@@ -138,30 +124,51 @@ A autenticação da aplicação foi construída utilizando uma arquitetura basea
 
 ## 🔹 3. Proteger endpoints da API
 
-A API passou a possuir controle de acesso com autenticação e autorização baseada em perfis.
+A API passou a possuir controle de acesso baseado em autenticação e autorização utilizando Spring Security e RBAC (Role-Based Access Control).
 
-- Rotas públicas
-- Rotas autenticadas
-- Rotas restritas por perfil
-- Segurança em nível de método
-- Controle granular de autorização
+A estratégia aplicada combina:
 
-## 📌 Estratégia aplicada
+- rotas públicas;
+- rotas autenticadas;
+- controle por roles;
+- segurança em nível de método;
+- autorização granular por endpoint.
 
-| Tipo de rota               | Acesso              |
-| -------------------------- | ------------------- |
-| Swagger/OpenAPI            | Público             |
-| GET de produtos/categorias | Público             |
-| Endpoints autenticados     | Usuário autenticado |
-| Endpoints administrativos  | `ROLE_ADMIN`        |
+---
 
-### 📌 Segurança em nível de método, Anotações utilizadas
+### 📌 Estratégia de acesso aplicada
+
+| Tipo de rota              | Acesso      |
+| ------------------------- | ----------- |
+| Swagger/OpenAPI           | Público     |
+| Categorias (GET)          | Público     |
+| Produtos (GET)            | Público     |
+| Demais endpoints          | Autenticado |
+| Endpoints administrativos | ROLE_ADMIN  |
+
+---
+
+### 📌 Segurança em nível de método
 
 ```java
 @PreAuthorize("hasRole('ROLE_ADMIN')")
 
 @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_OPERATOR')")
 ```
+
+### 📌 Exemplo de configuração de autorização
+```java
+.requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINTS).permitAll()
+.requestMatchers(DOCUMENTATION_OPENAPI).permitAll()
+.anyRequest().authenticated()
+```
+
+### 📌 Fluxo de autorização da requisição
+1. Cliente envia Bearer Token
+2. Resource Server intercepta a requisição
+3. JWT é validado
+4. Roles do usuário são verificadas
+5. Endpoint é liberado ou bloqueado
 
 ---
 
@@ -171,8 +178,6 @@ Foram implementadas estratégias utilizadas em APIs REST modernas e ambientes co
 
 ### 📌 Práticas aplicadas
 
-- Stateless Authentication
-- JWT assinado
 - Controle de acesso por roles
 - Configuração de CORS
 - Desabilitação controlada de CSRF
@@ -250,7 +255,6 @@ Essa separação permite maior desacoplamento, escalabilidade e aderência ao ec
 
 - Separação entre autenticação e autorização
 - Maior modularidade
-- Segurança stateless
 - Escalabilidade horizontal
 - Melhor manutenção evolutiva
 - Estrutura próxima de ambientes enterprise reais
@@ -323,7 +327,7 @@ Essa separação permite maior desacoplamento, escalabilidade e aderência ao ec
 </dependency>
 ```
 
-### 🛡️ OAuth2 Resource Server
+## 🛡️ OAuth2 Resource Server
 
 ```xml
 <dependency>
@@ -436,26 +440,6 @@ Os tokens JWT utilizados carregam informações importantes como:
 
 ---
 
-### 🔐 Características do Token
-
-- Assinado digitalmente
-- Stateless
-- Seguro para APIs REST
-- Compatível com OAuth2
-- Validado pelo Resource Server
-
----
-
-### 📌 Benefícios do JWT
-
-- Stateless
-- Escalável
-- Seguro
-- Amplamente utilizado no mercado
-- Ideal para APIs REST
-
----
-
 ## ⚙️ Configurações da Aplicação
 
 ### 📌 Properties de Segurança
@@ -494,10 +478,10 @@ O Authorization Server é responsável por:
 
 O Resource Server é responsável por:
 
-- Validar tokens JWT
-- Controlar acesso aos endpoints
-- Aplicar regras de autorização
-- Proteger recursos da API
+- Validar assinatura e expiração do JWT
+- Converter claims em authorities do Spring Security
+- Integrar autenticação stateless ao Security Filter Chain
+- Aplicar políticas de autorização definidas no ResourceServerConfig
 
 ### 📌 Configurações aplicadas
 
@@ -510,35 +494,116 @@ O Resource Server é responsável por:
 
 ---
 
-## 🌐 Segurança de Rotas
+## 🔒 Exemplo de Requisição Autenticada
 
-### 📌 Estratégia aplicada
+### 📌 Endpoint protegido
 
-| Tipo de rota              | Acesso      |
-| ------------------------- | ----------- |
-| Swagger/OpenAPI           | Público     |
-| Categorias (GET)          | Público     |
-| Produtos (GET)            | Público     |
-| Demais endpoints          | Autenticado |
-| Endpoints administrativos | ROLE_ADMIN  |
+```http
+GET /products
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
+```
 
 ---
 
-## 🔒 Exemplo de configuração
+### 📌 Exemplo de resposta
 
-```java
-.requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINTS).permitAll()
-.requestMatchers(DOCUMENTATION_OPENAPI).permitAll()
-.anyRequest().authenticated()
+```json
+{
+    "content": [
+        {
+            "id": 1,
+            "name": "The Lord of the Rings",
+            "description": "Classico da literatura de fantasia que narra a jornada épica na Terra Média.",
+            "price": 90.5,
+            "imgUrl": "https://raw.githubusercontent.com/devsuperior/dscatalog-resources/master/backend/img/1-big.jpg",
+            "date": "2020-07-13T20:50:07.123450Z",
+            "categories": []
+        },
+        {
+            "id": 2,
+            "name": "Smart TV",
+            "description": "Smart TV com alta resolução, acesso a streaming e conectividade Wi-Fi.",
+            "price": 2190.0,
+            "imgUrl": "https://raw.githubusercontent.com/devsuperior/dscatalog-resources/master/backend/img/2-big.jpg",
+            "date": "2020-07-14T10:00:00Z",
+            "categories": []
+        }
+    ],
+    "pageable": {
+        "pageNumber": 0,
+        "pageSize": 2,
+        "sort": {
+            "empty": false,
+            "sorted": true,
+            "unsorted": false
+        },
+        "offset": 0,
+        "paged": true,
+        "unpaged": false
+    },
+    "totalElements": 25,
+    "totalPages": 13,
+    "last": false,
+    "size": 2,
+    "number": 0,
+    "sort": {
+        "empty": false,
+        "sorted": true,
+        "unsorted": false
+    },
+    "numberOfElements": 2,
+    "first": true,
+    "empty": false
+}
 ```
+
+---
+
+### 📌 Fluxo da requisição
+
+1. Cliente envia Bearer Token
+2. Resource Server intercepta requisição
+3. JWT é validado
+4. Roles do usuário são verificadas
+5. Endpoint é liberado ou negado
 
 ---
 
 ## 🧾 Bean Validation
 
-### 📌 Validações implementadas
+A aplicação utiliza Bean Validation para garantir integridade, consistência e previsibilidade dos dados recebidos pela API.
 
-### Exemplos
+A estratégia adotada combina validações declarativas, validações customizadas e integração com regras de negócio da aplicação, permitindo respostas padronizadas e maior segurança no processamento das requisições.
+
+---
+
+### 📌 Estratégia aplicada
+
+- Validações declarativas em DTOs
+- Integração com Hibernate Validator
+- Validações customizadas por domínio
+- Mensagens externalizadas
+- Integração com banco de dados
+- Tratamento global de exceções
+- Respostas padronizadas para erros de validação
+
+---
+
+### 📌 Principais validações utilizadas
+
+| Validação | Objetivo |
+|---|---|
+| `@NotBlank` | Garantir campos textuais obrigatórios |
+| `@NotNull` | Impedir valores nulos |
+| `@Size` | Restringir tamanho mínimo e máximo |
+| `@Email` | Validar formato de email |
+| `@Positive` | Garantir valores numéricos positivos |
+| `@PastOrPresent` | Validar datas válidas |
+| Custom Validators | Regras específicas da aplicação |
+
+---
+
+### 📌 Exemplos de validação
 
 ```java
 @NotBlank(message = "Campo requerido")
@@ -549,6 +614,32 @@ O Resource Server é responsável por:
 
 @Positive(message = "Valor deve ser positivo")
 ```
+
+---
+
+### 📌 Validações customizadas implementadas
+
+Além das validações padrão da especificação Bean Validation, a aplicação também implementa validações customizadas integradas às regras de negócio.
+
+### Exemplos
+
+- `@StrongPassword`
+- `@UniqueEmail`
+- `@ValidRoles`
+- `UserCreateValidator`
+
+Essas validações permitem aplicar regras mais complexas, incluindo integração com banco de dados e validações contextuais da aplicação.
+
+---
+
+### 📌 Benefícios da abordagem
+
+- Maior integridade dos dados
+- Redução de inconsistências
+- Contratos HTTP mais previsíveis
+- Melhor experiência para consumidores da API
+- Centralização das regras de validação
+- Melhor rastreabilidade de erros
 
 ---
 
@@ -654,7 +745,7 @@ security
 ┃ ┗ resource
 ┃   ┗ ResourceServerConfig.java
 ┃
-┣ routes
+┣ userdetails
 ┃ ┗ AuthenticatedUser.java
 ┃
 ┣ service
@@ -694,7 +785,7 @@ security
   ┃
   ┗ response
     ┣ FieldMessage.java
-    ┗ ProblemDetails.java
+    ┣ ProblemDetails.java
     ┗ ValidationError.java
 ```
 
@@ -782,9 +873,9 @@ Embora versões modernas do OAuth2 desencorajem esse fluxo em cenários público
 | `CustomPasswordAuthenticationProvider`  | Processa autenticação do usuário                             |
 | `CustomPasswordAuthenticationToken`     | Representa token autenticado durante o fluxo                 |
 
-### 👥 security.routes
+### 👥 security.userdetails
 
-Responsável por armazenar informações relacionadas ao usuário autenticado.
+Responsável por centralizar informações relacionadas ao usuário autenticado dentro do contexto de segurança da aplicação.
 
 ### 📌 Responsabilidades
 
@@ -941,38 +1032,13 @@ A aplicação evolui também em termos de testes automatizados de autenticação
 
 ## 🧱 Boas Práticas Aplicadas
 
-- Separação entre autenticação e autorização
-- Uso de JWT stateless
-- Configuração baseada em perfis
-- Segurança em nível de método
-- Tratamento global de exceções
-- DTOs desacoplados das entidades
-- Proteção da documentação Swagger
-- Controle de acesso centralizado
-- Password encoding seguro
-- Configuração externalizada
-
----
-
-## 🔄 Fluxo Geral de Segurança
-
-```text
-Cliente
-   ↓
-Authorization Server
-   ↓
-Geração JWT
-   ↓
-Cliente recebe token
-   ↓
-Requisição com Bearer Token
-   ↓
-Resource Server valida JWT
-   ↓
-Spring Security verifica roles
-   ↓
-Controller protegido
-```
+- JWT stateless authentication
+- Externalização de secrets
+- Segurança baseada em environment profiles
+- Princípio do menor privilégio
+- Separation of Concerns
+- Centralização de exception handling
+- DTO validation boundary
 
 ---
 
@@ -989,22 +1055,35 @@ Com este capítulo, o projeto DSCatalog deixa de representar apenas uma API CRUD
 
 ---
 
+## 🚧 Principais Desafios Encontrados
+
+Durante a implementação deste capítulo, diversos desafios técnicos relacionados à segurança e autenticação moderna foram enfrentados.
+
+### 📌 Principais desafios
+
+- Configuração do Spring Security 6
+- Estruturação do OAuth2 Authorization Server
+- Integração entre Authorization Server e Resource Server
+- Geração e assinatura de JWT
+- Implementação do fluxo Password Grant customizado
+- Controle de acesso baseado em roles
+- Configuração de CORS e CSRF
+- Segurança stateless
+- Integração do Swagger com autenticação JWT
+- Estruturação desacoplada da camada de segurança
+- Criação de validações customizadas integradas ao banco de dados
+
+---
+
 ## 🧠 Aprendizados Consolidados
 
-Durante este capítulo foram consolidados conhecimentos fundamentais sobre:
-
-- Spring Security 6
-- OAuth2
-- JWT
-- Authorization Server
-- Resource Server
-- Bean Validation
-- Segurança de APIs REST
-- Controle de acesso por roles
-- Configuração de filtros de segurança
-- CORS e CSRF
-- Method Security
-- Tratamento de exceções de validação
+- Estruturação de autenticação e autorização com Spring Security 6
+- Configuração de OAuth2 Authorization Server e Resource Server
+- Implementação de autenticação stateless com JWT
+- Aplicação de RBAC com Method Security
+- Criação de validações customizadas com Bean Validation
+- Padronização de respostas de erro com Exception Handling
+- Organização modular da camada de segurança
 
 ---
 
@@ -1022,6 +1101,67 @@ Durante este capítulo foram consolidados conhecimentos fundamentais sobre:
 
 ---
 
+## 💼 Competências Demonstradas
+
+Este capítulo consolida competências importantes relacionadas ao desenvolvimento backend moderno com Java e Spring Boot.
+
+### 🔐 Segurança e autenticação
+
+- Spring Security 6
+- OAuth2
+- JWT Authentication
+- Authorization Server
+- Resource Server
+- Role-Based Access Control (RBAC)
+- Method Security
+- Stateless Authentication
+
+---
+
+### 🧾 Validação e tratamento de erros
+
+- Bean Validation
+- Hibernate Validator
+- Validações customizadas
+- Exception Handling
+- Problem Details Pattern
+- Validação integrada ao banco de dados
+
+---
+
+### 🏛️ Arquitetura backend
+
+- Arquitetura em camadas
+- DTO Pattern
+- Separação de responsabilidades
+- Modularização da segurança
+- Organização enterprise de packages
+- API REST segura
+
+---
+
+### 🧪 Testes e qualidade
+
+- Spring Security Test
+- MockMvc
+- JUnit 5
+- Mockito
+- Testes de autorização
+- Testes de autenticação
+
+---
+
+### ⚙️ Dev Practices
+
+- Externalização de configurações
+- Configuração por profiles
+- Segurança baseada em ambiente
+- Documentação técnica avançada
+- Swagger/OpenAPI
+- Estrutura preparada para produção
+
+---
+
 ## 🎓 Conclusão
 
 Este capítulo marca uma evolução significativa na maturidade arquitetural do projeto DSCatalog.
@@ -1031,7 +1171,6 @@ Mais do que apenas proteger endpoints, a aplicação passa a incorporar conceito
 - autenticação segura;
 - autorização baseada em perfis;
 - validação robusta;
-- segurança stateless;
 - controle de acesso profissional;
 - arquitetura preparada para produção.
 
