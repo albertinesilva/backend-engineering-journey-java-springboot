@@ -82,7 +82,7 @@ Para atingir esse objetivo, foram implementados os seguintes pilares:
 
 A aplicação passou a utilizar validações declarativas para garantir integridade e previsibilidade dos dados recebidos pela API.
 
-## 📌 Principais validações aplicadas
+## Principais validações aplicadas
 
 - `@NotBlank`
 - `@NotNull`
@@ -95,7 +95,7 @@ A aplicação passou a utilizar validações declarativas para garantir integrid
 - Mensagens personalizadas
 - Tratamento global de erros
 
-### 📌 Benefícios
+### Benefícios
 
 - Integridade dos dados
 - Contratos HTTP previsíveis
@@ -123,7 +123,7 @@ A autenticação da aplicação foi construída utilizando uma arquitetura basea
 - JWT
 - BCrypt Password Encoder
 
-### 📌 Recursos implementados
+### Recursos implementados
 
 - Geração segura de tokens JWT
 - Assinatura de tokens
@@ -167,7 +167,7 @@ A estratégia aplicada combina:
 
 ---
 
-### 📌 Segurança em nível de método
+### Segurança em nível de método
 
 ```java
 @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -235,7 +235,7 @@ Essa separação permite maior desacoplamento, escalabilidade e aderência ao ec
 
 ---
 
-### 🔐 Fluxo Arquitetural da Segurança
+### 📌 Estrutura Arquitetural
 
 ```text
 ┌──────────────────────┐
@@ -266,6 +266,30 @@ Essa separação permite maior desacoplamento, escalabilidade e aderência ao ec
 │ Products | Categories      │
 │ Users | Roles              │
 └────────────────────────────┘
+```
+
+### 🔐 Fluxo de autenticação e autorização
+
+```mermaid
+sequenceDiagram
+    autonumber
+
+    participant Client
+    participant AuthorizationServer
+    participant ResourceServer
+
+    Client->>AuthorizationServer: Authentication Request
+    activate AuthorizationServer
+
+    AuthorizationServer-->>Client: JWT Access Token
+    deactivate AuthorizationServer
+
+    Client->>ResourceServer: Request + Bearer Token
+
+    activate ResourceServer
+    ResourceServer->>ResourceServer: Validate JWT Signature & Claims
+    ResourceServer-->>Client: Protected Resource Response
+    deactivate ResourceServer
 ```
 
 ---
@@ -392,7 +416,7 @@ O projeto passou a possuir um modelo de autenticação baseado em:
 
 ## 🔐 Fluxo de Autenticação
 
-### 📌 Processo de Login
+### Processo de Login
 
 1. Cliente envia credenciais
 2. Authorization Server autentica usuário
@@ -405,7 +429,7 @@ O projeto passou a possuir um modelo de autenticação baseado em:
 
 ---
 
-## 🔄 Requisição de Login
+### Requisição de Login
 
 ### Authorization
 
@@ -425,7 +449,7 @@ grant_type=password
 
 ---
 
-## 🎫 Estrutura JWT
+### Estrutura JWT
 
 Os tokens JWT utilizados carregam informações importantes como:
 
@@ -459,7 +483,7 @@ As claims podem variar conforme a configuração do JWT Converter utilizado na a
 | Campo | Descrição |
 |---|---|
 | `sub` | Usuário autenticado |
-| `scope` | Roles/permissões do usuário |
+| `authorities` | Roles/permissões do usuário |
 | `iat` | Data de emissão do token |
 | `exp` | Data de expiração |
 | `iss` | Emissor do token |
@@ -489,7 +513,7 @@ O Authorization Server é responsável por:
 - Registrar aplicações clientes
 - Gerenciar autenticação OAuth2
 
-### 📌 Responsabilidades implementadas
+### Responsabilidades implementadas
 
 - Habilitação do Authorization Server
 - Configuração de assinatura JWT
@@ -500,7 +524,7 @@ O Authorization Server é responsável por:
 
 ---
 
-## 🔐 Resource Server
+### Resource Server
 
 O Resource Server é responsável por:
 
@@ -509,7 +533,7 @@ O Resource Server é responsável por:
 - Integrar autenticação stateless ao Security Filter Chain
 - Aplicar políticas de autorização definidas no ResourceServerConfig
 
-### 📌 Configurações aplicadas
+### Configurações aplicadas
 
 - Controle de acesso por rota
 - Configuração de CORS
@@ -603,7 +627,7 @@ A estratégia adotada combina validações declarativas, validações customizad
 
 ---
 
-### 📌 Estratégia aplicada
+### Estratégia aplicada
 
 - Validações declarativas em DTOs
 - Integração com Hibernate Validator
@@ -629,7 +653,7 @@ A estratégia adotada combina validações declarativas, validações customizad
 
 ---
 
-### 📌 Exemplos de validação
+### Exemplos de validação
 
 ```java
 @NotBlank(message = "Campo requerido")
@@ -658,7 +682,7 @@ Essas validações permitem aplicar regras mais complexas, incluindo integraçã
 
 ---
 
-### 📌 Benefícios da abordagem
+### Benefícios da abordagem
 
 - Maior integridade dos dados
 - Redução de inconsistências
@@ -673,7 +697,7 @@ Essas validações permitem aplicar regras mais complexas, incluindo integraçã
 
 A aplicação possui um mecanismo centralizado para tratamento de exceções e erros de validação.
 
-### 📌 Benefícios
+### Benefícios
 
 - Padronização das respostas
 - Melhor integração frontend/backend
@@ -891,7 +915,7 @@ Cada package possui uma responsabilidade bem definida dentro do fluxo de autenti
 
 Responsável pelas configurações globais de segurança da aplicação.
 
-### 📌 Responsabilidades
+### Responsabilidades
 
 - Registro de beans de segurança
 - Password Encoder
@@ -910,7 +934,7 @@ Responsável pela configuração do `Authorization Server` da aplicação.
 
 O **Authorization Server** é encarregado da autenticação dos usuários e emissão dos tokens `JWT`.
 
-### 📌 Responsabilidades
+### Responsabilidades
 
 - Configuração do OAuth2 Authorization Server
 - Geração de JWT
@@ -924,13 +948,13 @@ O **Authorization Server** é encarregado da autenticação dos usuários e emis
 | --------------------------- | ----------------------------------------------------------------------- |
 | `AuthorizationServerConfig` | Configuração do servidor OAuth2 responsável pela emissão dos tokens JWT |
 
-### 🔑 security.oauth2.resource
+### 🔐 security.oauth2.resource
 
 Responsável pela configuração do `Resource Server`.
 
 O **Resource Server** protege os endpoints da API e valida os `tokens JWT` recebidos nas requisições.
 
-### 📌 Responsabilidades
+### Responsabilidades
 
 - Proteção de endpoints REST
 - Validação de JWT
@@ -944,13 +968,13 @@ O **Resource Server** protege os endpoints da API e valida os `tokens JWT` receb
 | ---------------------- | ----------------------------------------------------------- |
 | `ResourceServerConfig` | Configuração de segurança da API e validação dos tokens JWT |
 
-### 👤 security.oauth2.grant_password
+### 🔐 security.oauth2.grant_password
 
 Implementa o fluxo customizado de autenticação utilizando Password Grant.
 
 Embora versões modernas do OAuth2 desencorajem esse fluxo em cenários públicos, ele foi utilizado neste projeto com fins educacionais e compreensão profunda do processo de autenticação.
 
-### 📌 Responsabilidades
+### Responsabilidades
 
 - Conversão das credenciais
 - Processamento da autenticação
@@ -965,11 +989,11 @@ Embora versões modernas do OAuth2 desencorajem esse fluxo em cenários público
 | `CustomPasswordAuthenticationProvider`  | Processa autenticação do usuário                             |
 | `CustomPasswordAuthenticationToken`     | Representa token autenticado durante o fluxo                 |
 
-### 👥 security.userdetails
+### 📂 security.userdetails
 
 Responsável por centralizar informações relacionadas ao usuário autenticado dentro do contexto de segurança da aplicação.
 
-### 📌 Responsabilidades
+### Responsabilidades
 
 - Recuperar usuário autenticado
 - Centralizar contexto de autenticação
@@ -1008,7 +1032,7 @@ Cada domínio possui:
 | `annotation` | Define annotations customizadas |
 | `validator` | Implementa regras de validação |
 
-### 📌 Benefícios da abordagem
+### Benefícios da abordagem
 
 - Regras isoladas por domínio
 - Fácil manutenção
@@ -1032,11 +1056,11 @@ Responsável pelos endpoints REST da aplicação.
 | `ProductController`  | Endpoints de produtos                          |
 | `UserController`     | Endpoints relacionados a usuários/autenticação |
 
-### ⚠️ web.exception
+### 📂 web.exception
 
 Responsável pelo tratamento global de exceções da aplicação.
 
-### 📌 Objetivos
+### Objetivos
 
 - Padronizar respostas HTTP
 - Centralizar tratamento de erros
@@ -1073,7 +1097,7 @@ A organização da camada de segurança segue princípios importantes de engenha
 
 A documentação da API foi integrada com autenticação JWT.
 
-## 📌 Recursos implementados
+### Recursos implementados
 
 - Autorização via Bearer Token
 - Teste de endpoints protegidos
@@ -1111,7 +1135,7 @@ A aplicação evolui também em termos de testes automatizados de autenticação
 
 ---
 
-### 📌 Ferramentas utilizadas
+### Ferramentas utilizadas
 
 | Ferramenta           | Finalidade                |
 | -------------------- | ------------------------- |
@@ -1121,16 +1145,17 @@ A aplicação evolui também em termos de testes automatizados de autenticação
 | JUnit 5              | Estrutura de testes       |
 
 ---
-
 ## 🧱 Boas Práticas Aplicadas
 
-- JWT stateless authentication
-- Externalização de secrets
+- Stateless authentication com JWT
+- Externalização de variáveis sensíveis
 - Segurança baseada em environment profiles
-- Princípio do menor privilégio
-- Separation of Concerns
+- Principle of Least Privilege (PoLP)
+- Separation of Concerns (SoC)
 - Centralização de exception handling
 - DTO validation boundary
+- Modularização da camada de segurança
+- Controle de acesso baseado em roles
 
 ---
 
@@ -1147,7 +1172,7 @@ Com este capítulo, o projeto DSCatalog deixa de representar apenas uma API CRUD
 - Tratamento padronizado de exceções
 - Estrutura modular e desacoplada
 - Configuração orientada a ambientes
-- Arquitetura preparada para evolução e manutenção
+- Estrutura preparada para ambientes distribuídos e cenários de produção
 
 ---
 
@@ -1264,11 +1289,11 @@ Este capítulo marca uma evolução significativa na maturidade arquitetural do 
 
 Mais do que apenas proteger endpoints, a aplicação passa a incorporar conceitos fundamentais utilizados em sistemas corporativos modernos:
 
-- autenticação segura;
-- autorização baseada em perfis;
-- validação robusta;
-- controle de acesso profissional;
-- arquitetura preparada para produção.
+- autenticação baseada em JWT;
+- autorização com RBAC;
+- validação consistente de dados;
+- proteção centralizada de recursos;
+- arquitetura modular preparada para evolução.
 
 A implementação de OAuth2, JWT e Spring Security consolida competências extremamente relevantes para o desenvolvimento backend moderno com Java e Spring Boot.
 
