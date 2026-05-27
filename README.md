@@ -47,31 +47,33 @@ Além da proteção de endpoints REST, foram aplicados conceitos fundamentais de
 
 # 📑 Sumário
 
-- [📚 Contexto do Projeto](#-contexto-do-projeto)
-- [🎯 Objetivos do Capítulo](#-objetivos-do-capítulo)
-  - [1. Aplicar validação robusta com Bean Validation](#1-aplicar-validação-robusta-com-bean-validation)
-  - [2. Implementar autenticação moderna com OAuth2 e JWT](#2-implementar-autenticação-moderna-com-oauth2-e-jwt)
-  - [3. Implementar controle de acesso e proteção de endpoints](#3-implementar-controle-de-acesso-e-proteção-de-endpoints)
-  - [4. Aplicar boas práticas modernas de segurança](#4-aplicar-boas-práticas-modernas-de-segurança)
-- [🧠 Conceitos Fundamentais Trabalhados](#-conceitos-fundamentais-trabalhados)
-- [🏛️ Arquitetura Geral de Segurança](#️-arquitetura-geral-de-segurança)
-- [🛠️ Tecnologias Utilizadas](#️-tecnologias-utilizadas)
-- [📦 Dependências Adicionadas](#-dependências-adicionadas)
-- [👥 Modelo de Usuários e Perfis](#-modelo-de-usuários-e-perfis)
-- [🔐 Fluxo de Autenticação](#-fluxo-de-autenticação)
-- [⚙️ Configurações da Aplicação](#️-configurações-da-aplicação)
-- [🧾 Bean Validation](#-bean-validation)
-- [📂 Organização dos Packages](#-organização-dos-packages)
-- [📊 Integração com Swagger/OpenAPI](#-integração-com-swaggeropenapi)
-- [🧪 Testes de Segurança](#-testes-de-segurança)
-- [🧱 Boas Práticas Aplicadas](#-boas-práticas-aplicadas)
-- [🚀 Evolução Arquitetural do Projeto](#-evolução-arquitetural-do-projeto)
-- [🚧 Principais Desafios Encontrados](#-principais-desafios-encontrados)
-- [🧠 Aprendizados Consolidados](#-aprendizados-consolidados)
-- [🚧 Melhorias Futuras](#-melhorias-futuras)
-- [💼 Competências Demonstradas](#-competências-demonstradas)
-- [🎓 Conclusão](#-conclusão)
-- [📚 Referências Técnicas](#-referências-técnicas)
+> Navegação do capítulo.
+
+---
+
+| 🧩 Module                                                                     | ⚡ Description                                           |
+| ----------------------------------------------------------------------------- | ------------------------------------------------------- |
+| [📚 Contexto do Projeto](#-contexto-do-projeto)                               | Evolução arquitetural da API DSCatalog                  |
+| [🎯 Objetivos do Capítulo](#-objetivos-do-capítulo)                           | Estratégias e metas técnicas implementadas              |
+| [🧠 Conceitos Fundamentais Trabalhados](#-conceitos-fundamentais-trabalhados) | Authentication, Authorization, JWT, OAuth2 e Validation |
+| [🏛️ Arquitetura Geral de Segurança](#️-arquitetura-geral-de-segurança)       | Authorization Server + Resource Server                  |
+| [🛠️ Tecnologias Utilizadas](#️-tecnologias-utilizadas)                       | Stack de segurança, validação e testes                  |
+| [📦 Dependências Adicionadas](#-dependências-adicionadas)                     | Ecossistema Spring Security e OAuth2                    |
+| [👥 Modelo de Usuários e Perfis](#-modelo-de-usuários-e-perfis)               | RBAC, roles e permissões                                |
+| [🔐 Fluxo de Autenticação](#-fluxo-de-autenticação)                           | Processo de autenticação JWT                            |
+| [⚙️ Configurações da Aplicação](#️-configurações-da-aplicação)                | Security properties e variáveis externas                |
+| [🧾 Bean Validation](#-bean-validation)                                       | Validações declarativas e customizadas                  |
+| [📂 Organização dos Packages](#-organização-dos-packages)                     | Estrutura modular da aplicação                          |
+| [📊 Integração com Swagger/OpenAPI](#-integração-com-swaggeropenapi)          | Documentação autenticada via JWT                        |
+| [🧪 Testes de Segurança](#-testes-de-segurança)                               | Testes de autenticação e autorização                    |
+| [🧱 Boas Práticas Aplicadas](#-boas-práticas-aplicadas)                       | Estratégias modernas de segurança backend               |
+| [🚀 Evolução Arquitetural do Projeto](#-evolução-arquitetural-do-projeto)     | Crescimento técnico da arquitetura                      |
+| [🚧 Principais Desafios Encontrados](#-principais-desafios-encontrados)       | Complexidades enfrentadas durante implementação         |
+| [🧠 Aprendizados Consolidados](#-aprendizados-consolidados)                   | Conhecimentos adquiridos neste capítulo                 |
+| [🚧 Melhorias Futuras](#-melhorias-futuras)                                   | Próximas evoluções da arquitetura                       |
+| [💼 Competências Demonstradas](#-competências-demonstradas)                   | Skills backend e segurança aplicadas                    |
+| [🎓 Conclusão](#-conclusão)                                                   | Consolidação técnica do capítulo                        |
+| [📚 Referências Técnicas](#-referências-técnicas)                             | Materiais e documentações utilizadas                    |
 
 ---
 
@@ -1347,9 +1349,7 @@ A implementação de OAuth2, JWT e Spring Security consolida competências extre
 Desenvolvedor Backend Java | Spring Boot
 
 ---
-
 ## 📎 Contato
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-%230077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/albert-backend-java-spring-boot/)
-
 [![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:albertinesilva.17@gmail.com)
