@@ -123,7 +123,7 @@ public class ProductController {
    * @param productCreateRequest dados do produto
    * @return produto criado
    */
-  @Operation(summary = "Cria um novo produto", description = "Recurso para criar um produto no sistema.", responses = {
+  @Operation(summary = "Cria um novo produto", description = "Exige Bearer Token. Acesso restrito a ADMIN ou OPERATOR.", security = @SecurityRequirement(name = "security"), responses = {
       @ApiResponse(responseCode = "201", description = "Produto criado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.class))),
       @ApiResponse(responseCode = "400", description = "Dados inválidos ou campos obrigatórios ausentes", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class))),
       @ApiResponse(responseCode = "409", description = "Produto já existente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))
@@ -202,7 +202,7 @@ public class ProductController {
    * @param id identificador do produto
    * @return detalhes do produto
    */
-  @Operation(summary = "Busca um produto pelo ID", description = "Recurso para obter detalhes completos de um produto pelo seu ID.", responses = {
+  @Operation(summary = "Busca um produto pelo ID", description = "Exige Bearer Token. Acesso restrito a ADMIN ou OPERATOR.", security = @SecurityRequirement(name = "security"), responses = {
       @ApiResponse(responseCode = "200", description = "Produto encontrado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductDetailsResponse.class))),
       @ApiResponse(responseCode = "404", description = "Produto não encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))
   })
@@ -246,7 +246,7 @@ public class ProductController {
    * @param productUpdateRequest dados para atualização
    * @return produto atualizado
    */
-  @Operation(summary = "Atualiza um produto", description = "Atualização parcial dos dados do produto, incluindo categorias.", responses = {
+  @Operation(summary = "Atualiza um produto", description = "Exige Bearer Token. Acesso restrito a ADMIN ou OPERATOR.", security = @SecurityRequirement(name = "security"), responses = {
       @ApiResponse(responseCode = "200", description = "Produto atualizado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.class))),
       @ApiResponse(responseCode = "404", description = "Produto não encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class))),
       @ApiResponse(responseCode = "400", description = "Dados inválidos", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))
@@ -283,7 +283,7 @@ public class ProductController {
    * @param id identificador do produto
    * @return resposta sem conteúdo
    */
-  @Operation(summary = "Ativa um produto", description = "Altera o status do produto para ativo.", responses = {
+  @Operation(summary = "Ativa um produto", description = "Exige Bearer Token. Acesso restrito a ADMIN ou OPERATOR.", security = @SecurityRequirement(name = "security"), responses = {
       @ApiResponse(responseCode = "204", description = "Produto ativado com sucesso"),
       @ApiResponse(responseCode = "404", description = "Produto não encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))
   })
@@ -319,7 +319,7 @@ public class ProductController {
    * @param id identificador do produto
    * @return resposta sem conteúdo
    */
-  @Operation(summary = "Desativa um produto", description = "Altera o status do produto para inativo.", responses = {
+  @Operation(summary = "Desativa um produto", description = "Exige Bearer Token. Acesso restrito a ADMIN ou OPERATOR.", security = @SecurityRequirement(name = "security"), responses = {
       @ApiResponse(responseCode = "204", description = "Produto desativado com sucesso"),
       @ApiResponse(responseCode = "404", description = "Produto não encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))
   })
@@ -351,7 +351,7 @@ public class ProductController {
    * @param id identificador do produto
    * @return resposta sem conteúdo
    */
-  @Operation(summary = "Remove um produto", description = "Exclui um produto pelo ID. Retorna erro se houver integridade referencial.", responses = {
+  @Operation(summary = "Remove um produto", description = "Exige Bearer Token. Acesso restrito a ADMIN ou OPERATOR.", security = @SecurityRequirement(name = "security"), responses = {
       @ApiResponse(responseCode = "204", description = "Produto deletado com sucesso"),
       @ApiResponse(responseCode = "404", description = "Produto não encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class))),
       @ApiResponse(responseCode = "400", description = "Violação de integridade - existem entidades relacionadas", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))

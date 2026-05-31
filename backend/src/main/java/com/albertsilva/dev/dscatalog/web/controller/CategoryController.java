@@ -104,7 +104,7 @@ public class CategoryController {
    * @param categoryCreateRequest dados da categoria
    * @return categoria criada com status 201 e header Location
    */
-  @Operation(summary = "Cria uma nova categoria", description = "Recurso para criar uma nova categoria no sistema.", responses = {
+  @Operation(summary = "Cria uma nova categoria", description = "Exige Bearer Token. Acesso restrito a ADMIN ou OPERATOR.", security = @SecurityRequirement(name = "security"), responses = {
       @ApiResponse(responseCode = "201", description = "Categoria criada com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CategoryResponse.class))),
       @ApiResponse(responseCode = "400", description = "Dados inválidos ou campos obrigatórios ausentes", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class))),
       @ApiResponse(responseCode = "409", description = "Categoria já existente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))
@@ -172,7 +172,7 @@ public class CategoryController {
    * @param id identificador da categoria
    * @return categoria encontrada
    */
-  @Operation(summary = "Busca uma categoria pelo ID", description = "Recurso para obter detalhes de uma categoria específica pelo seu ID.", responses = {
+  @Operation(summary = "Busca uma categoria pelo ID", description = "Exige Bearer Token. Acesso restrito a ADMIN ou OPERATOR.", security = @SecurityRequirement(name = "security"), responses = {
       @ApiResponse(responseCode = "200", description = "Categoria encontrada com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CategoryResponse.class))),
       @ApiResponse(responseCode = "404", description = "Categoria não encontrada", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))
   })
@@ -205,7 +205,7 @@ public class CategoryController {
    * @param categoryUpdateRequest dados para atualização
    * @return categoria atualizada
    */
-  @Operation(summary = "Atualiza uma categoria", description = "Atualização parcial dos dados da categoria. Apenas campos enviados são alterados.", responses = {
+  @Operation(summary = "Atualiza uma categoria", description = "Exige Bearer Token. Acesso restrito a ADMIN ou OPERATOR.", security = @SecurityRequirement(name = "security"), responses = {
       @ApiResponse(responseCode = "200", description = "Categoria atualizada com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CategoryResponse.class))),
       @ApiResponse(responseCode = "404", description = "Categoria não encontrada", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class))),
       @ApiResponse(responseCode = "400", description = "Dados inválidos", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))
@@ -234,7 +234,7 @@ public class CategoryController {
    * @param id identificador da categoria
    * @return resposta sem conteúdo
    */
-  @Operation(summary = "Ativa uma categoria", description = "Altera o status da categoria para ativo.", responses = {
+  @Operation(summary = "Ativa uma categoria", description = "Exige Bearer Token. Acesso restrito a ADMIN ou OPERATOR.", security = @SecurityRequirement(name = "security"), responses = {
       @ApiResponse(responseCode = "204", description = "Categoria ativada com sucesso"),
       @ApiResponse(responseCode = "404", description = "Categoria não encontrada", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))
   })
@@ -261,7 +261,7 @@ public class CategoryController {
    * @param id identificador da categoria
    * @return resposta sem conteúdo
    */
-  @Operation(summary = "Desativa uma categoria", description = "Altera o status da categoria para inativo.", responses = {
+  @Operation(summary = "Desativa uma categoria", description = "Exige Bearer Token. Acesso restrito a ADMIN ou OPERATOR.", security = @SecurityRequirement(name = "security"), responses = {
       @ApiResponse(responseCode = "204", description = "Categoria desativada com sucesso"),
       @ApiResponse(responseCode = "404", description = "Categoria não encontrada", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))
   })
@@ -295,7 +295,7 @@ public class CategoryController {
    * @param id identificador da categoria
    * @return resposta sem conteúdo
    */
-  @Operation(summary = "Remove uma categoria", description = "Exclui uma categoria pelo ID. Retorna erro se houver integridade referencial.", responses = {
+  @Operation(summary = "Remove uma categoria", description = "Exige Bearer Token. Acesso restrito a ADMIN ou OPERATOR.", security = @SecurityRequirement(name = "security"), responses = {
       @ApiResponse(responseCode = "204", description = "Categoria deletada com sucesso"),
       @ApiResponse(responseCode = "404", description = "Categoria não encontrada", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class))),
       @ApiResponse(responseCode = "409", description = "Violação de integridade - existem entidades relacionadas", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))

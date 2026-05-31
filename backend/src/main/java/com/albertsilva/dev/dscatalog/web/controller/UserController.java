@@ -97,7 +97,7 @@ public class UserController {
    * @param userCreateRequest dados do usuário
    * @return usuário criado com status 201 e header Location
    */
-  @Operation(summary = "Cria um novo usuário", description = "Recurso para criar um novo usuário no sistema.", responses = {
+  @Operation(summary = "Cria um novo usuário", description = "Requisição exige um Bearer Token. Acesso restrito a ADMIN logado", security = @SecurityRequirement(name = "security"), responses = {
       @ApiResponse(responseCode = "201", description = "Usuário criado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.class))),
       @ApiResponse(responseCode = "400", description = "Dados inválidos ou campos obrigatórios ausentes", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class))),
       @ApiResponse(responseCode = "409", description = "Usuário já existente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))
@@ -165,7 +165,7 @@ public class UserController {
    * @param id identificador do usuário
    * @return usuário encontrado
    */
-  @Operation(summary = "Busca um usuário pelo ID", description = "Recurso para obter detalhes de um usuário específico pelo seu ID.", responses = {
+  @Operation(summary = "Busca um usuário pelo ID", description = "Exige Bearer Token. Acesso restrito a ADMIN ou OPERATOR (apenas para seu próprio ID).", security = @SecurityRequirement(name = "security"), responses = {
       @ApiResponse(responseCode = "200", description = "Usuário encontrado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDetailsResponse.class))),
       @ApiResponse(responseCode = "404", description = "Usuário não encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))
   })
@@ -199,16 +199,15 @@ public class UserController {
    * @param userUpdateRequest dados para atualização
    * @return usuário atualizado
    */
-  @Operation(summary = "Atualiza um usuário", description = "Atualização completa dos dados do usuário.", responses = {
+  @Operation(summary = "Atualiza um usuário", description = "Exige Bearer Token. Acesso restrito a ADMIN ou OPERATOR (apenas para seu próprio ID).", security = @SecurityRequirement(name = "security"), responses = {
       @ApiResponse(responseCode = "200", description = "Usuário atualizado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.class))),
       @ApiResponse(responseCode = "404", description = "Usuário não encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class))),
       @ApiResponse(responseCode = "400", description = "Dados inválidos", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))
   })
   @PutMapping(value = "/{id}")
-  @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR') AND (#id == authentication.principal.id)")
+  @PreAuthorize("hasRole('ADMIN') OR (hasRole('OPERATOR') AND #id == authentication.principal.id)")
   public ResponseEntity<UserResponse> update(@PathVariable Long id,
       @Valid @RequestBody UserUpdateRequest userUpdateRequest) {
-
     logger.debug("Atualizando usuário id={} com dados: {}", id, userUpdateRequest);
 
     UserResponse response = userService.update(id, userUpdateRequest);
@@ -228,7 +227,7 @@ public class UserController {
    * @param id identificador do usuário
    * @return resposta sem conteúdo
    */
-  @Operation(summary = "Ativa um usuário", description = "Altera o status do usuário para ativo.", responses = {
+  @Operation(summary = "Ativa um usuário", description = "Exige Bearer Token. Acesso restrito a ADMIN.", security = @SecurityRequirement(name = "security"), responses = {
       @ApiResponse(responseCode = "204", description = "Usuário ativado com sucesso"),
       @ApiResponse(responseCode = "404", description = "Usuário não encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))
   })
@@ -255,7 +254,7 @@ public class UserController {
    * @param id identificador do usuário
    * @return resposta sem conteúdo
    */
-  @Operation(summary = "Desativa um usuário", description = "Altera o status do usuário para inativo.", responses = {
+  @Operation(summary = "Desativa um usuário", description = "Exige Bearer Token. Acesso restrito a ADMIN.", security = @SecurityRequirement(name = "security"), responses = {
       @ApiResponse(responseCode = "204", description = "Usuário desativado com sucesso"),
       @ApiResponse(responseCode = "404", description = "Usuário não encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))
   })
@@ -289,7 +288,7 @@ public class UserController {
    * @param id identificador do usuário
    * @return resposta sem conteúdo
    */
-  @Operation(summary = "Remove um usuário", description = "Exclui um usuário pelo ID. Retorna erro se houver integridade referencial.", responses = {
+  @Operation(summary = "Remove um usuário", description = "Exige Bearer Token. Acesso restrito a ADMIN.", security = @SecurityRequirement(name = "security"), responses = {
       @ApiResponse(responseCode = "204", description = "Usuário deletado com sucesso"),
       @ApiResponse(responseCode = "404", description = "Usuário não encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class))),
       @ApiResponse(responseCode = "409", description = "Violação de integridade - existem entidades relacionadas", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))
