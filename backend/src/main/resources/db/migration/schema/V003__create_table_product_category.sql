@@ -1,5 +1,5 @@
-CREATE TABLE tb_product_category (
-    product_id BIGINT NOT NULL,
-    category_id BIGINT NOT NULL,
-    PRIMARY KEY (product_id, category_id)
+create table tb_product_category (
+    category_id bigint not null,
+    product_id bigint not null,
+    primary key (category_id, product_id)
 );

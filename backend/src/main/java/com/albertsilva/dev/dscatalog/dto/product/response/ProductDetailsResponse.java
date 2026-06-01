@@ -40,14 +40,16 @@ import com.albertsilva.dev.dscatalog.dto.category.response.CategoryResponse;
  * @param price       preço
  * @param imgUrl      imagem
  * @param date        data
+ * @param active      status do produto
  * @param categories  categorias completas
  */
 public record ProductDetailsResponse(
-                Long id,
-                String name,
-                String description,
-                Double price,
-                String imgUrl,
-                Instant date,
-                List<CategoryResponse> categories) {
+    Long id,
+    String name,
+    String description,
+    Double price,
+    String imgUrl,
+    Instant date,
+    boolean active,
+    List<CategoryResponse> categories) {
 }

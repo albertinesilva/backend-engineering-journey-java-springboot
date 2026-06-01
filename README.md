@@ -1,916 +1,1345 @@
-# 🧩 Capítulo 01 — Operações CRUD com Spring Boot
+<h1 align="center">🛡️Capítulo 03 — Validation & Security with Spring Boot | OAuth2 | JWT</h1>
 
-<p style="text-align: justify;">
-<em>Este capítulo apresenta a construção de uma API backend utilizando <code>Java</code> e <code>Spring Boot</code>, com foco na implementação de operações de <code>CRUD</code> (Create, Read, Update e Delete) para gerenciamento de produtos e categorias.</em>
+<p align="justify">
+<em>
+This chapter focuses on building secure, production-ready backend APIs using <strong>Spring Security</strong>, <strong>OAuth2</strong>, <strong>JWT</strong>, and <strong>Bean Validation</strong>, applying modern authentication, authorization, and data validation strategies aligned with real-world enterprise applications.
+</em>
+</p>
+
+<p align="center">
+
+<img src="https://img.shields.io/badge/Java-17+-orange?style=for-the-badge&logo=openjdk&logoColor=white" />
+
+<img src="https://img.shields.io/badge/Spring_Boot-3.x-6DB33F?style=for-the-badge&logo=springboot&logoColor=white" />
+
+<img src="https://img.shields.io/badge/Security-Spring_Security-red?style=for-the-badge" />
+
+<img src="https://img.shields.io/badge/Auth-OAuth2%20%7C%20JWT-critical?style=for-the-badge" />
+
+<img src="https://img.shields.io/badge/Validation-Bean_Validation-blue?style=for-the-badge" />
+
+<img src="https://img.shields.io/badge/Authorization-RBAC-success?style=for-the-badge" />
+
+<img src="https://img.shields.io/badge/API_Security-Resource_Server-informational?style=for-the-badge" />
+
+<img src="https://img.shields.io/badge/Architecture-Authorization_Server-black?style=for-the-badge" />
+
+<img src="https://img.shields.io/badge/Testing-Spring_Security_Test-yellow?style=for-the-badge" />
+
+<img src="https://img.shields.io/badge/Documentation-Swagger%20%7C%20OpenAPI-85EA2D?style=for-the-badge" />
+
+<img src="https://img.shields.io/github/license/Albertinesilva/backend-engineering-journey-java-springboot?style=for-the-badge" />
+
+<img src="https://img.shields.io/github/last-commit/Albertinesilva/backend-engineering-journey-java-springboot?style=for-the-badge" />
+
+</p>
+
+<p align="justify">
+<em>
+Neste capítulo, o projeto <strong>DSCatalog</strong> evolui para um cenário muito mais próximo de aplicações corporativas reais, incorporando mecanismos robustos de autenticação, autorização e validação de dados utilizando o ecossistema moderno do <strong>Spring Security 6</strong>.
+
+Além da proteção de endpoints REST, foram aplicados conceitos fundamentais de segurança backend moderna, incluindo <strong>OAuth2 Authorization Server</strong>, <strong>Resource Server</strong>, autenticação stateless com <strong>JWT</strong>, controle de acesso baseado em roles, tratamento global de erros de validação e integração segura com Swagger/OpenAPI.
+</em>
+
 </p>
 
 ---
 
-O projeto **DSCatalog** foi estruturado seguindo boas práticas de desenvolvimento, adotando **arquitetura em camadas** e separação clara de responsabilidades. Além das operações básicas de CRUD, foram implementados conceitos importantes como:
+# 📑 Sumário
 
-- Uso de **DTOs** para comunicação entre camadas, utilizando **records do Java** para estruturas imutáveis de dados;
-- Mapeamento com classes dedicadas (**Mapper**);
-- Tratamento de **exceções customizadas**;
-- Padronização das respostas da API;
-- Mecanismo global de tratamento de erros, garantindo robustez e rastreabilidade.
-
-A aplicação contempla a organização em camadas: `controller`, `service` e `repository`, além da camada de DTOs que garante maior controle sobre os dados expostos.
+> Navegação do capítulo.
 
 ---
 
-## 🎯 Objetivos do Capítulo
-
-1. **Implementação de operações CRUD**
-   - Criação, leitura, atualização e exclusão de **produtos** e **categorias** via API REST.
-   - Endpoints bem estruturados: `GET`, `POST`, `PATCH`, `DELETE` com status HTTP adequado.
-   - Serviços que fazem mapeamento **DTO ↔ entidade** usando **records** e **Mapper**.
-   - Validação e tratamento de exceções (`ResourceNotFoundException`, `DatabaseException`) com logs detalhados.
-
-2. **Paginação e filtragem**
-   - Uso de `Pageable` para controlar páginas, tamanho e ordenação.
-   - Consultas case-insensitive e parciais (`findByNameContainingIgnoreCase`) para melhorar experiência do usuário.
-
-3. **Mapeamento de relacionamentos**
-   - Recebendo apenas **IDs de categorias** no request e resolvendo vínculos no backend.
-   - Atualização parcial de categorias, sem sobrescrever dados não enviados.
-
-4. **Ambientes de desenvolvimento e testes**
-
-| Aspecto             | Ambiente de Testes (`test`)                       | Ambiente de Desenvolvimento (`dev`)                 |
-| ------------------- | ------------------------------------------------- | --------------------------------------------------- |
-| Banco de dados      | H2 in-memory (efêmero)                            | PostgreSQL local (persistente)                      |
-| Console             | `/h2-console` para inspeção manual                | Console SQL exibindo queries                        |
-| Migrations (Flyway) | Desativado                                        | Ativo (`db/migration/schema` + `db/migration/data`) |
-| Logs                | DEBUG/TRACE, JSON, `logs/test/dscatalog-test.log` | DEBUG/TRACE, JSON, `logs/dev/dscatalog-dev.log`     |
-| Banner              | N/A                                               | Banner personalizado (`banner-dev.txt`)             |
-| Objetivo            | Testes isolados, rápidos e reproduzíveis          | Desenvolvimento realista com dados persistentes     |
-| Observações         | Banco efêmero, reset a cada execução              | Controle de schema, rastreabilidade completa        |
-
-> [!IMPORTANT]
-> Essa separação garante testes **isolados, rápidos e reproduzíveis**, enquanto o desenvolvimento ocorre em ambiente realista com dados persistentes e migrations. Reflete boas práticas de engenharia de software.
-
-5. **Documentação da API e código**
-   - **OpenAPI/Swagger** para documentação interativa;
-   - **JavaDocs** explicando responsabilidades de controllers e services.
-
-6. **Boas práticas de código e arquitetura**
-   - Estrutura clara em **Controller, Service e Repository**;
-   - Uso de **logger** para monitoramento e rastreabilidade;
-   - Tratamento transacional adequado (`@Transactional`) para consistência de dados.
+| 🧩 Module                                                                     | ⚡ Description                                           |
+| ----------------------------------------------------------------------------- | ------------------------------------------------------- |
+| [📚 Contexto do Projeto](#-contexto-do-projeto)                               | Evolução arquitetural da API DSCatalog                  |
+| [🎯 Objetivos do Capítulo](#-objetivos-do-capítulo)                           | Estratégias e metas técnicas implementadas              |
+| [🧠 Conceitos Fundamentais Trabalhados](#-conceitos-fundamentais-trabalhados) | Authentication, Authorization, JWT, OAuth2 e Validation |
+| [🏛️ Arquitetura Geral de Segurança](#️-arquitetura-geral-de-segurança)       | Authorization Server + Resource Server                  |
+| [🛠️ Tecnologias Utilizadas](#️-tecnologias-utilizadas)                       | Stack de segurança, validação e testes                  |
+| [📦 Dependências Adicionadas](#-dependências-adicionadas)                     | Ecossistema Spring Security e OAuth2                    |
+| [👥 Modelo de Usuários e Perfis](#-modelo-de-usuários-e-perfis)               | RBAC, roles e permissões                                |
+| [🔐 Fluxo de Autenticação](#-fluxo-de-autenticação)                           | Processo de autenticação JWT                            |
+| [⚙️ Configurações da Aplicação](#️-configurações-da-aplicação)                | Security properties e variáveis externas                |
+| [🧾 Bean Validation](#-bean-validation)                                       | Validações declarativas e customizadas                  |
+| [📂 Organização dos Packages](#-organização-dos-packages)                     | Estrutura modular da aplicação                          |
+| [📊 Integração com Swagger/OpenAPI](#-integração-com-swaggeropenapi)          | Documentação autenticada via JWT                        |
+| [🧪 Testes de Segurança](#-testes-de-segurança)                               | Testes de autenticação e autorização                    |
+| [🧱 Boas Práticas Aplicadas](#-boas-práticas-aplicadas)                       | Estratégias modernas de segurança backend               |
+| [🚀 Evolução Arquitetural do Projeto](#-evolução-arquitetural-do-projeto)     | Crescimento técnico da arquitetura                      |
+| [🚧 Principais Desafios Encontrados](#-principais-desafios-encontrados)       | Complexidades enfrentadas durante implementação         |
+| [🧠 Aprendizados Consolidados](#-aprendizados-consolidados)                   | Conhecimentos adquiridos neste capítulo                 |
+| [🚧 Melhorias Futuras](#-melhorias-futuras)                                   | Próximas evoluções da arquitetura                       |
+| [💼 Competências Demonstradas](#-competências-demonstradas)                   | Skills backend e segurança aplicadas                    |
+| [🎓 Conclusão](#-conclusão)                                                   | Consolidação técnica do capítulo                        |
+| [📚 Referências Técnicas](#-referências-técnicas)                             | Materiais e documentações utilizadas                    |
 
 ---
 
-## 📦 Estrutura do Projeto `DSCatalog`
+# 📚 Contexto do Projeto
 
-📦 `com.albertsilva.dev.dscatalog`  
-┣ 📂 `config`  
-┃ ┗ 📄 `SpringDocOpenApiConfig.java`  
-┣ 📂 `category`  
-┃ ┣ 📂 `mapper`  
-┃ ┃ ┗ 📄 `CategoryMapper.java`  
-┃ ┣ 📂 `request`  
-┃ ┃ ┣ 📄 `CategoryCreateRequest.java`  
-┃ ┃ ┗ 📄 `CategoryUpdateRequest.java`  
-┃ ┗ 📂 `response`  
-┃ ┗ 📄 `CategoryResponse.java`  
-┣ 📂 `product`  
-┃ ┣ 📂 `mapper`  
-┃ ┃ ┗ 📄 `ProductMapper.java`  
-┃ ┣ 📂 `request`  
-┃ ┃ ┣ 📄 `ProductCreateRequest.java`  
-┃ ┃ ┗ 📄 `ProductUpdateRequest.java`  
-┃ ┗ 📂 `response`  
-┃ ┣ 📄 `ProductDetailsResponse.java`  
-┃ ┗ 📄 `ProductResponse.java`  
-┣ 📂 `entities`  
-┃ ┣ 📄 `Category.java`  
-┃ ┗ 📄 `Product.java`  
-┣ 📂 `repositories`  
-┃ ┣ 📄 `CategoryRepository.java`  
-┃ ┗ 📄 `ProductRepository.java`  
-┣ 📂 `services`  
-┃ ┣ 📂 `exceptions`  
-┃ ┃ ┣ 📄 `DatabaseException.java`  
-┃ ┃ ┗ 📄 `ResourceNotFoundException.java`  
-┃ ┣ 📄 `CategoryService.java`  
-┃ ┗ 📄 `ProductService.java`  
-┣ 📂 `web`  
-┃ ┣ 📂 `controllers`  
-┃ ┃ ┣ 📄 `CategoryController.java`  
-┃ ┃ ┗ 📄 `ProductController.java`  
-┃ ┗ 📂 `exceptions`  
-┃ ┃ ┣ 📂 `enums`  
-┃ ┃ ┃ ┗ 📄 `ErrorType.java`  
-┃ ┃ ┗ 📂 `advice`  
-┃ ┃ ┃ ┣ 📄 `ControllerExceptionHandler.java`  
-┃ ┃ ┃ ┗ 📄 `ProblemDetails.java`  
-┣ 📄 `DscatalogApplication.java`  
-┣ 📂 `resources`  
-┃ ┣ 📂 `db`  
-┃ ┃ ┣ 📂 `migration`  
-┃ ┃ ┗ 📂 `data / schema`  
-┃ ┣ 📂 `static`  
-┃ ┣ 📂 `templates`  
-┃ ┣ 📄 `application-dev.properties`  
-┃ ┣ 📄 `application-test.properties`  
-┃ ┣ 📄 `application.properties`  
-┃ ┗ 📄 `import.sql`
+Após a consolidação da arquitetura em camadas e da estratégia de testes automatizados nos capítulos anteriores, o projeto evolui para uma nova etapa focada em autenticação, autorização e validação robusta.
+
+Neste capítulo, a API DSCatalog evolui para suportar aplicações robustas, incorporando mecanismos modernos de segurança utilizando Spring Security 6, OAuth2, JWT e Bean Validation, aproximando a aplicação de cenários reais utilizados em ambientes corporativos.
 
 ---
 
-## 🧱 Arquitetura em Camadas
+# 🎯 Objetivos do Capítulo
 
-A aplicação **DSCatalog** segue a arquitetura tradicional **Controller → Service → Repository**, organizada em camadas bem definidas para garantir **manutenção mais fácil, testabilidade e escalabilidade**.
+Este capítulo tem como objetivo transformar a API DSCatalog em uma aplicação backend preparada para APIs escaláveis, autenticação moderna e sistemas seguros.
 
-<img src="https://raw.githubusercontent.com/Albertinesilva/devsuperior-java-springboot-bootcamp/chapter-01-crud/docs/assets/imgs/padrao-camadas.png" width="100%">
+Para atingir esse objetivo, foram implementados os seguintes pilares:
 
-## Padrão de Camadas
+---
 
-- Consiste em organizar os componentes do sistema em **partes denominadas camadas**.
-- Cada camada possui **responsabilidade específica**.
-- Componentes de uma camada só podem depender de **componentes da mesma camada** ou da camada **mais abaixo**.
+## 1. Aplicar validação robusta com Bean Validation
 
-## Descrição das Camadas e Responsabilidades
+A aplicação passou a utilizar validações declarativas para garantir integridade e previsibilidade dos dados recebidos pela API.
 
-### Controller
+### Principais validações aplicadas
 
-- Responde interações do usuário (no caso de API REST, as requisições HTTP).
-- Recebe os dados do front-end, encaminha para o service e retorna respostas padronizadas.
+- `@NotBlank`
+- `@NotNull`
+- `@Size`
+- `@Email`
+- `@Positive`
+- `@PastOrPresent`
+- Validações customizadas
+- Integração com banco de dados
+- Mensagens personalizadas
+- Tratamento global de erros
 
-### Service
+### Benefícios
 
-- Realiza operações de negócio, cada método deve ter **significado relacionado ao negócio**.
-- Pode executar várias operações dentro de uma transação.  
-  _Exemplo:_ `registrarPedido` → verificar estoque, salvar pedido, baixar estoque, enviar email.
-- Manipula DTOs, valida regras de negócio e interage com o repository.
+- Integridade dos dados
+- Contratos HTTP previsíveis
+- Redução de inconsistências
+- Segurança contra entradas inválidas
+- Melhor experiência para consumidores da API
 
-### Repository
+### ⚠️ Observações e recomendações — Validação
 
-- Executa operações **individuais** de acesso ao banco de dados.
-- Responsável pela persistência via **Spring Data JPA**.
+- Centralizar mensagens em `ValidationMessages.properties`
+- Remover mensagens hardcoded
+- Padronizar chaves de validação
+- Preparar estrutura para i18n
+- Adicionar testes para validadores customizados
 
-### DTOs (Data Transfer Objects)
+---
 
-- Objetos **simples**, usados apenas para transferência de dados.
-- Não são gerenciados por ORM / banco de dados.
-- Podem conter outros DTOs **aninhados**, mas **nunca devem conter entities**.
-- Usos comuns:
-  - Projeção de dados
-  - Segurança (não expor dados sensíveis)
-  - Economia de tráfego
-  - Flexibilidade: diferentes representações dos dados
-    - Combobox: `{ id: number, nome: string }`
-    - Relatório detalhado: `{ id, nome, salario, email, telefones[] }`
+## 2. Implementar autenticação moderna com OAuth2 e JWT
 
-### Mapper
+A autenticação da aplicação foi construída utilizando:
 
-- Converte entre **entities** do banco e **DTOs**, mantendo separação de responsabilidades.
+- Spring Security 6
+- OAuth2 Authorization Server
+- JWT
+- BCrypt Password Encoder
 
-### Exception Handler Global
+### Recursos implementados
 
-- Captura exceções em toda a aplicação e retorna respostas padronizadas em **JSON**, com mensagens claras e rastreabilidade.
+- Geração segura de tokens JWT
+- Assinatura de tokens
+- Expiração configurável
+- Login via OAuth2 Password Flow
+- Registro de aplicações clientes
+- Controle de acesso baseado em roles
 
-## Por que usar DTOs?
+### ⚠️ Observações e recomendações — Segurança
 
-- Separação clara de responsabilidades:
-  - **Service e Repository:** foco em transações e monitoramento ORM
-  - **Controller:** tráfego simples de dados
-- Segurança, economia de tráfego e flexibilidade na API.
-- Facilita diferentes representações de dados para front-end e relatórios.
+- Preferir Authorization Code + PKCE em aplicações públicas
+- Utilizar secret manager para chaves RSA
+- Persistir tokens em produção
+- Restringir CORS adequadamente
+- Externalizar segredos
+- Implementar políticas adicionais de segurança
 
-> [!IMPORTANT]  
-> Essa separação garante **código limpo, testável e escalável**, permitindo que a aplicação evolua sem impactar outras camadas, além de tornar a leitura do código mais intuitiva para recrutadores e profissionais que avaliam a arquitetura do sistema.
+---
+
+## 3. Implementar controle de acesso e proteção de endpoints
+
+A API passou a possuir controle de acesso baseado em autenticação e autorização utilizando Spring Security e RBAC.
+
+### Estratégia aplicada
+
+- Rotas públicas
+- Rotas autenticadas
+- Controle por roles
+- Segurança em nível de método
+- Autorização granular
+
+### Estratégia de acesso aplicada
+
+| Tipo de rota              | Acesso      |
+| ------------------------- | ----------- |
+| Swagger/OpenAPI           | Público     |
+| Categorias (GET)          | Público     |
+| Produtos (GET)            | Público     |
+| Demais endpoints          | Autenticado |
+| Endpoints administrativos | ROLE_ADMIN  |
+
+### Segurança em nível de método
+
+```java
+@PreAuthorize("hasRole('ROLE_ADMIN')")
+
+@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_OPERATOR')")
+```
+
+### 📌 Exemplo de configuração de autorização
+
+```java
+.requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINTS).permitAll()
+.requestMatchers(DOCUMENTATION_OPENAPI).permitAll()
+.anyRequest().authenticated()
+```
+
+### 📌 Fluxo de autorização da requisição
+
+1. Cliente envia Bearer Token
+2. Resource Server intercepta a requisição
+3. JWT é validado
+4. Roles do usuário são verificadas
+5. Endpoint é liberado ou bloqueado
+
+---
+
+## 4. Aplicar boas práticas modernas de segurança
+
+Foram implementadas estratégias utilizadas em APIs REST modernas e ambientes corporativos.
+
+### 📌 Práticas aplicadas
+
+- Controle de acesso por roles
+- Configuração de CORS
+- Desabilitação controlada de CSRF
+- Separação entre Authorization Server e Resource Server
+- Configuração por perfis (`dev`, `test`, `prod`)
+- Proteção da documentação Swagger
+- Externalização de variáveis sensíveis
+
+---
+
+# 🧠 Conceitos Fundamentais Trabalhados
+
+| Conceito             | Objetivo                                 |
+| -------------------- | ---------------------------------------- |
+| Authentication       | Verificar identidade do usuário          |
+| Authorization        | Verificar permissões do usuário          |
+| OAuth2               | Protocolo de autorização                 |
+| JWT                  | Token seguro para autenticação stateless |
+| Bean Validation      | Validação declarativa de dados           |
+| Method Security      | Proteção em nível de métodos             |
+| Resource Server      | Proteção dos recursos da API             |
+| Authorization Server | Emissão e gerenciamento de tokens        |
+
+---
+
+## 🏛️ Arquitetura Geral de Segurança
+
+A estratégia de segurança da aplicação foi construída utilizando uma arquitetura baseada em separação clara entre autenticação, autorização e proteção de recursos, seguindo padrões modernos utilizados em APIs escaláveis e arquiteturas desacopladas.
+
+A aplicação foi dividida em dois componentes principais:
+
+- **Authorization Server**
+- **Resource Server**
+
+Essa separação permite maior desacoplamento, escalabilidade e aderência ao ecossistema OAuth2 moderno.
+
+---
+
+### 📌 Estrutura Arquitetural
+
+```text
+┌──────────────────────┐
+│      Client App      │
+│  Frontend / Postman  │
+└──────────┬───────────┘
+           │
+           │ Login Request
+           ▼
+┌────────────────────────────┐
+│   Authorization Server     │
+│ OAuth2 + Spring Security   │
+│ JWT Generation             │
+└──────────┬─────────────────┘
+           │
+           │ JWT Token
+           ▼
+┌────────────────────────────┐
+│      Resource Server       │
+│ JWT Validation             │
+│ Route Protection           │
+│ Method Security            │
+└──────────┬─────────────────┘
+           │
+           ▼
+┌────────────────────────────┐
+│     Protected Endpoints    │
+│ Products | Categories      │
+│ Users | Roles              │
+└────────────────────────────┘
+```
+
+### 🔐 Fluxo de autenticação e autorização
+
+```mermaid
+sequenceDiagram
+    autonumber
+
+    participant Client
+    participant AuthorizationServer
+    participant ResourceServer
+
+    Client->>AuthorizationServer: Authentication Request
+    activate AuthorizationServer
+
+    AuthorizationServer-->>Client: JWT Access Token
+    deactivate AuthorizationServer
+
+    Client->>ResourceServer: Request + Bearer Token
+
+    activate ResourceServer
+    ResourceServer->>ResourceServer: Validate JWT Signature & Claims
+    ResourceServer-->>Client: Protected Resource Response
+    deactivate ResourceServer
+```
+
+---
+
+### 📌 Benefícios da Arquitetura
+
+- Separação entre autenticação e autorização
+- Maior modularidade
+- Suporte a ambientes distribuídos
+- Melhor manutenção evolutiva
+- Estrutura preparada para arquiteturas desacopladas
 
 ---
 
 ## 🛠️ Tecnologias Utilizadas
 
-O projeto **DSCatalog** foi desenvolvido utilizando um conjunto moderno de tecnologias voltadas para construção de APIs REST robustas, escaláveis e bem estruturadas.
+## 🔐 Segurança
 
-### 📌 Stack Principal
-
-| Categoria    | Tecnologia             | Função                                                           |
-| ------------ | ---------------------- | ---------------------------------------------------------------- |
-| Linguagem    | Java 17                | Desenvolvimento backend moderno com recursos atuais da linguagem |
-| Framework    | Spring Boot 3.5.13     | Estrutura principal da aplicação e gerenciamento de dependências |
-| API REST     | Spring Web             | Criação de endpoints HTTP (RESTful APIs)                         |
-| Persistência | Spring Data JPA        | Abstração para acesso a dados e integração com ORM               |
-| ORM          | Hibernate              | Mapeamento objeto-relacional (Entity ↔ Tabela)                   |
-| Validação    | Spring Boot Validation | Validação de dados de entrada (Bean Validation)                  |
+| Tecnologia                  | Função                                     |
+| --------------------------- | ------------------------------------------ |
+| Spring Security             | Framework principal de segurança           |
+| OAuth2 Authorization Server | Emissão de tokens JWT                      |
+| OAuth2 Resource Server      | Validação de tokens e proteção de recursos |
+| JWT                         | Autenticação stateless baseada em token    |
+| BCryptPasswordEncoder       | Criptografia segura de senhas              |
 
 ---
 
-### 🗄️ Banco de Dados
+## 🧾 Validação
 
-| Categoria       | Tecnologia  | Função                                                    |
-| --------------- | ----------- | --------------------------------------------------------- |
-| Banco Principal | PostgreSQL  | Banco relacional utilizado no ambiente de desenvolvimento |
-| Banco de Testes | H2 Database | Banco em memória para testes rápidos e isolados           |
-| Console DB      | H2 Console  | Interface web para inspeção de dados em ambiente de teste |
-
----
-
-### 🔄 Migração e Versionamento de Banco
-
-| Tecnologia | Função                                                              |
-| ---------- | ------------------------------------------------------------------- |
-| Flyway     | Controle de versão do banco de dados (migrations de schema e dados) |
+| Tecnologia          | Função                                         |
+| ------------------- | ---------------------------------------------- |
+| Bean Validation     | Validação declarativa                          |
+| Hibernate Validator | Implementação da especificação Bean Validation |
+| Jakarta Validation  | API padrão de validação                        |
 
 ---
 
-### 📄 Documentação da API
+## 📄 Documentação
 
-| Tecnologia                     | Função                                                                          |
-| ------------------------------ | ------------------------------------------------------------------------------- |
-| SpringDoc OpenAPI (Swagger UI) | Geração automática de documentação interativa da API REST                       |
-| JavaDocs                       | Documentação técnica do código, descrevendo responsabilidades, métodos e fluxos |
-
-> [!TIP]
-> A API conta com documentação automatizada via **Swagger/OpenAPI**, além de **JavaDocs** bem definidos nos controllers e services, facilitando o entendimento da lógica de negócio e manutenção do código.
+| Tecnologia        | Função                      |
+| ----------------- | --------------------------- |
+| SpringDoc OpenAPI | Documentação automática     |
+| Swagger UI        | Interface interativa da API |
 
 ---
 
-### 🧪 Testes
+## 🧪 Testes
 
-| Tecnologia               | Função                           |
-| ------------------------ | -------------------------------- |
-| Spring Boot Starter Test | Testes unitários e de integração |
-
----
-
-### ⚙️ Ferramentas de Desenvolvimento
-
-| Ferramenta           | Função                                                   |
-| -------------------- | -------------------------------------------------------- |
-| Spring Boot DevTools | Hot reload e aumento de produtividade no desenvolvimento |
-| IntelliJ IDEA        | IDE principal para desenvolvimento backend               |
-| VS Code              | Editor auxiliar                                          |
-| Postman              | Teste de endpoints e simulação de requisições HTTP       |
-| pgAdmin              | Administração e gerenciamento do banco PostgreSQL        |
+| Tecnologia           | Função                             |
+| -------------------- | ---------------------------------- |
+| Spring Security Test | Testes de autenticação/autorização |
+| MockMvc              | Testes de endpoints protegidos     |
+| JUnit 5              | Testes automatizados               |
+| Mockito              | Mocking de dependências            |
 
 ---
 
-### 📦 Build e Gerenciamento
+# 📦 Dependências Adicionadas
 
-| Tecnologia     | Função                                           |
-| -------------- | ------------------------------------------------ |
-| Maven          | Gerenciamento de dependências e build do projeto |
-| Maven Compiler | Compilação com suporte ao Java 17                |
-| Maven Javadoc  | Geração de documentação técnica do código        |
+## 🔐 Spring Security
 
----
-
-### 📊 Observabilidade e Logs
-
-| Tecnologia       | Função                                        |
-| ---------------- | --------------------------------------------- |
-| Logback (Spring) | Gerenciamento de logs da aplicação            |
-| SLF4J            | Abstração de logging                          |
-| JSON Logging     | Logs estruturados para melhor rastreabilidade |
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+```
 
 ---
 
-> [!IMPORTANT]
-> A escolha dessas tecnologias segue padrões amplamente adotados no mercado, garantindo **produtividade, manutenibilidade e escalabilidade**, além de alinhar o projeto com práticas profissionais utilizadas em aplicações corporativas.
+## 🎫 OAuth2 Authorization Server
+
+```xml
+<dependency>
+    <groupId>org.springframework.security</groupId>
+    <artifactId>spring-security-oauth2-authorization-server</artifactId>
+</dependency>
+```
+
+## 🛡️ OAuth2 Resource Server
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+</dependency>
+```
 
 ---
 
-## 🚀 API REST — Endpoints
+## 🧪 Spring Security Test
 
-A API do **DSCatalog** expõe endpoints REST seguindo boas práticas de design, utilizando JSON como formato padrão de comunicação.
-
----
-
-### 📦 Categorias (`/api/v1/categories`)
-
-| Método | Endpoint             | Descrição                           |
-| ------ | -------------------- | ----------------------------------- |
-| POST   | `/categories`        | Cria uma nova categoria             |
-| GET    | `/categories`        | Lista categorias (paginado)         |
-| GET    | `/categories/{id}`   | Busca categoria por ID              |
-| GET    | `/categories/search` | Busca categorias por nome           |
-| PATCH  | `/categories/{id}`   | Atualiza parcialmente uma categoria |
-| DELETE | `/categories/{id}`   | Remove uma categoria                |
+```xml
+<dependency>
+    <groupId>org.springframework.security</groupId>
+    <artifactId>spring-security-test</artifactId>
+    <scope>test</scope>
+</dependency>
+```
 
 ---
 
-## 📌 Endpoints — Categorias
+## 👥 Modelo de Usuários e Perfis
 
-Base URL: `/api/v1/categories`
+O projeto passou a possuir um modelo de autenticação baseado em:
 
-Esta seção documenta todos os endpoints relacionados ao recurso **Categoria**, incluindo exemplos de requisição e resposta.
+- Usuários
+- Perfis (roles)
+- Relacionamentos entre usuários e permissões
+
+## 📌 Perfis utilizados
+
+| Perfil        | Responsabilidade         |
+| ------------- | ------------------------ |
+| ROLE_ADMIN    | Controle total da API    |
+| ROLE_OPERATOR | Operações intermediárias |
 
 ---
 
-### 📥 Criar Categoria
+## 🖼️ Modelagem de Usuários e Perfis
 
-**POST** `/api/v1/categories`
+<img src="https://raw.githubusercontent.com/Albertinesilva/backend-engineering-journey-java-springboot/chapter-03-validation-security/docs/assets/imgs/modelo-conceitual.png" width="80%">
 
-Cria uma nova categoria no sistema.
+## 🔐 Fluxo de Autenticação
 
-#### 🔸 Request Body
+### Processo de Login
+
+1. Cliente envia credenciais
+2. Authorization Server autentica usuário
+3. Token JWT é gerado
+4. Cliente recebe token
+5. Requisições utilizam Bearer Token
+6. Resource Server valida JWT
+7. Spring Security verifica permissões
+8. API libera ou bloqueia acesso
+
+---
+
+### Requisição de Login
+
+### Authorization
+
+```text
+Type: Basic Auth
+Username: client-id
+Password: client-secret
+```
+
+### Body (x-www-form-urlencoded)
+
+```text
+username=alex@gmail.com
+password=123456
+grant_type=password
+```
+
+---
+
+### Estrutura JWT
+
+Os tokens JWT utilizados carregam informações importantes como:
+
+- Usuário autenticado
+- Authorities/Roles
+- Tempo de expiração
+- Issuer
+- Audience
+
+### 📄 Exemplo de Payload JWT
 
 ```json
 {
-  "name": "Eletrônicos",
-  "description": "Produtos eletrônicos em geral",
-  "active": true
+  "sub": "myclientid",
+  "aud": "myclientid",
+  "nbf": 1779662147,
+  "iss": "http://localhost:8080",
+  "exp": 1779748547,
+  "iat": 1779662147,
+  "jti": "c86d494c-43b0-4ce4-83bf-e3f6355da3bb",
+  "authorities": ["ROLE_OPERATOR"],
+  "username": "albert@gmail.com"
 }
 ```
 
-> 💡 O campo active é opcional. Caso não seja informado, será definido como false.
+As claims podem variar conforme a configuração do JWT Converter utilizado na aplicação.
 
-### 🔸 Response (201 Created)
+### 📌 Significado dos campos
 
-```json
-{
-  "id": 1,
-  "name": "Eletrônicos",
-  "description": "Produtos eletrônicos em geral",
-  "active": true
-}
-```
+| Campo         | Descrição                   |
+| ------------- | --------------------------- |
+| `sub`         | Usuário autenticado         |
+| `authorities` | Roles/permissões do usuário |
+| `iat`         | Data de emissão do token    |
+| `exp`         | Data de expiração           |
+| `iss`         | Emissor do token            |
 
-### 🔸 Headers
+---
 
-```
-Location: /api/v1/categories/1
+## ⚙️ Configurações da Aplicação
+
+### 📌 Properties de Segurança
+
+```properties
+security.client-id=${CLIENT_ID:myclientid}
+security.client-secret=${CLIENT_SECRET:myclientsecret}
+security.jwt.duration=${JWT_DURATION:86400}
+cors.origins=${CORS_ORIGINS:http://localhost:3000,http://localhost:5173}
 ```
 
 ---
 
-### 📄 Listar Categorias (Paginado)
+## 🛡️ Authorization Server
 
-**GET** `/api/v1/categories`
+O Authorization Server é responsável por:
 
-Retorna uma lista paginada de categorias.
+- Autenticar usuários
+- Gerar tokens JWT
+- Assinar tokens
+- Registrar aplicações clientes
+- Gerenciar autenticação OAuth2
 
-> ⚠️ **Observação**  
-> Este padrão de parametrização de paginação foi definido explicitamente na API com o objetivo de padronizar a comunicação com o front-end. Apesar disso, o **Spring Data** já fornece suporte nativo à paginação e ordenação por meio do `Pageable`, tornando essa configuração manual opcional. A abordagem adotada aqui prioriza clareza no contrato da API e previsibilidade para o consumo no front-end.
+### Responsabilidades implementadas
 
-#### 🔸 Query Params
+- Habilitação do Authorization Server
+- Configuração de assinatura JWT
+- Configuração de Password Encoder
+- Registro de client OAuth2
+- Configuração de token JWT
+- Definição de duração do token
 
-| Parâmetro    | Tipo   | Default | Descrição               |
-| ------------ | ------ | ------- | ----------------------- |
-| page         | int    | 0       | Número da página        |
-| linesPerPage | int    | 12      | Quantidade de registros |
-| orderBy      | string | name    | Campo de ordenação      |
-| direction    | string | ASC     | Direção (ASC ou DESC)   |
+---
 
-#### 🔸 Exemplo
+### Resource Server
+
+O Resource Server é responsável por:
+
+- Validar assinatura e expiração do JWT
+- Converter claims em authorities do Spring Security
+- Integrar autenticação stateless ao Security Filter Chain
+- Aplicar políticas de autorização definidas no ResourceServerConfig
+
+### Configurações aplicadas
+
+- Controle de acesso por rota
+- Configuração de CORS
+- Configuração de CSRF
+- Validação JWT
+- Liberação do Swagger/OpenAPI
+- Liberação do H2 Console em ambiente de teste
+
+---
+
+## 🔒 Exemplo de Requisição Autenticada
+
+### 📌 Endpoint protegido
 
 ```http
-GET /api/v1/categories?page=0&linesPerPage=10&orderBy=name&direction=ASC
+GET /products
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
 ```
 
-### 🔸 Response (200 OK)
+---
+
+### 📌 Exemplo de resposta
 
 ```json
 {
   "content": [
     {
       "id": 1,
-      "name": "Eletrônicos",
-      "description": "Produtos eletrônicos",
-      "active": true
-    }
-  ],
-  "totalElements": 1,
-  "totalPages": 1,
-  "size": 10,
-  "number": 0
-}
-```
-
-> 🛡️ Segurança (em desenvolvimento)  
-> Este endpoint será protegido com autenticação e controle de acesso (ROLE ADMIN) em versões futuras da API.
-
----
-
-### 🔍 Buscar Categoria por ID
-
-**GET** `/api/v1/categories/{id}`
-
-Retorna os dados de uma categoria específica.
-
-### 🔸 Response (200 OK)
-
-```json
-{
-  "id": 1,
-  "name": "Eletrônicos",
-  "description": "Produtos eletrônicos",
-  "active": true
-}
-```
-
-### 🔸 Erros possíveis
-
-```json
-{
-  "timestamp": "2026-04-09T18:42:25.491392800Z",
-  "status": 404,
-  "error": "Resource not found",
-  "message": "Entity not found id: 100",
-  "path": "/api/v1/categories/100"
-}
-```
-
----
-
-### 🔎 Buscar Categorias por Nome
-
-**GET** `/api/v1/categories/search`
-
-Busca categorias por nome (case insensitive e parcial).
-
-### 🔸 Query Params
-
-| Parâmetro | Tipo   | Descrição      |
-| --------- | ------ | -------------- |
-| name      | string | Termo de busca |
-
-### 🔸 Exemplo
-
-```http
-GET /api/v1/categories/search?name=eletrônicos
-```
-
-### 🔸 Response (200 OK)
-
-```json
-{
-  "content": [
+      "name": "The Lord of the Rings",
+      "description": "Classico da literatura de fantasia que narra a jornada épica na Terra Média.",
+      "price": 90.5,
+      "imgUrl": "https://raw.githubusercontent.com/devsuperior/dscatalog-resources/master/backend/img/1-big.jpg",
+      "date": "2020-07-13T20:50:07.123450Z",
+      "categories": []
+    },
     {
-      "id": 1,
-      "name": "Eletrônicos",
-      "description": "Produtos eletrônicos",
-      "active": true
-    }
-  ]
-}
-```
-
----
-
-### ✏️ Atualizar Categoria (Parcial)
-
-**PATCH** `/api/v1/categories/{id}`
-
-Atualiza parcialmente os dados de uma categoria.
-
-### 🔸 Request Body
-
-```json
-{
-  "name": "Eletrônicos Atualizado",
-  "active": false
-}
-```
-
-> 💡 Apenas campos enviados são atualizados
-> 💡 Campos null são ignorados
-
-### 🔸 Response (200 OK)
-
-```json
-{
-  "id": 1,
-  "name": "Eletrônicos Atualizado",
-  "description": "Produtos eletrônicos",
-  "active": false
-}
-```
-
----
-
-### ❌ Remover Categoria
-
-**DELETE** `/api/v1/categories/{id}`
-
-Remove uma categoria do sistema.
-
-### 🔸 Response
-
-- 204 No Content
-
-### 🔸 Erros possíveis
-
-- 404 Not Found
-- 409 Conflict (violação de integridade)
-
-### ⚠️ Padrão de Erro
-
-- Todos os erros seguem um padrão unificado:
-
-```json
-{
-  "timestamp": "2026-04-09T18:50:14.708743400Z",
-  "status": 404,
-  "error": "Resource not found",
-  "message": "Entity not found id: 100",
-  "path": "/api/v1/categories/100"
-}
-```
-
-```json
-{
-  "timestamp": "2026-04-09T18:50:44.722862600Z",
-  "status": 409,
-  "error": "Database error",
-  "message": "Cannot delete resource because it has related entities",
-  "path": "/api/v1/categories/1"
-}
-```
-
-> [!IMPORTANT]
-> A API segue boas práticas REST, utilizando corretamente os métodos HTTP (POST, GET, PATCH, DELETE), códigos de status e padronização de respostas, garantindo previsibilidade e facilidade de integração.
-
----
-
-### 📦 Produtos (`/api/v1/products`)
-
-| Método | Endpoint         | Descrição                        |
-| ------ | ---------------- | -------------------------------- |
-| POST   | `/products`      | Cria um novo produto             |
-| GET    | `/products`      | Lista produtos (paginado)        |
-| GET    | `/products/{id}` | Busca produto por ID (detalhado) |
-| PATCH  | `/products/{id}` | Atualiza parcialmente um produto |
-| DELETE | `/products/{id}` | Remove um produto                |
-
----
-
-## 📌 Endpoints — Produtos
-
-Base URL: `/api/v1/products`
-
-Esta seção documenta todos os endpoints relacionados ao recurso **Produto**, incluindo exemplos de requisição e resposta.
-
----
-
-### 📥 Criar Produto
-
-**POST** `/api/v1/products`
-
-Cria um novo produto no sistema.
-
-#### 🔸 Request Body
-
-```json
-{
-  "name": "Notebook Gamer",
-  "description": "Notebook de alta performance",
-  "price": 4500.0,
-  "imgUrl": "https://image.com/notebook.png",
-  "date": "2025-01-01T10:00:00Z",
-  "active": true,
-  "categoryIds": [1, 2]
-}
-```
-
-> 💡 As categorias devem ser enviadas apenas como IDs (categoryIds)
-> 💡 O backend é responsável por resolver o relacionamento com categorias
-
-### 🔸 Response (201 Created)
-
-```json
-{
-  "id": 1,
-  "name": "Notebook Gamer",
-  "description": "Notebook de alta performance",
-  "price": 4500.0,
-  "imgUrl": "https://image.com/notebook.png",
-  "date": "2025-01-01T10:00:00Z",
-  "categories": []
-}
-```
-
-### 🔸 Headers
-
-```http
-Location: /api/v1/products/1
-```
-
----
-
-### 📄 Listar Produtos (Paginado)
-
-**GET** `/api/v1/products`
-
-Retorna uma lista paginada de produtos.
-
-> ⚠️ **Observação**  
-> Neste endpoint foi adotado o padrão nativo de paginação do **Spring Data**, utilizando os parâmetros `page`, `size` e `sort`. Diferentemente do endpoint de categorias, essa abordagem demonstra a forma padrão recomendada pelo framework, evidenciando como a paginação pode ser implementada de maneira mais direta com o uso de `Pageable`.
-
-### 🔸 Query Params
-
-| Parâmetro | Tipo   | Descrição                |
-| --------- | ------ | ------------------------ |
-| page      | int    | Número da página         |
-| size      | int    | Quantidade de registros  |
-| sort      | string | Ordenação (ex: name,asc) |
-
-### 🔸 Exemplo
-
-```http
-GET /api/v1/products?page=0&size=10&sort=name,asc
-```
-
-### 🔸 Response (200 OK)
-
-```json
-{
-  "content": [
-    {
-      "id": 1,
-      "name": "Notebook Gamer",
-      "description": "Notebook de alta performance",
-      "price": 4500.0,
-      "imgUrl": "https://image.com/notebook.png",
-      "date": "2025-01-01T10:00:00Z",
+      "id": 2,
+      "name": "Smart TV",
+      "description": "Smart TV com alta resolução, acesso a streaming e conectividade Wi-Fi.",
+      "price": 2190.0,
+      "imgUrl": "https://raw.githubusercontent.com/devsuperior/dscatalog-resources/master/backend/img/2-big.jpg",
+      "date": "2020-07-14T10:00:00Z",
       "categories": []
     }
   ],
-  "totalElements": 1,
-  "totalPages": 1,
-  "size": 10,
-  "number": 0
+  "pageable": {
+    "pageNumber": 0,
+    "pageSize": 2,
+    "sort": {
+      "empty": false,
+      "sorted": true,
+      "unsorted": false
+    },
+    "offset": 0,
+    "paged": true,
+    "unpaged": false
+  },
+  "totalElements": 25,
+  "totalPages": 13,
+  "last": false,
+  "size": 2,
+  "number": 0,
+  "sort": {
+    "empty": false,
+    "sorted": true,
+    "unsorted": false
+  },
+  "numberOfElements": 2,
+  "first": true,
+  "empty": false
 }
 ```
 
-> 🛡️ Segurança (em desenvolvimento)  
-> Este endpoint será protegido com autenticação e controle de acesso (ROLE ADMIN) em versões futuras da API.
+---
+
+### 📌 Fluxo da requisição
+
+1. Cliente envia Bearer Token
+2. Resource Server intercepta requisição
+3. JWT é validado
+4. Roles do usuário são verificadas
+5. Endpoint é liberado ou negado
 
 ---
 
-### 🔍 Buscar Produto por ID
+## 🧾 Bean Validation
 
-**GET** `/api/v1/products/{id}`
+A aplicação utiliza Bean Validation para garantir integridade, consistência e previsibilidade dos dados recebidos pela API.
 
-Retorna os detalhes completos de um produto, incluindo suas categorias.
+A estratégia adotada combina validações declarativas, validações customizadas e integração com regras de negócio da aplicação, permitindo respostas padronizadas e maior segurança no processamento das requisições.
 
-### 🔸 Response (200 OK)
+---
+
+### Estratégia aplicada
+
+- Validações declarativas em DTOs
+- Integração com Hibernate Validator
+- Validações customizadas por domínio
+- Mensagens externalizadas
+- Integração com banco de dados
+- Tratamento global de exceções
+- Respostas padronizadas para erros de validação
+
+---
+
+### 📌 Principais validações utilizadas
+
+| Validação         | Objetivo                              |
+| ----------------- | ------------------------------------- |
+| `@NotBlank`       | Garantir campos textuais obrigatórios |
+| `@NotNull`        | Impedir valores nulos                 |
+| `@Size`           | Restringir tamanho mínimo e máximo    |
+| `@Email`          | Validar formato de email              |
+| `@Positive`       | Garantir valores numéricos positivos  |
+| `@PastOrPresent`  | Validar datas válidas                 |
+| Custom Validators | Regras específicas da aplicação       |
+
+---
+
+### Exemplos de validação
+
+```java
+@NotBlank(message = "Campo requerido")
+
+@Email(message = "Email inválido")
+
+@Size(min = 3, max = 80)
+
+@Positive(message = "Valor deve ser positivo")
+```
+
+---
+
+### 📌 Validações customizadas implementadas
+
+Além das validações padrão da especificação Bean Validation, a aplicação também implementa validações customizadas integradas às regras de negócio.
+
+### Exemplos
+
+- `@StrongPassword`
+- `@UniqueEmail`
+- `@ValidRoles`
+- `UserCreateValidator`
+
+Essas validações permitem aplicar regras mais complexas, incluindo integração com banco de dados e validações contextuais da aplicação.
+
+---
+
+### Benefícios da abordagem
+
+- Maior integridade dos dados
+- Redução de inconsistências
+- Contratos HTTP mais previsíveis
+- Melhor experiência para consumidores da API
+- Centralização das regras de validação
+- Melhor rastreabilidade de erros
+
+---
+
+## 🔄 Tratamento Global de Validações
+
+A aplicação possui um mecanismo centralizado para tratamento de exceções e erros de validação.
+
+### Benefícios
+
+- Padronização das respostas
+- Melhor integração frontend/backend
+- Clareza de erros
+- Rastreabilidade
+- Melhor experiência de consumo da API
+
+---
+
+### 📄 Exemplo de resposta de validação
 
 ```json
 {
-  "id": 1,
-  "name": "Notebook Gamer",
-  "description": "Notebook de alta performance",
-  "price": 4500.0,
-  "imgUrl": "https://image.com/notebook.png",
-  "date": "2025-01-01T10:00:00Z",
-  "categories": [
+  "timestamp": "2026-05-24T19:40:35.468801500Z",
+  "status": 422,
+  "error": "Validation Error",
+  "message": "One or more fields are invalid",
+  "path": "/api/v1/users",
+  "fieldErrors": [
     {
-      "id": 1,
-      "name": "Eletrônicos",
-      "description": "Produtos eletrônicos",
-      "active": true
+      "fieldName": "firstName",
+      "message": "Primeiro nome deve ter entre 2 e 80 caracteres"
+    },
+    {
+      "fieldName": "password",
+      "message": "Senha contém padrões muito comuns e inseguros"
+    },
+    {
+      "fieldName": "firstName",
+      "message": "Primeiro nome é obrigatório"
+    },
+    {
+      "fieldName": "password",
+      "message": "Senha deve possuir ao menos 10 caracteres"
+    },
+    {
+      "fieldName": "password",
+      "message": "Senha deve conter ao menos uma letra minúscula"
+    },
+    {
+      "fieldName": "email",
+      "message": "Email já existente"
+    },
+    {
+      "fieldName": "roleIds",
+      "message": "Usuário deve possuir ao menos uma role"
+    },
+    {
+      "fieldName": "lastName",
+      "message": "Sobrenome deve ter entre 2 e 80 caracteres"
+    },
+    {
+      "fieldName": "lastName",
+      "message": "Sobrenome é obrigatório"
+    },
+    {
+      "fieldName": "password",
+      "message": "Senha deve conter ao menos uma letra maiúscula"
+    },
+    {
+      "fieldName": "password",
+      "message": "Senha deve conter ao menos um caractere especial"
     }
   ]
 }
 ```
 
-### 🔸 Erros possíveis
+---
 
-```json
-{
-  "timestamp": "2026-04-09T18:42:25.491392800Z",
-  "status": 404,
-  "error": "Resource not found",
-  "message": "Entity not found id: 100",
-  "path": "/api/v1/products/100"
-}
+## 📂 Organização dos Packages
+
+A estrutura da camada de segurança foi organizada seguindo princípios de separação de responsabilidades, modularidade e baixo acoplamento, permitindo maior clareza arquitetural, facilidade de manutenção e escalabilidade evolutiva.
+
+O objetivo foi estruturar cada responsabilidade de segurança de forma isolada e coesa, aproximando a aplicação de arquiteturas desacopladas utilizadas em projetos modernos com Spring Security.
+
+---
+
+## 🖼️ Organização da Camada de Segurança
+
+```text
+📦 com.albertsilva.dev.dscatalog
+┣ 📂 config
+┃ ┗ 📄 SpringDocOpenApiConfig.java
+┃
+┣ 📂 dto
+┃ ┣ 📂 category
+┃ ┃ ┣ 📂 request
+┃ ┃ ┃ ┣ 📄 CategoryCreateRequest.java
+┃ ┃ ┃ ┗ 📄 CategoryUpdateRequest.java
+┃ ┃ ┗ 📂 response
+┃ ┃ ┃ ┗ 📄 CategoryResponse.java
+┃ ┃
+┃ ┣ 📂 product
+┃ ┃ ┣ 📂 request
+┃ ┃ ┃ ┣ 📄 ProductCreateRequest.java
+┃ ┃ ┃ ┗ 📄 ProductUpdateRequest.java
+┃ ┃ ┗ 📂 response
+┃ ┃ ┃ ┣ 📄 ProductDetailsResponse.java
+┃ ┃ ┃ ┗ 📄 ProductResponse.java
+┃ ┃
+┃ ┗ 📂 user
+┃   ┣ 📂 request
+┃   ┃ ┣ 📄 UserCreateRequest.java
+┃   ┃ ┗ 📄 UserUpdateRequest.java
+┃   ┗ 📂 response
+┃     ┗ 📄 UserResponse.java
+┃
+┣ 📂 entity
+┃ ┣ 📄 Category.java
+┃ ┣ 📄 Product.java
+┃ ┣ 📄 Role.java
+┃ ┗ 📄 User.java
+┃
+┣ 📂 mapper
+┃ ┣ 📂 category
+┃ ┃ ┗ 📄 CategoryMapper.java
+┃ ┣ 📂 product
+┃ ┃ ┗ 📄 ProductMapper.java
+┃ ┗ 📂 user
+┃   ┗ 📄 UserMapper.java
+┃
+┣ 📂 repository
+┃ ┣ 📄 CategoryRepository.java
+┃ ┣ 📄 ProductRepository.java
+┃ ┣ 📄 RoleRepository.java
+┃ ┗ 📄 UserRepository.java
+┃
+┣ 📂 security
+┃ ┣ 📂 config
+┃ ┃ ┗ 📄 SecurityBeansConfig.java
+┃ ┃
+┃ ┣ 📂 oauth2
+┃ ┃ ┣ 📂 authorization
+┃ ┃ ┃ ┗ 📂 config
+┃ ┃ ┃   ┗ 📄 AuthorizationServerConfig.java
+┃ ┃ ┃
+┃ ┃ ┣ 📂 grant_password
+┃ ┃ ┃ ┣ 📄 CustomPasswordAuthenticationConverter.java
+┃ ┃ ┃ ┣ 📄 CustomPasswordAuthenticationProvider.java
+┃ ┃ ┃ ┗ 📄 CustomPasswordAuthenticationToken.java
+┃ ┃ ┃
+┃ ┃ ┗ 📂 resource
+┃ ┃   ┗ 📄 ResourceServerConfig.java
+┃ ┃
+┃ ┗ 📂 userdetails
+┃   ┗ 📄 AuthenticatedUser.java
+┃
+┣ 📂 service
+┃ ┣ 📂 exceptions
+┃ ┃ ┣ 📄 DatabaseException.java
+┃ ┃ ┗ 📄 ResourceNotFoundException.java
+┃ ┣ 📄 CategoryService.java
+┃ ┣ 📄 ProductService.java
+┃ ┗ 📄 UserService.java
+┃
+┣ 📂 validation
+┃ ┣ 📂 category
+┃ ┃ ┣ 📂 annotation
+┃ ┃ ┗ 📂 validator
+┃ ┃
+┃ ┣ 📂 product
+┃ ┃ ┣ 📂 annotation
+┃ ┃ ┗ 📂 validator
+┃ ┃
+┃ ┣ 📂 role
+┃ ┃ ┣ 📂 annotation
+┃ ┃ ┗ 📂 validator
+┃ ┃
+┃ ┗ 📂 user
+┃   ┣ 📂 annotation
+┃   ┗ 📂 validator
+┃
+┣ 📂 web
+┃ ┣ 📂 controller
+┃ ┃ ┣ 📄 CategoryController.java
+┃ ┃ ┣ 📄 ProductController.java
+┃ ┃ ┗ 📄 UserController.java
+┃ ┃
+┃ ┗ 📂 exception
+┃   ┣ 📂 enums
+┃   ┃ ┗ 📄 ErrorType.java
+┃   ┣ 📂 handler
+┃   ┃ ┗ 📄 ControllerExceptionHandler.java
+┃   ┗ 📂 response
+┃     ┣ 📄 FieldMessage.java
+┃     ┣ 📄 ProblemDetails.java
+┃     ┗ 📄 ValidationError.java
+┃
+┣ 📄 DscatalogApplication.java
+┃
+┗ 📂 resources
+  ┣ 📂 db
+  ┃ ┣ 📂 data
+  ┃ ┣ 📂 migration
+  ┃ ┗ 📂 schema
+  ┣ 📂 static
+  ┣ 📂 templates
+  ┣ 📄 application-dev.properties
+  ┣ 📄 application-prod.properties
+  ┣ 📄 application-test.properties
+  ┣ 📄 application.properties
+  ┣ 📄 ValidationMessages.properties
+  ┣ 📄 banner-dev.txt
+  ┗ 📄 import.sql
 ```
 
 ---
 
-### ✏️ Atualizar Produto (Parcial)
+## 🛡️ Estrutura da Camada de Segurança
 
-**PATCH** `/api/v1/products/{id}`
+A camada de segurança foi projetada para centralizar autenticação, autorização, validação e proteção dos recursos da API, utilizando uma abordagem modular inspirada em arquiteturas desacopladas e aplicações robustas.
 
-Atualiza parcialmente os dados de um produto.
+Cada package possui uma responsabilidade bem definida dentro do fluxo de autenticação e segurança da aplicação.
 
-### 🔸 Request Body
+### 🔐 `security.config`
 
-```json
-{
-  "name": "Notebook Atualizado",
-  "price": 4200.0,
-  "categoryIds": [2, 3]
-}
+Responsável pelas configurações globais de segurança da aplicação.
+
+### Responsabilidades
+
+- Registro de beans de segurança
+- Password Encoder
+- Configurações compartilhadas
+- Componentes reutilizáveis do Spring Security
+
+### 📄 Classe principal
+
+| Classe                | Responsabilidade                                       |
+| --------------------- | ------------------------------------------------------ |
+| `SecurityBeansConfig` | Configuração central de beans relacionados à segurança |
+
+### 🎫 `security.oauth2.authorization`
+
+Responsável pela configuração do `Authorization Server` da aplicação.
+
+O **Authorization Server** é encarregado da autenticação dos usuários e emissão dos tokens `JWT`.
+
+### Responsabilidades
+
+- Configuração do OAuth2 Authorization Server
+- Geração de JWT
+- Assinatura de tokens
+- Registro de clients OAuth2
+- Configuração do fluxo de autenticação
+
+### 📄 Classe principal
+
+| Classe                      | Responsabilidade                                                        |
+| --------------------------- | ----------------------------------------------------------------------- |
+| `AuthorizationServerConfig` | Configuração do servidor OAuth2 responsável pela emissão dos tokens JWT |
+
+### 🔐 security.oauth2.resource
+
+Responsável pela configuração do `Resource Server`.
+
+O **Resource Server** protege os endpoints da API e valida os `tokens JWT` recebidos nas requisições.
+
+### Responsabilidades
+
+- Proteção de endpoints REST
+- Validação de JWT
+- Configuração de autorização
+- Controle de acesso por roles
+- Configuração de CORS e CSRF
+
+### 📄 Classe principal
+
+| Classe                 | Responsabilidade                                            |
+| ---------------------- | ----------------------------------------------------------- |
+| `ResourceServerConfig` | Configuração de segurança da API e validação dos tokens JWT |
+
+### 🔐 security.oauth2.grant_password
+
+Implementa o fluxo customizado de autenticação utilizando Password Grant.
+
+Embora versões modernas do OAuth2 desencorajem esse fluxo em cenários públicos, ele foi utilizado neste projeto com fins educacionais e compreensão profunda do processo de autenticação.
+
+### Responsabilidades
+
+- Conversão das credenciais
+- Processamento da autenticação
+- Criação de tokens autenticados
+- Integração com Spring Security
+
+### 📄 Classes principais
+
+| Classe                                  | Responsabilidade                                             |
+| --------------------------------------- | ------------------------------------------------------------ |
+| `CustomPasswordAuthenticationConverter` | Converte credenciais da requisição em objeto de autenticação |
+| `CustomPasswordAuthenticationProvider`  | Processa autenticação do usuário                             |
+| `CustomPasswordAuthenticationToken`     | Representa token autenticado durante o fluxo                 |
+
+### 📂 security.userdetails
+
+Responsável por centralizar informações relacionadas ao usuário autenticado dentro do contexto de segurança da aplicação.
+
+### Responsabilidades
+
+- Recuperar usuário autenticado
+- Centralizar contexto de autenticação
+- Facilitar acesso ao usuário logado
+
+### 📄 Classe principal
+
+| Classe              | Responsabilidade                                              |
+| ------------------- | ------------------------------------------------------------- |
+| `AuthenticatedUser` | Representação do usuário autenticado no contexto da aplicação |
+
+## 🧾 Camada de Validação
+
+A estrutura de validação foi organizada separando anotações customizadas e validadores específicos por domínio da aplicação.
+
+Essa abordagem melhora:
+
+- coesão;
+- reutilização;
+- clareza arquitetural;
+- manutenção evolutiva.
+
+### 📂 Estrutura
+
+```text
+validation
+┣ category
+┣ product
+┣ role
+┗ user
 ```
 
-> 💡 Apenas campos enviados são atualizados
-> 💡 Campos null são ignorados
-> 💡 Se categoryIds for informado, as categorias serão substituídas
+Cada domínio possui:
+| Estrutura | Responsabilidade |
+| ------------ | ------------------------------- |
+| `annotation` | Define annotations customizadas |
+| `validator` | Implementa regras de validação |
 
-🔸 Response (200 OK)
+### Benefícios da abordagem
 
-```json
-{
-  "id": 1,
-  "name": "Notebook Atualizado",
-  "description": "Notebook de alta performance",
-  "price": 4200.0,
-  "imgUrl": "https://image.com/notebook.png",
-  "date": "2025-01-01T10:00:00Z",
-  "categories": []
-}
-```
+- Regras isoladas por domínio
+- Fácil manutenção
+- Reutilização de validações
+- Maior legibilidade
+- Melhor organização arquitetural
+
+## 🌐 Camada Web
+
+A camada web concentra os pontos de entrada da aplicação e o tratamento padronizado das respostas HTTP.
+
+### 📂 `web.controller`
+
+Responsável pelos endpoints REST da aplicação.
+
+### 📌 Controllers implementados
+
+| Controller           | Responsabilidade                               |
+| -------------------- | ---------------------------------------------- |
+| `CategoryController` | Endpoints de categorias                        |
+| `ProductController`  | Endpoints de produtos                          |
+| `UserController`     | Endpoints relacionados a usuários/autenticação |
+
+### 📂 web.exception
+
+Responsável pelo tratamento global de exceções da aplicação.
+
+### Objetivos
+
+- Padronizar respostas HTTP
+- Centralizar tratamento de erros
+- Melhorar rastreabilidade
+- Facilitar integração frontend/backend
+
+### 📄 Estruturas principais
+
+| Estrutura                    | Responsabilidade                            |
+| ---------------------------- | ------------------------------------------- |
+| `ControllerExceptionHandler` | Intercepta exceções globalmente             |
+| `ErrorType`                  | Enumeração de tipos de erro                 |
+| `ProblemDetails`             | Estrutura padronizada da resposta           |
+| `FieldMessage`               | Representa erros específicos de validação   |
+| `ValidationError`            | Resposta específica para erros de validação |
 
 ---
 
-### ❌ Remover Produto
+## 🏛️ Estratégia Arquitetural Aplicada
 
-**DELETE** `/api/v1/products/{id}`
+A organização da camada de segurança segue princípios importantes de engenharia de software:
 
-Remove um produto do sistema.
-
-### 🔸 Response
-
-- 204 No Content
-
-### 🔸 Erros possíveis
-
-- 404 Not Found
-- 409 Conflict (violação de integridade)
-
-⚠️ Padrão de Erro
-
-Todos os erros seguem um padrão unificado:
-
-```json
-{
-  "timestamp": "2026-04-09T18:50:14.708743400Z",
-  "status": 404,
-  "error": "Resource not found",
-  "message": "Entity not found id: 100",
-  "path": "/api/v1/products/100"
-}
-```
-
-```json
-{
-  "timestamp": "2026-04-09T18:50:44.722862600Z",
-  "status": 409,
-  "error": "Database error",
-  "message": "Cannot delete resource because it has related entities",
-  "path": "/api/v1/products/1"
-}
-```
-
-> [!IMPORTANT]
-> A API segue boas práticas REST, utilizando corretamente os métodos HTTP (POST, GET, PATCH, DELETE), códigos de status e padronização de respostas, garantindo previsibilidade e facilidade de integração.
+| Princípio                             | Aplicação                                                   |
+| ------------------------------------- | ----------------------------------------------------------- |
+| SRP (Single Responsibility Principle) | Cada package possui responsabilidade única                  |
+| Desacoplamento                        | Separação clara entre autenticação, autorização e validação |
+| Modularidade                          | Estrutura preparada para evolução                           |
+| Escalabilidade                        | Facilidade para adicionar novos fluxos                      |
+| Manutenibilidade                      | Código mais organizado e sustentável                        |
 
 ---
 
-### ▶️ Como Executar o Projeto
+## 📊 Integração com Swagger/OpenAPI
 
-### 🔧 Pré-requisitos
+A documentação da API foi integrada com autenticação JWT.
 
-- Java 17+
-- Maven 3.9+
-- PostgreSQL (para ambiente `dev`)
+### Recursos implementados
 
----
-
-### 🚀 Executando em ambiente de desenvolvimento
-
-```bash
-# Clonar o repositório
-git clone https://github.com/seu-usuario/seu-repo.git
-
-# Entrar na pasta do projeto
-cd dscatalog
-
-# Executar a aplicação
-mvn spring-boot:run
-```
-
-### ⚙️ Configuração do banco (PostgreSQL)
-
-Edite o arquivo: `src/main/resources/application-dev.properties`
-
-```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/dscatalog
-spring.datasource.username=seu_usuario
-spring.datasource.password=sua_senha
-```
+- Autorização via Bearer Token
+- Teste de endpoints protegidos
+- Documentação automática
+- Exploração segura da API
 
 ---
-
-### 🧪 Executando em ambiente de teste (H2)
-
-A aplicação utiliza banco em memória automaticamente:
-
-```properties
-spring.datasource.url=jdbc:h2:mem:dscatalog
-spring.datasource.driverClassName=org.h2.Driver
-spring.datasource.username=sa
-spring.datasource.password=
-```
-
-Console disponível em: `http://localhost:8080/h2-console`
-
----
-
-## 📊 Documentação Interativa (Swagger)
-
-A API disponibiliza documentação interativa utilizando **Swagger UI**, permitindo visualizar e testar os endpoints diretamente pelo navegador, sem necessidade de ferramentas externas.
 
 ### 🔗 Acesso
 
-Após iniciar a aplicação, acesse:
+```text
+http://localhost:8080/swagger-ui.html
+```
 
-- http://localhost:8080/swagger-ui.html
-- http://localhost:8080/swagger-ui/index.html
+ou
 
-> [!TIP]
-> Utilize o Swagger para explorar os endpoints, validar requisições e entender rapidamente os contratos da API.
-
----
-
-### 🔄 Fluxo de Requisição
-
-Exemplo de fluxo ao criar um produto:
-
-1. Cliente envia requisição HTTP (POST `/products`)
-2. `ProductController` recebe os dados (DTO)
-3. `ProductService` aplica regras de negócio
-4. `ProductMapper` converte DTO → Entity
-5. `ProductRepository` persiste no banco
-6. Resposta é convertida para DTO e retornada
-
-> [!IMPORTANT]
-> Esse fluxo garante separação de responsabilidades e baixo acoplamento.
+```text
+http://localhost:8080/swagger-ui/index.html
+```
 
 ---
 
-### 🧠 Decisões de Arquitetura
+## 🧪 Testes de Segurança
 
-Algumas decisões importantes tomadas no projeto:
+A aplicação evolui também em termos de testes automatizados de autenticação e autorização.
 
-- Uso de **DTOs com records** → imutabilidade e clareza
-- Separação de **Mapper** → evita acoplamento entre camadas
-- Uso de **PATCH** → atualização parcial eficiente
-- Relacionamento resolvido no backend → evita inconsistência no client
-- Tratamento global de exceções → padronização e rastreabilidade
+### 📌 Cenários testados
 
-> [!NOTE]
-> Essas decisões seguem boas práticas utilizadas em sistemas corporativos.
-
----
-
-### 🔐 Segurança (Roadmap)
-
-A API está preparada para evolução com segurança baseada em:
-
-- Spring Security
-- Autenticação via JWT
-- Controle de acesso por roles (ROLE ADMIN)
-
-> [!NOTE]
-> Atualmente não implementado, mas planejado para o proximo capítulo do curso.
+- Usuário autenticado
+- Usuário não autenticado
+- Usuário sem permissão
+- Acesso por role
+- Respostas HTTP de segurança
+- Endpoints protegidos
 
 ---
 
-### 🚧 Melhorias Futuras
+### Ferramentas utilizadas
 
-- Implementação de autenticação com JWT
-- Upload de imagens para produtos
-- Cache com Redis
-- Deploy em cloud (AWS / Railway / Render)
-- CI/CD com GitHub Actions
-- Testes de integração mais robustos
-
-> [!NOTE]
-> O projeto foi estruturado pensando em evolução contínua.
+| Ferramenta           | Finalidade                |
+| -------------------- | ------------------------- |
+| MockMvc              | Teste de endpoints        |
+| Spring Security Test | Simulação de autenticação |
+| Mockito              | Mock de serviços          |
+| JUnit 5              | Estrutura de testes       |
 
 ---
 
-### 🎓 Conclusão e Aprendizados
+## 🧱 Boas Práticas Aplicadas
 
-Este projeto foi fundamental para consolidar conceitos essenciais no desenvolvimento de APIs REST com Java e Spring Boot.
+- Stateless authentication com JWT
+- Externalização de variáveis sensíveis
+- Segurança baseada em environment profiles
+- Principle of Least Privilege (PoLP)
+- Separation of Concerns (SoC)
+- Centralização de exception handling
+- DTO validation boundary
+- Modularização da camada de segurança
+- Controle de acesso baseado em roles
 
-Durante a implementação, foram aplicados na prática:
+---
 
-- Estruturação de aplicações em **arquitetura em camadas**
-- Uso de **DTOs e Mappers** para desacoplamento
-- Implementação de **operações CRUD completas**
-- Uso de **paginação, ordenação e filtros**
-- Tratamento de **exceções padronizado**
-- Organização de código voltada para **manutenção e escalabilidade**
+## 🚀 Evolução Arquitetural do Projeto
 
-Além disso, o projeto reforçou a importância de:
+Com este capítulo, o projeto DSCatalog deixa de representar apenas uma API CRUD tradicional e evolui para uma arquitetura backend mais próxima de cenários reais de mercado, incorporando fundamentos essenciais para construção de APIs escaláveis, sistemas seguros e aplicações robustas.
 
-- Separação clara de responsabilidades
-- Padronização de respostas da API
-- Uso correto de métodos HTTP e status codes
-- Escrita de código limpo e bem documentado
+### 📌 Principais evoluções arquiteturais
 
-Mais do que apenas um CRUD, este projeto representa a construção de uma base sólida para desenvolvimento de aplicações backend profissionais, seguindo boas práticas amplamente utilizadas no mercado.
+- Autenticação stateless com JWT
+- Autorização baseada em roles (RBAC)
+- Proteção centralizada de endpoints
+- Validação consistente de dados
+- Tratamento padronizado de exceções
+- Estrutura modular e desacoplada
+- Configuração orientada a ambientes
+- Estrutura preparada para ambientes distribuídos e cenários de produção
 
-> 🚀 Este é um passo importante na evolução como desenvolvedor backend Java, preparando o caminho para projetos mais complexos e ambientes de produção.
+---
+
+## 🚧 Principais Desafios Encontrados
+
+Durante a implementação deste capítulo, diversos desafios técnicos relacionados à segurança e autenticação moderna foram enfrentados.
+
+### 📌 Principais desafios
+
+- Configuração do Spring Security 6
+- Estruturação do OAuth2 Authorization Server
+- Integração entre Authorization Server e Resource Server
+- Geração e assinatura de JWT
+- Implementação do fluxo Password Grant customizado
+- Controle de acesso baseado em roles
+- Configuração de CORS e CSRF
+- Segurança stateless
+- Integração do Swagger com autenticação JWT
+- Estruturação desacoplada da camada de segurança
+- Criação de validações customizadas integradas ao banco de dados
+
+---
+
+## 🧠 Aprendizados Consolidados
+
+- Estruturação de autenticação e autorização com Spring Security 6
+- Configuração de OAuth2 Authorization Server e Resource Server
+- Implementação de autenticação stateless com JWT
+- Aplicação de RBAC com Method Security
+- Criação de validações customizadas com Bean Validation
+- Padronização de respostas de erro com Exception Handling
+- Organização modular da camada de segurança
+
+---
+
+## 🚧 Melhorias Futuras
+
+- Refresh Token
+- Revogação de tokens
+- Login social (Google/GitHub)
+- MFA (autenticação em dois fatores)
+- Rate Limiting
+- Auditoria de segurança
+- Observabilidade com métricas
+- Deploy seguro com HTTPS
+- Integração com Keycloak
+
+---
+
+## 💼 Competências Demonstradas
+
+Este capítulo consolida competências importantes relacionadas ao desenvolvimento backend moderno com Java e Spring Boot.
+
+### 🔐 Segurança e autenticação
+
+- Spring Security 6
+- OAuth2
+- JWT Authentication
+- Authorization Server
+- Resource Server
+- Role-Based Access Control (RBAC)
+- Method Security
+- Stateless Authentication
+
+---
+
+### 🧾 Validação e tratamento de erros
+
+- Bean Validation
+- Hibernate Validator
+- Validações customizadas
+- Exception Handling
+- Problem Details Pattern
+- Validação integrada ao banco de dados
+
+---
+
+### 🏛️ Arquitetura backend
+
+- Arquitetura em camadas
+- DTO Pattern
+- Separação de responsabilidades
+- Modularização da segurança
+- Organização enterprise de packages
+- API REST segura
+
+---
+
+### 🧪 Testes e qualidade
+
+- Spring Security Test
+- MockMvc
+- JUnit 5
+- Mockito
+- Testes de autorização
+- Testes de autenticação
+
+---
+
+### ⚙️ Dev Practices
+
+- Externalização de configurações
+- Configuração por profiles
+- Segurança baseada em ambiente
+- Documentação técnica avançada
+- Swagger/OpenAPI
+- Estrutura preparada para ambientes distribuídos e produção
+
+---
+
+## 🎓 Conclusão
+
+Este capítulo marca uma evolução significativa na maturidade arquitetural do projeto DSCatalog.
+
+Mais do que apenas proteger endpoints, a aplicação passa a incorporar conceitos fundamentais utilizados em sistemas corporativos modernos:
+
+- autenticação baseada em JWT;
+- autorização com RBAC;
+- validação consistente de dados;
+- proteção centralizada de recursos;
+- arquitetura modular preparada para evolução.
+
+A implementação de OAuth2, JWT e Spring Security consolida competências extremamente relevantes para o desenvolvimento backend moderno com Java e Spring Boot.
+
+> [!IMPORTANT] Este capítulo representa um passo importante rumo à construção de APIs escaláveis, sistemas seguros e arquiteturas desacopladas alinhadas às práticas utilizadas no mercado profissional.
+
+---
+
+## 📚 Referências Técnicas
+
+### 🔹 Bean Validation
+
+- https://beanvalidation.org/
+- https://docs.jboss.org/hibernate/beanvalidation/spec/2.0/api/overview-summary.html
+- https://www.baeldung.com/java-bean-validation-not-null-empty-blank
+- https://www.baeldung.com/spring-custom-validation-message-source
+
+---
+
+### 🔹 Segurança e JWT
+
+- https://jwt.io
+- https://oauth.net/2/
+- https://spring.io/projects/spring-security
+- https://docs.spring.io/spring-security/reference/
+
+---
+
+### 🔹 Regex e validações
+
+- https://regexr.com/
+- https://regexlib.com/
 
 ---
 
@@ -920,8 +1349,7 @@ Mais do que apenas um CRUD, este projeto representa a construção de uma base s
 Desenvolvedor Backend Java | Spring Boot
 
 ---
-
-### 📎 Contato
+## 📎 Contato
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-%230077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/albert-backend-java-spring-boot/)
-[![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:albertinesilva.17@gmail.com?subject=Contato%20sobre%20o%20projeto%20CAD-MOTOTAXISTA)
+[![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:albertinesilva.17@gmail.com)

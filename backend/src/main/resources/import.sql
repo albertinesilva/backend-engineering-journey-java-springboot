@@ -1,4 +1,23 @@
 -- =========================
+-- USERS
+-- =========================
+INSERT INTO tb_user (first_name, last_name, email, password, active) VALUES ('Albert', 'Silva', 'albert@gmail.com', '$2a$10$eDIzRoyjJ4Rw7RbsBBfqVuzxU8lABGMlgKAMqqLtnpu9iN6b1w7ve', true);
+INSERT INTO tb_user (first_name, last_name, email, password, active) VALUES ('Maria', 'Green', 'maria@gmail.com', '$2a$10$eDIzRoyjJ4Rw7RbsBBfqVuzxU8lABGMlgKAMqqLtnpu9iN6b1w7ve', true);
+
+-- =========================
+-- ROLES
+-- =========================
+INSERT INTO tb_role (authority) VALUES ('ROLE_OPERATOR');
+INSERT INTO tb_role (authority) VALUES ('ROLE_ADMIN');
+
+-- =========================
+-- USER-ROLE RELATIONSHIP
+-- =========================
+INSERT INTO tb_user_role (user_id, role_id) VALUES (1, 1);
+INSERT INTO tb_user_role (user_id, role_id) VALUES (2, 1);
+INSERT INTO tb_user_role (user_id, role_id) VALUES (2, 2);
+
+-- =========================
 -- CATEGORIES
 -- =========================
 INSERT INTO tb_category(name, description, active, created_at, updated_at) VALUES ('Books', 'Books and literature', true, NOW(), NOW());
