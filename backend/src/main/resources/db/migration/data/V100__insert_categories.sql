@@ -1,5 +1,5 @@
-INSERT INTO tb_category(name, description, active, created_at, updated_at) VALUES ('Books', 'Books and literature', true, NOW(), NOW());
 INSERT INTO tb_category(name, description, active, created_at, updated_at) VALUES ('Electronics', 'Electronic devices and gadgets', true, NOW(), NOW());
+INSERT INTO tb_category(name, description, active, created_at, updated_at) VALUES ('Books', 'Books and literature', true, NOW(), NOW());
 INSERT INTO tb_category(name, description, active, created_at, updated_at) VALUES ('Computers', 'Computers, laptops and accessories', true, NOW(), NOW());
 INSERT INTO tb_category(name, description, active, created_at, updated_at) VALUES ('Home Appliances', 'Appliances for home use', true, NOW(), NOW());
 INSERT INTO tb_category(name, description, active, created_at, updated_at) VALUES ('Furniture', 'Home and office furniture', true, NOW(), NOW());

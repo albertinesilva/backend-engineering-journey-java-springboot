@@ -1,13 +1,13 @@
 INSERT INTO tb_product_category (product_id, category_id) VALUES (1, 1);  -- The Lord of the Rings -> Books
 INSERT INTO tb_product_category (product_id, category_id) VALUES (5, 1);  -- Rails for Dummies -> Books
 
-INSERT INTO tb_product_category (product_id, category_id) VALUES (2, 2);  -- Smart TV -> Electronics
-INSERT INTO tb_product_category (product_id, category_id) VALUES (3, 2);  -- Macbook Pro -> Electronics
-INSERT INTO tb_product_category (product_id, category_id) VALUES (4, 2);  -- PC Gamer -> Electronics
-INSERT INTO tb_product_category (product_id, category_id) VALUES (6, 2);  -- PC Gamer Ex -> Electronics
-INSERT INTO tb_product_category (product_id, category_id) VALUES (7, 2);  -- PC Gamer X -> Electronics
-INSERT INTO tb_product_category (product_id, category_id) VALUES (8, 2);  -- PC Gamer Alfa -> Electronics
-INSERT INTO tb_product_category (product_id, category_id) VALUES (9, 2);  -- PC Gamer Tera -> Electronics
+INSERT INTO tb_product_category (product_id, category_id) VALUES (2, 1);  -- Smart TV -> Electronics
+INSERT INTO tb_product_category (product_id, category_id) VALUES (3, 1);  -- Macbook Pro -> Electronics
+INSERT INTO tb_product_category (product_id, category_id) VALUES (4, 1);  -- PC Gamer -> Electronics
+INSERT INTO tb_product_category (product_id, category_id) VALUES (6, 1);  -- PC Gamer Ex -> Electronics
+INSERT INTO tb_product_category (product_id, category_id) VALUES (7, 1);  -- PC Gamer X -> Electronics
+INSERT INTO tb_product_category (product_id, category_id) VALUES (8, 1);  -- PC Gamer Alfa -> Electronics
+INSERT INTO tb_product_category (product_id, category_id) VALUES (9, 1);  -- PC Gamer Tera -> Electronics
 
 INSERT INTO tb_product_category (product_id, category_id) VALUES (3, 3);  -- Macbook Pro -> Computers
 INSERT INTO tb_product_category (product_id, category_id) VALUES (4, 3);  -- PC Gamer -> Computers

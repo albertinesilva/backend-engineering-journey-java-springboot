@@ -20,8 +20,8 @@ INSERT INTO tb_user_role (user_id, role_id) VALUES (2, 2);
 -- =========================
 -- CATEGORIES
 -- =========================
-INSERT INTO tb_category(name, description, active, created_at, updated_at) VALUES ('Books', 'Books and literature', true, NOW(), NOW());
 INSERT INTO tb_category(name, description, active, created_at, updated_at) VALUES ('Electronics', 'Electronic devices and gadgets', true, NOW(), NOW());
+INSERT INTO tb_category(name, description, active, created_at, updated_at) VALUES ('Books', 'Books and literature', true, NOW(), NOW());
 INSERT INTO tb_category(name, description, active, created_at, updated_at) VALUES ('Computers', 'Computers, laptops and accessories', true, NOW(), NOW());
 INSERT INTO tb_category(name, description, active, created_at, updated_at) VALUES ('Home Appliances', 'Appliances for home use', true, NOW(), NOW());
 INSERT INTO tb_category(name, description, active, created_at, updated_at) VALUES ('Furniture', 'Home and office furniture', true, NOW(), NOW());
@@ -73,25 +73,26 @@ INSERT INTO tb_product (name, price, date, description, active, img_url) VALUES 
 -- =========================
 -- BOOKS
 -- =========================
-INSERT INTO tb_product_category (product_id, category_id) VALUES (1, 1); -- The Lord of the Rings
-INSERT INTO tb_product_category (product_id, category_id) VALUES (5, 1); -- Rails for Dummies
+INSERT INTO tb_product_category (product_id, category_id) VALUES (1, 2); -- The Lord of the Rings
+INSERT INTO tb_product_category (product_id, category_id) VALUES (5, 2); -- Rails for Dummies
 
 
 -- =========================
 -- ELECTRONICS
 -- =========================
-INSERT INTO tb_product_category (product_id, category_id) VALUES (2, 2); -- Smart TV
-INSERT INTO tb_product_category (product_id, category_id) VALUES (3, 2); -- Macbook Pro
-INSERT INTO tb_product_category (product_id, category_id) VALUES (4, 2); -- PC Gamer
-INSERT INTO tb_product_category (product_id, category_id) VALUES (6, 2);
-INSERT INTO tb_product_category (product_id, category_id) VALUES (7, 2);
-INSERT INTO tb_product_category (product_id, category_id) VALUES (8, 2);
-INSERT INTO tb_product_category (product_id, category_id) VALUES (9, 2);
+INSERT INTO tb_product_category (product_id, category_id) VALUES (2, 1); -- Smart TV
+INSERT INTO tb_product_category (product_id, category_id) VALUES (3, 1); -- Macbook Pro
+INSERT INTO tb_product_category (product_id, category_id) VALUES (4, 1); -- PC Gamer
+INSERT INTO tb_product_category (product_id, category_id) VALUES (6, 1);
+INSERT INTO tb_product_category (product_id, category_id) VALUES (7, 1);
+INSERT INTO tb_product_category (product_id, category_id) VALUES (8, 1);
+INSERT INTO tb_product_category (product_id, category_id) VALUES (9, 1);
 
 
 -- =========================
 -- COMPUTERS
 -- =========================
+INSERT INTO tb_product_category (product_id, category_id) VALUES (2, 3); -- Smart TV
 INSERT INTO tb_product_category (product_id, category_id) VALUES (3, 3); -- Macbook Pro
 INSERT INTO tb_product_category (product_id, category_id) VALUES (4, 3); -- PC Gamer
 
@@ -116,12 +117,6 @@ INSERT INTO tb_product_category (product_id, category_id) VALUES (22, 3);
 INSERT INTO tb_product_category (product_id, category_id) VALUES (23, 3);
 INSERT INTO tb_product_category (product_id, category_id) VALUES (24, 3);
 INSERT INTO tb_product_category (product_id, category_id) VALUES (25, 3);
-
-
--- =========================
--- HOME APPLIANCES
--- =========================
-INSERT INTO tb_product_category (product_id, category_id) VALUES (2, 4); -- Smart TV
 
 
 -- =========================
