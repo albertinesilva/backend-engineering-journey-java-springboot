@@ -1,11 +1,15 @@
 package com.albertsilva.dev.dscatalog.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.albertsilva.dev.dscatalog.entity.Product;
+import com.albertsilva.dev.dscatalog.projection.ProductProjection;
 
 /**
  * Repositório responsável pelo acesso a dados da entidade {@link Product}.
@@ -49,7 +53,7 @@ import com.albertsilva.dev.dscatalog.entity.Product;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
- /**
+  /**
    * Busca produtos cujo nome contenha o valor informado (ignorando
    * maiúsculas/minúsculas).
    *
@@ -87,6 +91,25 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
    */
   Page<Product> findByNameContainingIgnoreCase(String name, Pageable pageable);
 
+  @Query(nativeQuery = true, value = """
+      SELECT DISTINCT tb_product.id, tb_product.name
+      FROM tb_product
+      INNER JOIN tb_product_category ON tb_product.id = tb_product_category.product_id
+      WHERE (:categoryIds IS NULL OR tb_product_category.category_id IN :categoryIds)
+      AND (LOWER(tb_product.name) LIKE LOWER(CONCAT('%',:name,'%')))
+      ORDER BY tb_product.name
+      """, countQuery = """
+      SELECT COUNT(*) FROM (
+      SELECT DISTINCT tb_product.id, tb_product.name
+      FROM tb_product
+      INNER JOIN tb_product_category ON tb_product.id = tb_product_category.product_id
+      WHERE (:categoryIds IS NULL OR tb_product_category.category_id IN :categoryIds)
+      AND (LOWER(tb_product.name) LIKE LOWER(CONCAT('%',:name,'%')))
+      ORDER BY tb_product.name
+      ) AS tb_result
+      """)
+  Page<ProductProjection> searchProducts(List<Long> categoryIds, String name, Pageable pageable);
+
   /**
    * Verifica se existe um produto com o nome informado (ignorando
    * maiúsculas/minúsculas).
@@ -119,7 +142,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
    *
    * @param name nome do produto a ser verificado
    * @param id   ID do produto a ser ignorado na verificação
-   * @return true se existir um produto com o nome informado e ID diferente, false caso contrário
+   * @return true se existir um produto com o nome informado e ID diferente, false
+   *         caso contrário
    */
   boolean existsByNameIgnoreCaseAndIdNot(String name, Long id);
 }

@@ -23,6 +23,7 @@ import com.albertsilva.dev.dscatalog.dto.product.request.ProductCreateRequest;
 import com.albertsilva.dev.dscatalog.dto.product.request.ProductUpdateRequest;
 import com.albertsilva.dev.dscatalog.dto.product.response.ProductDetailsResponse;
 import com.albertsilva.dev.dscatalog.dto.product.response.ProductResponse;
+import com.albertsilva.dev.dscatalog.projection.ProductProjection;
 import com.albertsilva.dev.dscatalog.service.ProductService;
 import com.albertsilva.dev.dscatalog.web.exception.response.ProblemDetails;
 
@@ -171,14 +172,18 @@ public class ProductController {
       @ApiResponse(responseCode = "403", description = "Usuário sem permissão para acessar este recurso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))
   })
   @GetMapping
-  public ResponseEntity<Page<ProductResponse>> findAll(@RequestParam(required = false) String name, Pageable pageable) {
+  public ResponseEntity<Page<ProductProjection>> findAll(
+      @RequestParam(value = "name", defaultValue = "") String name,
+      @RequestParam(value = "categoryIds", defaultValue = "0") String categoryIds,
+      Pageable pageable) {
+
     logger.debug("Buscando produtos paginados - name: {}, page: {}, size: {}, sort: {}",
         name,
         pageable.getPageNumber(),
         pageable.getPageSize(),
         pageable.getSort().isSorted() ? pageable.getSort() : "unsorted");
 
-    Page<ProductResponse> response = productService.search(name, pageable);
+    Page<ProductProjection> response = productService.findAllPaged(name, categoryIds, pageable);
 
     logger.debug("Produtos retornados: {}", response.getTotalElements());
     return ResponseEntity.ok(response);

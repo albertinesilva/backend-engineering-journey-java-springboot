@@ -1,6 +1,8 @@
 package com.albertsilva.dev.dscatalog.service;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +20,7 @@ import com.albertsilva.dev.dscatalog.dto.product.response.ProductResponse;
 import com.albertsilva.dev.dscatalog.entity.Category;
 import com.albertsilva.dev.dscatalog.entity.Product;
 import com.albertsilva.dev.dscatalog.mapper.product.ProductMapper;
+import com.albertsilva.dev.dscatalog.projection.ProductProjection;
 import com.albertsilva.dev.dscatalog.repository.CategoryRepository;
 import com.albertsilva.dev.dscatalog.repository.ProductRepository;
 import com.albertsilva.dev.dscatalog.service.exception.DatabaseException;
@@ -316,6 +319,17 @@ public class ProductService {
       logger.error("Erro de integridade ao deletar produto. id: {}", id);
       throw new DatabaseException("Integrity violation: cannot delete product with related entities");
     }
+  }
+
+  @Transactional(readOnly = true)
+  public Page<ProductProjection> findAllPaged(String name, String categoryId, Pageable pageable) {
+
+    List<Long> categoryIds = Arrays.asList();
+    if (!"0".equals(categoryId)) {
+      categoryIds = Arrays.asList(categoryId.split(",")).stream().map(Long::parseLong).toList();
+    }
+
+    return productRepository.searchProducts(categoryIds, name, pageable);
   }
 
   /**
