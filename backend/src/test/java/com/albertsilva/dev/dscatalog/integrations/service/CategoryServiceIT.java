@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.albertsilva.dev.dscatalog.dto.category.request.CategoryCreateRequest;
 import com.albertsilva.dev.dscatalog.dto.category.request.CategoryUpdateRequest;
+import com.albertsilva.dev.dscatalog.dto.category.response.CategoryDetailsResponse;
 import com.albertsilva.dev.dscatalog.dto.category.response.CategoryResponse;
 import com.albertsilva.dev.dscatalog.factory.CategoryFactory;
 import com.albertsilva.dev.dscatalog.repository.CategoryRepository;
@@ -144,7 +145,7 @@ class CategoryServiceIT {
       void findByIdShouldReturnCategoryWhenIdExists() {
 
         // Act
-        CategoryResponse result = service.findById(EXISTING_ID);
+        CategoryDetailsResponse result = service.findById(EXISTING_ID);
 
         // Assert
         assertNotNull(result);
@@ -206,7 +207,7 @@ class CategoryServiceIT {
       assertEquals(EXISTING_ID, result.id());
       assertEquals(request.name(), result.name());
 
-      CategoryResponse updatedCategory = service.findById(EXISTING_ID);
+      CategoryDetailsResponse updatedCategory = service.findById(EXISTING_ID);
 
       assertEquals(request.name(), updatedCategory.name());
     }

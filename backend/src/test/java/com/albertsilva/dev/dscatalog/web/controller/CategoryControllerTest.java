@@ -44,6 +44,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import com.albertsilva.dev.dscatalog.dto.category.request.CategoryCreateRequest;
 import com.albertsilva.dev.dscatalog.dto.category.request.CategoryUpdateRequest;
+import com.albertsilva.dev.dscatalog.dto.category.response.CategoryDetailsResponse;
 import com.albertsilva.dev.dscatalog.dto.category.response.CategoryResponse;
 import com.albertsilva.dev.dscatalog.factory.CategoryFactory;
 import com.albertsilva.dev.dscatalog.repository.CategoryRepository;
@@ -73,11 +74,13 @@ class CategoryControllerTest {
 
   private Page<CategoryResponse> page;
   private CategoryResponse categoryResponse;
+  private CategoryDetailsResponse categoryDetailsResponse;
 
   @BeforeEach
   void setUp() {
 
     categoryResponse = CategoryFactory.createCategoryResponse();
+    categoryDetailsResponse = CategoryFactory.createCategoryDetailsResponse();
 
     page = new PageImpl<>(List.of(categoryResponse), PageRequest.of(0, 10), 1);
 
@@ -199,7 +202,7 @@ class CategoryControllerTest {
     void findByIdShouldReturnCategoryWhenIdExists() throws Exception {
 
       // Arrange
-      when(categoryService.findById(EXISTING_ID)).thenReturn(categoryResponse);
+      when(categoryService.findById(EXISTING_ID)).thenReturn(categoryDetailsResponse);
 
       // Act
       ResultActions resultActions = mockMvc.perform(get(BASE_URL + "/{id}", EXISTING_ID)

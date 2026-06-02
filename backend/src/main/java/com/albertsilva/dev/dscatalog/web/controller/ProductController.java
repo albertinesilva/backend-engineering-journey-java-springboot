@@ -172,7 +172,7 @@ public class ProductController {
       @ApiResponse(responseCode = "403", description = "Usuário sem permissão para acessar este recurso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))
   })
   @GetMapping
-  public ResponseEntity<Page<ProductProjection>> findAll(
+  public ResponseEntity<Page<ProductResponse>> findAll(
       @RequestParam(value = "name", defaultValue = "") String name,
       @RequestParam(value = "categoryIds", defaultValue = "0") String categoryIds,
       Pageable pageable) {
@@ -183,7 +183,7 @@ public class ProductController {
         pageable.getPageSize(),
         pageable.getSort().isSorted() ? pageable.getSort() : "unsorted");
 
-    Page<ProductProjection> response = productService.findAllPaged(name, categoryIds, pageable);
+    Page<ProductResponse> response = productService.findAllPaged(name, categoryIds, pageable);
 
     logger.debug("Produtos retornados: {}", response.getTotalElements());
     return ResponseEntity.ok(response);

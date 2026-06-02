@@ -1,10 +1,9 @@
 package com.albertsilva.dev.dscatalog.mapper.product;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
+import com.albertsilva.dev.dscatalog.dto.category.response.CategoryDetailsResponse;
 import com.albertsilva.dev.dscatalog.dto.category.response.CategoryResponse;
 import com.albertsilva.dev.dscatalog.dto.product.request.ProductCreateRequest;
 import com.albertsilva.dev.dscatalog.dto.product.request.ProductUpdateRequest;
@@ -161,7 +160,7 @@ public class ProductMapper {
         entity.getPrice(),
         entity.getImgUrl(),
         entity.getDate(),
-        List.of());
+        entity.getCategories().stream().map(cat -> new CategoryResponse(cat.getId(), cat.getName())).toList());
   }
 
   /**
@@ -198,7 +197,7 @@ public class ProductMapper {
         entity.getImgUrl(),
         entity.getDate(),
         entity.isActive(),
-        entity.getCategories().stream().map(cat -> new CategoryResponse(
+        entity.getCategories().stream().map(cat -> new CategoryDetailsResponse(
             cat.getId(),
             cat.getName(),
             cat.getDescription(),

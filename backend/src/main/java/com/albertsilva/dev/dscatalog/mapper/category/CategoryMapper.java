@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import com.albertsilva.dev.dscatalog.dto.category.request.CategoryCreateRequest;
 import com.albertsilva.dev.dscatalog.dto.category.request.CategoryUpdateRequest;
+import com.albertsilva.dev.dscatalog.dto.category.response.CategoryDetailsResponse;
 import com.albertsilva.dev.dscatalog.dto.category.response.CategoryResponse;
 import com.albertsilva.dev.dscatalog.entity.Category;
 
@@ -108,11 +109,15 @@ public class CategoryMapper {
       return null;
     }
 
-    return new CategoryResponse(
-        entity.getId(),
-        entity.getName(),
-        entity.getDescription(),
-        entity.isActive());
+    return new CategoryResponse(entity.getId(), entity.getName());
+  }
+
+  public CategoryDetailsResponse toDetailsResponse(Category entity) {
+    if (entity == null) {
+      return null;
+    }
+
+    return new CategoryDetailsResponse(entity.getId(), entity.getName(), entity.getDescription(), entity.isActive());
   }
 
   /**

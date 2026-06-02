@@ -10,6 +10,7 @@ import org.springframework.util.StringUtils;
 
 import com.albertsilva.dev.dscatalog.dto.category.request.CategoryCreateRequest;
 import com.albertsilva.dev.dscatalog.dto.category.request.CategoryUpdateRequest;
+import com.albertsilva.dev.dscatalog.dto.category.response.CategoryDetailsResponse;
 import com.albertsilva.dev.dscatalog.dto.category.response.CategoryResponse;
 import com.albertsilva.dev.dscatalog.entity.Category;
 import com.albertsilva.dev.dscatalog.mapper.category.CategoryMapper;
@@ -131,8 +132,8 @@ public class CategoryService {
    *          Optional, tratamento de exceções e busca segura de entidades.
    */
   @Transactional(readOnly = true)
-  public CategoryResponse findById(Long id) {
-    return categoryMapper.toResponse(findEntityById(id));
+  public CategoryDetailsResponse findById(Long id) {
+    return categoryMapper.toDetailsResponse(findEntityById(id));
   }
 
   /**

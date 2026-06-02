@@ -2,12 +2,12 @@ package com.albertsilva.dev.dscatalog.service;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -120,6 +120,52 @@ public class ProductService {
     logger.debug("Busca concluída | total={}", productsPage.getTotalElements());
 
     return productMapper.toResponsePage(productsPage);
+  }
+
+  /**
+   * Busca produtos com suporte a filtragem por nome e categorias, além de
+   * paginação.
+   *
+   * <p>
+   * Permite buscar produtos cujo nome contenha o termo fornecido e que estejam
+   * associados a categorias específicas.
+   * </p>
+   *
+   * <p>
+   * O parâmetro {@code categoryId} pode conter um ou mais IDs de categorias,
+   * separados por vírgula. Se for "0" ou nulo, não aplica filtro por categoria.
+   * </p>
+   *
+   * @param name       termo de busca para o nome do produto (opcional)
+   * @param categoryId IDs de categorias para filtrar (opcional)
+   * @param pageable   informações de paginação e ordenação
+   * @return página de produtos que correspondem aos critérios de busca
+   *
+   * @implNote
+   *           Utiliza consultas personalizadas no repositório para otimizar a
+   *           busca com múltiplos filtros, evitando carregamento desnecessário
+   *           de dados.
+   *
+   * @apiNote
+   *          Esta implementação reforça conceitos importantes como:
+   *          filtragem avançada, paginação, uso de Optional e boas práticas de
+   *          consulta em Spring Data JPA.
+   */
+  @Transactional(readOnly = true)
+  public Page<ProductResponse> findAllPaged(String name, String categoryId, Pageable pageable) {
+
+    List<Long> categoryIds = Arrays.asList();
+    if (!"0".equals(categoryId)) {
+      categoryIds = Arrays.asList(categoryId.split(",")).stream().map(Long::parseLong).toList();
+    }
+
+    Page<ProductProjection> page = productRepository.searchProducts(categoryIds, name, pageable);
+    List<Long> productsIds = page.map(ProductProjection::getId).toList();
+
+    List<Product> products = productRepository.searchProductsWithCategories(productsIds);
+    List<ProductResponse> responses = products.stream().map(productMapper::toResponse).toList();
+
+    return new PageImpl<>(responses, pageable, page.getTotalElements());
   }
 
   /**
@@ -319,17 +365,6 @@ public class ProductService {
       logger.error("Erro de integridade ao deletar produto. id: {}", id);
       throw new DatabaseException("Integrity violation: cannot delete product with related entities");
     }
-  }
-
-  @Transactional(readOnly = true)
-  public Page<ProductProjection> findAllPaged(String name, String categoryId, Pageable pageable) {
-
-    List<Long> categoryIds = Arrays.asList();
-    if (!"0".equals(categoryId)) {
-      categoryIds = Arrays.asList(categoryId.split(",")).stream().map(Long::parseLong).toList();
-    }
-
-    return productRepository.searchProducts(categoryIds, name, pageable);
   }
 
   /**

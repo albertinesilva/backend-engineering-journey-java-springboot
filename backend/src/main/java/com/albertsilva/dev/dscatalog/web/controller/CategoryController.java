@@ -21,6 +21,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.albertsilva.dev.dscatalog.dto.category.request.CategoryCreateRequest;
 import com.albertsilva.dev.dscatalog.dto.category.request.CategoryUpdateRequest;
+import com.albertsilva.dev.dscatalog.dto.category.response.CategoryDetailsResponse;
 import com.albertsilva.dev.dscatalog.dto.category.response.CategoryResponse;
 import com.albertsilva.dev.dscatalog.service.CategoryService;
 import com.albertsilva.dev.dscatalog.web.exception.response.ProblemDetails;
@@ -177,10 +178,10 @@ public class CategoryController {
       @ApiResponse(responseCode = "404", description = "Categoria não encontrada", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))
   })
   @GetMapping(value = "/{id}")
-  public ResponseEntity<CategoryResponse> findById(@PathVariable Long id) {
+  public ResponseEntity<CategoryDetailsResponse> findById(@PathVariable Long id) {
     logger.debug("Buscando categoria por id: {}", id);
 
-    CategoryResponse response = categoryService.findById(id);
+    CategoryDetailsResponse response = categoryService.findById(id);
 
     logger.debug("Categoria encontrada: id={}", id);
     return ResponseEntity.ok(response);

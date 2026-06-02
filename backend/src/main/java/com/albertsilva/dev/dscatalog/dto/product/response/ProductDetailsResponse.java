@@ -3,7 +3,7 @@ package com.albertsilva.dev.dscatalog.dto.product.response;
 import java.time.Instant;
 import java.util.List;
 
-import com.albertsilva.dev.dscatalog.dto.category.response.CategoryResponse;
+import com.albertsilva.dev.dscatalog.dto.category.response.CategoryDetailsResponse;
 
 /**
  * DTO de resposta detalhada para produto.
@@ -51,5 +51,5 @@ public record ProductDetailsResponse(
     String imgUrl,
     Instant date,
     boolean active,
-    List<CategoryResponse> categories) {
+    List<CategoryDetailsResponse> categories) {
 }

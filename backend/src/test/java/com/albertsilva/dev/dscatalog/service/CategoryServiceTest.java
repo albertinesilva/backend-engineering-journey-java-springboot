@@ -25,6 +25,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.albertsilva.dev.dscatalog.dto.category.request.CategoryCreateRequest;
 import com.albertsilva.dev.dscatalog.dto.category.request.CategoryUpdateRequest;
+import com.albertsilva.dev.dscatalog.dto.category.response.CategoryDetailsResponse;
 import com.albertsilva.dev.dscatalog.dto.category.response.CategoryResponse;
 import com.albertsilva.dev.dscatalog.entity.Category;
 import com.albertsilva.dev.dscatalog.factory.CategoryFactory;
@@ -110,18 +111,18 @@ class CategoryServiceTest {
       Category category = CategoryFactory.createCategory();
       category.setId(EXISTING_ID);
 
-      CategoryResponse expectedResponse = Mockito.mock(CategoryResponse.class);
+      CategoryDetailsResponse expectedResponse = Mockito.mock(CategoryDetailsResponse.class);
 
       Mockito.when(repository.findById(EXISTING_ID)).thenReturn(Optional.of(category));
-      Mockito.when(categoryMapper.toResponse(category)).thenReturn(expectedResponse);
+      Mockito.when(categoryMapper.toDetailsResponse(category)).thenReturn(expectedResponse);
 
-      CategoryResponse result = service.findById(EXISTING_ID);
+      CategoryDetailsResponse result = service.findById(EXISTING_ID);
 
       Assertions.assertNotNull(result);
       Assertions.assertEquals(expectedResponse, result);
 
       Mockito.verify(repository).findById(EXISTING_ID);
-      Mockito.verify(categoryMapper).toResponse(category);
+      Mockito.verify(categoryMapper).toDetailsResponse(category);
     }
 
     @Test

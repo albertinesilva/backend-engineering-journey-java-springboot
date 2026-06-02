@@ -13,5 +13,5 @@ package com.albertsilva.dev.dscatalog.dto.category.response;
  * @param description descrição da categoria
  * @param active      indica se a categoria está ativa
  */
-public record CategoryResponse(Long id, String name, String description, boolean active) {
+public record CategoryResponse(Long id, String name) {
 }
