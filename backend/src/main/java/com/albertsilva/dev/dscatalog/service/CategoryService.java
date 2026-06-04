@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import com.albertsilva.dev.dscatalog.domain.Category;
 import com.albertsilva.dev.dscatalog.dto.category.request.CategoryCreateRequest;
 import com.albertsilva.dev.dscatalog.dto.category.request.CategoryUpdateRequest;
 import com.albertsilva.dev.dscatalog.dto.category.response.CategoryDetailsResponse;
 import com.albertsilva.dev.dscatalog.dto.category.response.CategoryResponse;
-import com.albertsilva.dev.dscatalog.entity.Category;
 import com.albertsilva.dev.dscatalog.mapper.category.CategoryMapper;
 import com.albertsilva.dev.dscatalog.repository.CategoryRepository;
 import com.albertsilva.dev.dscatalog.service.exception.ResourceNotFoundException;

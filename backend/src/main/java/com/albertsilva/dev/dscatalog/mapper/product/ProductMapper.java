@@ -3,13 +3,13 @@ package com.albertsilva.dev.dscatalog.mapper.product;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
+import com.albertsilva.dev.dscatalog.domain.Product;
 import com.albertsilva.dev.dscatalog.dto.category.response.CategoryDetailsResponse;
 import com.albertsilva.dev.dscatalog.dto.category.response.CategoryResponse;
 import com.albertsilva.dev.dscatalog.dto.product.request.ProductCreateRequest;
 import com.albertsilva.dev.dscatalog.dto.product.request.ProductUpdateRequest;
 import com.albertsilva.dev.dscatalog.dto.product.response.ProductDetailsResponse;
 import com.albertsilva.dev.dscatalog.dto.product.response.ProductResponse;
-import com.albertsilva.dev.dscatalog.entity.Product;
 
 /**
  * Componente responsável pela conversão entre DTOs e entidade {@link Product}.

@@ -19,11 +19,11 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import com.albertsilva.dev.dscatalog.domain.Product;
 import com.albertsilva.dev.dscatalog.dto.product.request.ProductCreateRequest;
 import com.albertsilva.dev.dscatalog.dto.product.request.ProductUpdateRequest;
 import com.albertsilva.dev.dscatalog.dto.product.response.ProductDetailsResponse;
 import com.albertsilva.dev.dscatalog.dto.product.response.ProductResponse;
-import com.albertsilva.dev.dscatalog.entity.Product;
 import com.albertsilva.dev.dscatalog.factory.ProductFactory;
 import com.albertsilva.dev.dscatalog.mapper.product.ProductMapper;
 import com.albertsilva.dev.dscatalog.repository.ProductRepository;

@@ -1,4 +1,4 @@
-package com.albertsilva.dev.dscatalog.projection;
+package com.albertsilva.dev.dscatalog.domain;
 
 public interface Identifiable<ID> {
 

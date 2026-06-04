@@ -13,12 +13,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import com.albertsilva.dev.dscatalog.domain.Category;
+import com.albertsilva.dev.dscatalog.domain.Product;
 import com.albertsilva.dev.dscatalog.dto.product.request.ProductCreateRequest;
 import com.albertsilva.dev.dscatalog.dto.product.request.ProductUpdateRequest;
 import com.albertsilva.dev.dscatalog.dto.product.response.ProductDetailsResponse;
 import com.albertsilva.dev.dscatalog.dto.product.response.ProductResponse;
-import com.albertsilva.dev.dscatalog.entity.Category;
-import com.albertsilva.dev.dscatalog.entity.Product;
 import com.albertsilva.dev.dscatalog.mapper.product.ProductMapper;
 import com.albertsilva.dev.dscatalog.projection.ProductProjection;
 import com.albertsilva.dev.dscatalog.repository.CategoryRepository;

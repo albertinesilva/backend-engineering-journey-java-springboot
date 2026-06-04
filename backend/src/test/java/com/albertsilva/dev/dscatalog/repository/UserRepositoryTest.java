@@ -14,7 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import com.albertsilva.dev.dscatalog.entity.User;
+import com.albertsilva.dev.dscatalog.domain.User;
 import com.albertsilva.dev.dscatalog.factory.UserFactory;
 
 @DataJpaTest

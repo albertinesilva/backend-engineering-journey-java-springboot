@@ -1,4 +1,4 @@
-package com.albertsilva.dev.dscatalog.entity;
+package com.albertsilva.dev.dscatalog.domain;
 
 import java.io.Serializable;
 import java.time.Instant;

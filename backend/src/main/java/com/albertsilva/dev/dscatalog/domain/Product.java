@@ -1,11 +1,9 @@
-package com.albertsilva.dev.dscatalog.entity;
+package com.albertsilva.dev.dscatalog.domain;
 
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
-
-import com.albertsilva.dev.dscatalog.projection.Identifiable;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

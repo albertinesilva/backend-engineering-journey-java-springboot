@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.albertsilva.dev.dscatalog.projection.Identifiable;
+import com.albertsilva.dev.dscatalog.domain.Identifiable;
 
 public final class IdentifiableUtils {
 

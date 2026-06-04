@@ -16,12 +16,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import com.albertsilva.dev.dscatalog.domain.Role;
+import com.albertsilva.dev.dscatalog.domain.User;
 import com.albertsilva.dev.dscatalog.dto.user.request.UserCreateRequest;
 import com.albertsilva.dev.dscatalog.dto.user.request.UserUpdateRequest;
 import com.albertsilva.dev.dscatalog.dto.user.response.UserDetailsResponse;
 import com.albertsilva.dev.dscatalog.dto.user.response.UserResponse;
-import com.albertsilva.dev.dscatalog.entity.Role;
-import com.albertsilva.dev.dscatalog.entity.User;
 import com.albertsilva.dev.dscatalog.mapper.user.UserMapper;
 import com.albertsilva.dev.dscatalog.projection.UserDetailsProjection;
 import com.albertsilva.dev.dscatalog.repository.RoleRepository;

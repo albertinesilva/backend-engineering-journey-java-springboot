@@ -26,12 +26,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.albertsilva.dev.dscatalog.domain.Role;
+import com.albertsilva.dev.dscatalog.domain.User;
 import com.albertsilva.dev.dscatalog.dto.user.request.UserCreateRequest;
 import com.albertsilva.dev.dscatalog.dto.user.request.UserUpdateRequest;
 import com.albertsilva.dev.dscatalog.dto.user.response.UserDetailsResponse;
 import com.albertsilva.dev.dscatalog.dto.user.response.UserResponse;
-import com.albertsilva.dev.dscatalog.entity.Role;
-import com.albertsilva.dev.dscatalog.entity.User;
 import com.albertsilva.dev.dscatalog.factory.UserFactory;
 import com.albertsilva.dev.dscatalog.mapper.user.UserMapper;
 import com.albertsilva.dev.dscatalog.repository.RoleRepository;

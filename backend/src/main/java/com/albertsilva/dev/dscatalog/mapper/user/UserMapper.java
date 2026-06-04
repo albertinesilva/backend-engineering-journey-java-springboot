@@ -7,13 +7,13 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
+import com.albertsilva.dev.dscatalog.domain.Role;
+import com.albertsilva.dev.dscatalog.domain.User;
 import com.albertsilva.dev.dscatalog.dto.role.response.RoleResponse;
 import com.albertsilva.dev.dscatalog.dto.user.request.UserCreateRequest;
 import com.albertsilva.dev.dscatalog.dto.user.request.UserUpdateRequest;
 import com.albertsilva.dev.dscatalog.dto.user.response.UserDetailsResponse;
 import com.albertsilva.dev.dscatalog.dto.user.response.UserResponse;
-import com.albertsilva.dev.dscatalog.entity.Role;
-import com.albertsilva.dev.dscatalog.entity.User;
 
 @Component
 public class UserMapper {
