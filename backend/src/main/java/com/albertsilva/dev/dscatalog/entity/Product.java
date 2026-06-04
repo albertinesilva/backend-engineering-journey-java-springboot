@@ -5,6 +5,8 @@ import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.albertsilva.dev.dscatalog.projection.Identifiable;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -42,8 +44,7 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "tb_product")
-public class Product implements Serializable {
-
+public class Product implements Serializable, Identifiable<Long> {
   private static final long serialVersionUID = 1L;
 
   /**
@@ -160,6 +161,7 @@ public class Product implements Serializable {
   /**
    * @return identificador único do produto
    */
+  @Override
   public Long getId() {
     return id;
   }

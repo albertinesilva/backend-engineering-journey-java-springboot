@@ -25,7 +25,7 @@ import com.albertsilva.dev.dscatalog.repository.CategoryRepository;
 import com.albertsilva.dev.dscatalog.repository.ProductRepository;
 import com.albertsilva.dev.dscatalog.service.exception.DatabaseException;
 import com.albertsilva.dev.dscatalog.service.exception.ResourceNotFoundException;
-import com.albertsilva.dev.dscatalog.util.ProductUtils;
+import com.albertsilva.dev.dscatalog.util.IdentifiableUtils;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -164,7 +164,7 @@ public class ProductService {
     List<Long> productsIds = page.map(ProductProjection::getId).toList();
 
     List<Product> products = productRepository.searchProductsWithCategories(productsIds);
-    products = ProductUtils.replace(products, page.getContent());
+    products = IdentifiableUtils.reorderByReference(products, page.getContent());
 
     List<ProductResponse> responses = products.stream().map(productMapper::toResponse).toList();
 
