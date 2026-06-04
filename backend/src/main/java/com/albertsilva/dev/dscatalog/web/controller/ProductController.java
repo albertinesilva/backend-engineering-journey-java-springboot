@@ -23,7 +23,6 @@ import com.albertsilva.dev.dscatalog.dto.product.request.ProductCreateRequest;
 import com.albertsilva.dev.dscatalog.dto.product.request.ProductUpdateRequest;
 import com.albertsilva.dev.dscatalog.dto.product.response.ProductDetailsResponse;
 import com.albertsilva.dev.dscatalog.dto.product.response.ProductResponse;
-import com.albertsilva.dev.dscatalog.projection.ProductProjection;
 import com.albertsilva.dev.dscatalog.service.ProductService;
 import com.albertsilva.dev.dscatalog.web.exception.response.ProblemDetails;
 
