@@ -19,6 +19,7 @@ import org.springframework.util.StringUtils;
 import com.albertsilva.dev.dscatalog.domain.Role;
 import com.albertsilva.dev.dscatalog.domain.User;
 import com.albertsilva.dev.dscatalog.dto.user.request.UserCreateRequest;
+import com.albertsilva.dev.dscatalog.dto.user.request.UserRegisterRequest;
 import com.albertsilva.dev.dscatalog.dto.user.request.UserUpdateRequest;
 import com.albertsilva.dev.dscatalog.dto.user.response.UserDetailsResponse;
 import com.albertsilva.dev.dscatalog.dto.user.response.UserResponse;
@@ -154,6 +155,19 @@ public class UserService implements UserDetailsService {
     return userMapper.toDetailsResponse(findEntityById(id));
   }
 
+  public UserResponse register(UserRegisterRequest request) {
+    logger.debug("Criando novo usuário - email: {}", request.email());
+
+    Role operator = roleRepository.findByAuthority("ROLE_OPERATOR");
+    User entity = userMapper.toEntity(request, Set.of(operator));
+    entity.setPassword(passwordEncoder.encode(request.password()));
+    entity.setActive(true);
+
+    entity = userRepository.save(entity);
+    logger.info("Usuário registrado com sucesso. id: {}", entity.getId());
+    return userMapper.toResponse(entity);
+  }
+
   /**
    * Insere um novo usuário no sistema.
    *
@@ -177,9 +191,8 @@ public class UserService implements UserDetailsService {
   public UserResponse create(UserCreateRequest request) {
     logger.debug("Criando novo usuário - email: {}", request.email());
 
-    Set<Role> roles = findRolesByIdsOrThrow(request.roleIds());
-
-    User entity = userMapper.toEntity(request, roles);
+    Role operator = roleRepository.findByAuthority("ROLE_OPERATOR");
+    User entity = userMapper.toEntity(request, Set.of(operator));
     entity.setPassword(passwordEncoder.encode(request.password()));
     entity.setActive(true);
 
@@ -222,9 +235,9 @@ public class UserService implements UserDetailsService {
     try {
       User entity = userRepository.getReferenceById(id);
 
-      Set<Role> roles = findRolesByIdsOrThrow(request.roleIds());
+      Role operator = roleRepository.findByAuthority("ROLE_OPERATOR");
 
-      userMapper.updateEntity(request, entity, roles);
+      userMapper.updateEntity(request, entity, Set.of(operator));
 
       if (request.password() != null) {
         entity.setPassword(passwordEncoder.encode(request.password()));
@@ -463,4 +476,5 @@ public class UserService implements UserDetailsService {
 
     return user;
   }
+
 }

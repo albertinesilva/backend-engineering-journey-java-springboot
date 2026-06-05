@@ -34,10 +34,10 @@ import com.albertsilva.dev.dscatalog.dto.role.response.RoleResponse;
  * @param roles     Conjunto de roles associadas ao usuário
  */
 public record UserDetailsResponse(
-                Long id,
-                String firstName,
-                String lastName,
-                String email,
-                Set<RoleResponse> roles,
-                boolean active) {
+    Long id,
+    String firstName,
+    String lastName,
+    String email,
+    Set<RoleResponse> roles,
+    boolean active) {
 }

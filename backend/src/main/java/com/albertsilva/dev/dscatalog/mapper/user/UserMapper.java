@@ -11,6 +11,7 @@ import com.albertsilva.dev.dscatalog.domain.Role;
 import com.albertsilva.dev.dscatalog.domain.User;
 import com.albertsilva.dev.dscatalog.dto.role.response.RoleResponse;
 import com.albertsilva.dev.dscatalog.dto.user.request.UserCreateRequest;
+import com.albertsilva.dev.dscatalog.dto.user.request.UserRegisterRequest;
 import com.albertsilva.dev.dscatalog.dto.user.request.UserUpdateRequest;
 import com.albertsilva.dev.dscatalog.dto.user.response.UserDetailsResponse;
 import com.albertsilva.dev.dscatalog.dto.user.response.UserResponse;
@@ -39,6 +40,45 @@ public class UserMapper {
    * nulo
    */
   public User toEntity(UserCreateRequest request, Set<Role> roles) {
+
+    if (request == null) {
+      return null;
+    }
+
+    User user = new User();
+    user.setFirstName(request.firstName());
+    user.setLastName(request.lastName());
+    user.setEmail(request.email());
+    user.setPassword(request.password());
+
+    if (roles != null) {
+      user.getRoles().addAll(roles);
+    }
+
+    return user;
+  }
+
+  /*
+   * *
+   * Converte um {@link UserRegisterRequest} em uma entidade {@link User}.
+   *
+   * <p>
+   * <b>Comportamento:</b>
+   * </p>
+   * <ul>
+   * <li>Cria uma nova instância de {@link User}</li>
+   * <li>Mapeia os campos básicos (firstName, lastName, email, password)</li>
+   * <li>Associa os papéis (roles) com base nos IDs fornecidos</li>
+   * </ul>
+   *
+   * @param request dados recebidos na requisição de registro
+   * 
+   * @param roles conjunto de entidades {@link Role} associadas ao usuário
+   * 
+   * @return entidade pronta para persistência ou {@code null} se o request for
+   * nulo
+   */
+  public User toEntity(UserRegisterRequest request, Set<Role> roles) {
 
     if (request == null) {
       return null;

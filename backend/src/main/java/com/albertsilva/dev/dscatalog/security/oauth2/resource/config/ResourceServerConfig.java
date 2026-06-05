@@ -111,6 +111,8 @@ public class ResourceServerConfig {
       "/docs-dscatalog.html", "/swagger-ui/**" };
   private static final String[] PUBLIC_GET_ENDPOINTS = { "/api/v1/categories/**", "/api/v1/products/**" };
 
+  private static final String[] PUBLIC_POST_ENDPOINTS = { "/api/v1/users/register" };
+
   @Value("${cors.origins}")
   private String corsOrigins;
 
@@ -212,6 +214,9 @@ public class ResourceServerConfig {
     http.authorizeHttpRequests(authorize -> authorize
         // Public endpoints
         .requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINTS).permitAll()
+
+        // Public POST endpoints
+        .requestMatchers(HttpMethod.POST, PUBLIC_POST_ENDPOINTS).permitAll()
 
         // Swagger / OpenAPI
         .requestMatchers(DOCUMENTATION_OPENAPI).permitAll()
