@@ -117,34 +117,33 @@ public class UserMapper {
    * 
    * @param roles conjunto de entidades {@link Role} associadas ao usuário
    */
-  public void updateEntity(UserUpdateRequest request, User entity, Set<Role> roles) {
+  public void updateEntity(UserUpdateRequest request, User entity) {
 
     entity.setFirstName(request.firstName());
     entity.setLastName(request.lastName());
     entity.setEmail(request.email());
-
-    entity.getRoles().clear();
-    entity.getRoles().addAll(roles);
   }
 
-  /*
-   * *
-   * Converte uma entidade {@link User} em um DTO de resposta {@link
-   * UserResponse}.
+  /**
+   * Converte uma entidade {@link User} em um DTO de resposta
+   * {@link UserResponse}.
    *
    * <p>
    * <b>Comportamento:</b>
    * </p>
    * <ul>
    * <li>Cria uma nova instância de {@link UserResponse}</li>
-   * <li>Mapeia os campos básicos (id, firstName, lastName, email)</li>
-   * <li>Converte os papéis (roles) para um conjunto de strings representando as
-   * autoridades</li>
+   * <li>Mapeia os campos básicos do usuário (id, firstName, lastName e
+   * email)</li>
+   * <li>Converte as roles associadas ao usuário para um conjunto de
+   * {@link RoleResponse}</li>
+   * <li>Preserva a ordem das roles utilizando um {@link LinkedHashSet}</li>
    * </ul>
    *
-   * @param entity entidade a ser convertida
-   * 
-   * @return DTO de resposta ou {@code null} se a entidade for nula
+   * @param entity entidade {@link User} a ser convertida
+   *
+   * @return DTO {@link UserResponse} correspondente à entidade informada,
+   *         ou {@code null} caso a entidade seja nula
    */
   public UserResponse toResponse(User entity) {
 
@@ -152,7 +151,7 @@ public class UserMapper {
       return null;
     }
 
-    Set<String> roles = entity.getRoles().stream().map(Role::getAuthority)
+    Set<RoleResponse> roles = entity.getRoles().stream().map(this::toRoleResponse)
         .collect(Collectors.toCollection(LinkedHashSet::new));
 
     return new UserResponse(entity.getId(), entity.getFirstName(), entity.getLastName(), entity.getEmail(), roles);

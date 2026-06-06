@@ -2,6 +2,8 @@ package com.albertsilva.dev.dscatalog.dto.user.response;
 
 import java.util.Set;
 
+import com.albertsilva.dev.dscatalog.dto.role.response.RoleResponse;
+
 /**
  * DTO de resposta para operações relacionadas a usuários.
  *
@@ -23,7 +25,7 @@ import java.util.Set;
  *     "John",
  *     "Doe",
  *     "john.doe@example.com",
- *     Set.of("ROLE_USER"));
+ *     Set.of(new RoleResponse(1L, "ROLE_USER")));
  * }</pre>
  *
  * @param id        Identificador único do usuário
@@ -37,6 +39,6 @@ public record UserResponse(
     String firstName,
     String lastName,
     String email,
-    Set<String> roles) {
+    Set<RoleResponse> roles) {
 
 }

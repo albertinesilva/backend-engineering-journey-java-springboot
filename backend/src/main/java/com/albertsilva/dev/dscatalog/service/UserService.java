@@ -1,5 +1,6 @@
 package com.albertsilva.dev.dscatalog.service;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -191,8 +192,7 @@ public class UserService implements UserDetailsService {
   public UserResponse create(UserCreateRequest request) {
     logger.debug("Criando novo usuário - email: {}", request.email());
 
-    Role operator = roleRepository.findByAuthority("ROLE_OPERATOR");
-    User entity = userMapper.toEntity(request, Set.of(operator));
+    User entity = userMapper.toEntity(request, findRolesByIdsOrThrow(request.roleIds()));
     entity.setPassword(passwordEncoder.encode(request.password()));
     entity.setActive(true);
 
@@ -233,15 +233,13 @@ public class UserService implements UserDetailsService {
     logger.debug("Atualizando usuário. id: {}", id);
 
     try {
+
       User entity = userRepository.getReferenceById(id);
 
-      Role operator = roleRepository.findByAuthority("ROLE_OPERATOR");
+      userMapper.updateEntity(request, entity);
 
-      userMapper.updateEntity(request, entity, Set.of(operator));
-
-      if (request.password() != null) {
-        entity.setPassword(passwordEncoder.encode(request.password()));
-      }
+      updateRolesIfPresent(request, entity);
+      updatePasswordIfPresent(request, entity);
 
       entity = userRepository.save(entity);
 
@@ -250,7 +248,9 @@ public class UserService implements UserDetailsService {
       return userMapper.toResponse(entity);
 
     } catch (EntityNotFoundException e) {
+
       logger.warn("Falha ao atualizar. Usuário não encontrado. id: {}", id);
+
       throw new ResourceNotFoundException("Entity not found id: " + id);
     }
   }
@@ -387,8 +387,8 @@ public class UserService implements UserDetailsService {
    */
   private Set<Role> findRolesByIdsOrThrow(Set<Long> roleIds) {
 
-    if (roleIds == null) {
-      return null;
+    if (roleIds == null || roleIds.isEmpty()) {
+      return Collections.emptySet();
     }
 
     Set<Role> roles = new HashSet<>(roleRepository.findAllById(roleIds));
@@ -475,6 +475,25 @@ public class UserService implements UserDetailsService {
     }
 
     return user;
+  }
+
+  private void updatePasswordIfPresent(UserUpdateRequest request, User entity) {
+
+    if (request.password() != null) {
+      entity.setPassword(passwordEncoder.encode(request.password()));
+    }
+  }
+
+  private void updateRolesIfPresent(UserUpdateRequest request, User entity) {
+
+    if (request.roleIds() == null) {
+      return;
+    }
+
+    Set<Role> roles = findRolesByIdsOrThrow(request.roleIds());
+
+    entity.getRoles().clear();
+    entity.getRoles().addAll(roles);
   }
 
 }

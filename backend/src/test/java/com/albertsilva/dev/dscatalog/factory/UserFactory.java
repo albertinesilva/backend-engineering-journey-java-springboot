@@ -22,7 +22,8 @@ public class UserFactory {
   }
 
   public static UserResponse createUserResponse() {
-    return new UserResponse(EXISTING_ID, "Maria", "Silva", "maria@gmail.com", Set.of("ROLE_OPERATOR"));
+    return new UserResponse(EXISTING_ID, "Maria", "Silva", "maria@gmail.com",
+        Set.of(RoleFactory.createOperatorRoleResponse()));
   }
 
   public static UserDetailsResponse createUserDetailsResponse() {
@@ -38,7 +39,8 @@ public class UserFactory {
   }
 
   public static UserResponse createUpdatedUserResponse() {
-    return new UserResponse(EXISTING_ID, "Pedro", "Santos Updated", "pedro@gmail.com", Set.of("ROLE_OPERATOR"));
+    return new UserResponse(EXISTING_ID, "Pedro", "Santos Updated", "pedro@gmail.com",
+        Set.of(RoleFactory.createAdminRoleResponse()));
   }
 
 }

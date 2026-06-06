@@ -9,7 +9,6 @@ import com.albertsilva.dev.dscatalog.validation.user.annotation.UserCreateValid;
 import com.albertsilva.dev.dscatalog.validation.user.annotation.ValidEmail;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
 /**
@@ -80,7 +79,6 @@ public record UserCreateRequest(
     @StrongPassword 
     String password,
 
-    @NotEmpty(message = "{user.roleIds.notEmpty}") 
     @ValidRoles 
     Set<Long> roleIds) {
 }
