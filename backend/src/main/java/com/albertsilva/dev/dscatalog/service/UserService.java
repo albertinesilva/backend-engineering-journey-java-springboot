@@ -17,8 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import com.albertsilva.dev.dscatalog.domain.Role;
-import com.albertsilva.dev.dscatalog.domain.User;
+import com.albertsilva.dev.dscatalog.domain.user.Role;
+import com.albertsilva.dev.dscatalog.domain.user.User;
 import com.albertsilva.dev.dscatalog.dto.user.request.UserCreateRequest;
 import com.albertsilva.dev.dscatalog.dto.user.request.UserRegisterRequest;
 import com.albertsilva.dev.dscatalog.dto.user.request.UserUpdateRequest;

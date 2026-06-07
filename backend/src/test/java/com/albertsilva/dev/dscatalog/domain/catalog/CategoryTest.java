@@ -1,9 +1,10 @@
-package com.albertsilva.dev.dscatalog.domain;
+package com.albertsilva.dev.dscatalog.domain.catalog;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.albertsilva.dev.dscatalog.domain.catalog.Category;
 import com.albertsilva.dev.dscatalog.factory.CategoryFactory;
 
 @DisplayName("Tests for Category Entity")

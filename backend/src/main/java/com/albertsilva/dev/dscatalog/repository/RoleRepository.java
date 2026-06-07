@@ -3,7 +3,7 @@ package com.albertsilva.dev.dscatalog.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.albertsilva.dev.dscatalog.domain.Role;
+import com.albertsilva.dev.dscatalog.domain.user.Role;
 
 /**
  * Repositório responsável pelo acesso a dados da entidade {@link Role}.

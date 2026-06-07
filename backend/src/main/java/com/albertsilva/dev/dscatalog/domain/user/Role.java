@@ -1,4 +1,4 @@
-package com.albertsilva.dev.dscatalog.domain;
+package com.albertsilva.dev.dscatalog.domain.user;
 
 import org.springframework.security.core.GrantedAuthority;
 

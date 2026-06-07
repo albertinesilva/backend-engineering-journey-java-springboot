@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import com.albertsilva.dev.dscatalog.domain.Category;
-import com.albertsilva.dev.dscatalog.domain.Product;
+import com.albertsilva.dev.dscatalog.domain.catalog.Category;
+import com.albertsilva.dev.dscatalog.domain.catalog.Product;
 import com.albertsilva.dev.dscatalog.dto.product.request.ProductCreateRequest;
 import com.albertsilva.dev.dscatalog.dto.product.request.ProductUpdateRequest;
 import com.albertsilva.dev.dscatalog.dto.product.response.ProductDetailsResponse;

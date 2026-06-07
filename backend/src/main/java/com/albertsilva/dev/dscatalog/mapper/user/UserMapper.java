@@ -7,8 +7,8 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
-import com.albertsilva.dev.dscatalog.domain.Role;
-import com.albertsilva.dev.dscatalog.domain.User;
+import com.albertsilva.dev.dscatalog.domain.user.Role;
+import com.albertsilva.dev.dscatalog.domain.user.User;
 import com.albertsilva.dev.dscatalog.dto.role.response.RoleResponse;
 import com.albertsilva.dev.dscatalog.dto.user.request.UserCreateRequest;
 import com.albertsilva.dev.dscatalog.dto.user.request.UserRegisterRequest;

@@ -2,7 +2,7 @@ package com.albertsilva.dev.dscatalog.factory;
 
 import java.util.Set;
 
-import com.albertsilva.dev.dscatalog.domain.User;
+import com.albertsilva.dev.dscatalog.domain.user.User;
 import com.albertsilva.dev.dscatalog.dto.user.request.UserCreateRequest;
 import com.albertsilva.dev.dscatalog.dto.user.request.UserUpdateRequest;
 import com.albertsilva.dev.dscatalog.dto.user.response.UserDetailsResponse;

@@ -1,4 +1,4 @@
-package com.albertsilva.dev.dscatalog.domain;
+package com.albertsilva.dev.dscatalog.domain.user;
 
 import java.util.Collection;
 import java.util.HashSet;

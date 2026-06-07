@@ -3,7 +3,7 @@ package com.albertsilva.dev.dscatalog.mapper.product;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
-import com.albertsilva.dev.dscatalog.domain.Product;
+import com.albertsilva.dev.dscatalog.domain.catalog.Product;
 import com.albertsilva.dev.dscatalog.dto.category.response.CategoryDetailsResponse;
 import com.albertsilva.dev.dscatalog.dto.category.response.CategoryResponse;
 import com.albertsilva.dev.dscatalog.dto.product.request.ProductCreateRequest;

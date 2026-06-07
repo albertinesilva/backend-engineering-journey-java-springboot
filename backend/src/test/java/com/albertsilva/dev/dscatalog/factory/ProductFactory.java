@@ -3,7 +3,7 @@ package com.albertsilva.dev.dscatalog.factory;
 import java.time.Instant;
 import java.util.List;
 
-import com.albertsilva.dev.dscatalog.domain.Product;
+import com.albertsilva.dev.dscatalog.domain.catalog.Product;
 import com.albertsilva.dev.dscatalog.dto.product.request.ProductCreateRequest;
 import com.albertsilva.dev.dscatalog.dto.product.request.ProductUpdateRequest;
 import com.albertsilva.dev.dscatalog.dto.product.response.ProductDetailsResponse;
