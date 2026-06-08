@@ -111,7 +111,7 @@ public class ResourceServerConfig {
       "/docs-dscatalog.html", "/swagger-ui/**" };
   private static final String[] PUBLIC_GET_ENDPOINTS = { "/api/v1/categories/**", "/api/v1/products/**" };
 
-  private static final String[] PUBLIC_POST_ENDPOINTS = { "/api/v1/users/register" };
+  private static final String[] PUBLIC_POST_ENDPOINTS = { "/api/v1/account/register" };
 
   @Value("${cors.origins}")
   private String corsOrigins;
