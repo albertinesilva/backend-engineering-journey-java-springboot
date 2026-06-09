@@ -37,7 +37,7 @@ import jakarta.validation.constraints.Size;
  * @param subject   assunto do email
  * @param content   conteúdo da mensagem
  */
-public record EmailCreateRequest(
+public record EmailRegisterRequest(
 
   @NotBlank(message = "{email.sender.notBlank}")
   @Email(message = "{email.sender.invalid}")
@@ -48,7 +48,7 @@ public record EmailCreateRequest(
   String recipient,
 
   @NotBlank(message = "{email.subject.notBlank}")
-  @Size(max = 255, message = "{email.subject.size}")
+  @Size(max = 500, message = "{email.subject.size}")
   String subject,
 
   @NotBlank(message = "{email.content.notBlank}")

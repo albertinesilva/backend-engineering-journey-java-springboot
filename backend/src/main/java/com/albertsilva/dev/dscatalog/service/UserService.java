@@ -20,7 +20,6 @@ import org.springframework.util.StringUtils;
 import com.albertsilva.dev.dscatalog.domain.user.Role;
 import com.albertsilva.dev.dscatalog.domain.user.User;
 import com.albertsilva.dev.dscatalog.dto.user.request.UserCreateRequest;
-import com.albertsilva.dev.dscatalog.dto.user.request.UserRegisterRequest;
 import com.albertsilva.dev.dscatalog.dto.user.request.UserUpdateRequest;
 import com.albertsilva.dev.dscatalog.dto.user.response.UserDetailsResponse;
 import com.albertsilva.dev.dscatalog.dto.user.response.UserResponse;
@@ -156,19 +155,6 @@ public class UserService implements UserDetailsService {
     return userMapper.toDetailsResponse(findEntityById(id));
   }
 
-  public UserResponse register(UserRegisterRequest request) {
-    logger.debug("Criando novo usuário - email: {}", request.email());
-
-    Role operator = roleRepository.findByAuthority("ROLE_OPERATOR");
-    User entity = userMapper.toEntity(request, Set.of(operator));
-    entity.setPassword(passwordEncoder.encode(request.password()));
-    entity.setActive(true);
-
-    entity = userRepository.save(entity);
-    logger.info("Usuário registrado com sucesso. id: {}", entity.getId());
-    return userMapper.toResponse(entity);
-  }
-
   /**
    * Insere um novo usuário no sistema.
    *
@@ -194,7 +180,7 @@ public class UserService implements UserDetailsService {
 
     User entity = userMapper.toEntity(request, findRolesByIdsOrThrow(request.roleIds()));
     entity.setPassword(passwordEncoder.encode(request.password()));
-    entity.setActive(true);
+    entity.activate();
 
     entity = userRepository.save(entity);
     logger.info("Usuário criado com sucesso. id: {}", entity.getId());
@@ -276,7 +262,16 @@ public class UserService implements UserDetailsService {
    */
   @Transactional
   public void activate(Long id) {
-    changeStatus(id, true);
+    User entity = findEntityById(id);
+
+    if (entity.isActive() == true) {
+      logger.debug("Status já definido | id={} | active={}", id, true);
+      return;
+    }
+
+    entity.activate();
+
+    logger.info("Status alterado | id={} | active={}", id, true);
   }
 
   /*
@@ -301,7 +296,16 @@ public class UserService implements UserDetailsService {
    */
   @Transactional
   public void deactivate(Long id) {
-    changeStatus(id, false);
+    User entity = findEntityById(id);
+
+    if (entity.isActive() == false) {
+      logger.debug("Status já definido | id={} | active={}", id, false);
+      return;
+    }
+
+    entity.deactivate();
+
+    logger.info("Status alterado | id={} | active={}", id, false);
   }
 
   /**
@@ -398,40 +402,6 @@ public class UserService implements UserDetailsService {
     }
 
     return roles;
-  }
-
-  /**
-   * Altera o status de um usuário para ativo ou inativo.
-   *
-   * <p>
-   * Realiza a mudança de status do usuário, ativando ou desativando-o
-   * conforme o parâmetro fornecido.
-   * </p>
-   *
-   * @param id     identificador do usuário
-   * @param active novo status do usuário (true para ativo, false para inativo)
-   * @throws ResourceNotFoundException caso o usuário não exista
-   *
-   * @implNote
-   *           Centraliza a lógica de alteração de status em um método privado,
-   *           evitando duplicação de código entre os métodos de ativação e
-   *           desativação.
-   *
-   * @apiNote
-   *          Esta implementação reforça conceitos importantes como:
-   *          centralização de lógica, DRY Principle e manutenção facilitada.
-   */
-  private void changeStatus(Long id, boolean active) {
-    User entity = findEntityById(id);
-
-    if (entity.isActive() == active) {
-      logger.debug("Status já definido | id={} | active={}", id, active);
-      return;
-    }
-
-    entity.setActive(active);
-
-    logger.info("Status alterado | id={} | active={}", id, active);
   }
 
   /**

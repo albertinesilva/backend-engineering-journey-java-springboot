@@ -1,5 +1,7 @@
 package com.albertsilva.dev.dscatalog.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +16,6 @@ public interface TokenRepository extends JpaRepository<Token, Long> {
    * @param token valor do token a ser buscado
    * @return o token encontrado ou {@code null} se não existir
    */
-  Token findByToken(String token);
+  Optional<Token> findByToken(String token);
   
 }

@@ -1,9 +1,10 @@
 package com.albertsilva.dev.dscatalog.domain.recovery;
 
+import java.io.Serializable;
 import java.time.Instant;
 
 import com.albertsilva.dev.dscatalog.domain.recovery.enums.EmailStatus;
-import com.albertsilva.dev.dscatalog.dto.email.request.EmailCreateRequest;
+import com.albertsilva.dev.dscatalog.dto.email.request.EmailRegisterRequest;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,8 +17,8 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "tb_email")
-public class Email {
-
+public class Email implements Serializable {
+  private static final long serialVersionUID = 1L;
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -28,7 +29,7 @@ public class Email {
   @Column(nullable = false)
   private String recipient;
 
-  @Column(nullable = false, length = 255)
+  @Column(nullable = false, columnDefinition = "TEXT")
   private String subject;
 
   @Column(nullable = false, columnDefinition = "TEXT")
@@ -44,7 +45,7 @@ public class Email {
   public Email() {
   }
 
-  public Email(EmailCreateRequest request) {
+  public Email(EmailRegisterRequest request) {
     this.sender = request.sender();
     this.recipient = request.recipient();
     this.subject = request.subject();

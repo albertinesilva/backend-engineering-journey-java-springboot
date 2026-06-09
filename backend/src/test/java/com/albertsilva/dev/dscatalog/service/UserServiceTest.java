@@ -296,7 +296,7 @@ class UserServiceTest {
       // Arrange
       User user = UserFactory.createUser();
       user.setId(existingId);
-      user.setActive(false);
+      user.deactivate();
 
       when(repository.findById(existingId)).thenReturn(Optional.of(user));
 
@@ -334,7 +334,7 @@ class UserServiceTest {
       // Arrange
       User user = UserFactory.createUser();
       user.setId(existingId);
-      user.setActive(true);
+      user.activate();
 
       when(repository.findById(existingId)).thenReturn(Optional.of(user));
 

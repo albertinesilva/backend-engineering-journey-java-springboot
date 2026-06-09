@@ -184,13 +184,6 @@ public class User implements UserDetails {
     return active;
   }
 
-  /**
-   * @param active define se a conta do usuário está ativa
-   */
-  public void setActive(boolean active) {
-    this.active = active;
-  }
-
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -256,6 +249,14 @@ public class User implements UserDetails {
     }
 
     return roles.stream().anyMatch(role -> roleName.equals(role.getAuthority()));
+  }
+
+  public void activate() {
+    this.active = true;
+  }
+
+  public void deactivate() {
+    this.active = false;
   }
 
 }

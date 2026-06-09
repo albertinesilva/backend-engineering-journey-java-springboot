@@ -113,25 +113,25 @@ class UserRepositoryTest {
       User user = userRepository.saveAndFlush(UserFactory.createUser());
 
       // Act
-      User result = userRepository.findByEmail(user.getEmail());
+      Optional<User> result = userRepository.findByEmail(user.getEmail());
 
       // Assert
-      assertThat(result).as("User should be found by email").isNotNull();
-      assertThat(result.getEmail()).as("User email should match").isEqualTo(user.getEmail());
+      assertThat(result).as("User should be found by email").isPresent();
+      assertThat(result.get().getEmail()).as("User email should match").isEqualTo(user.getEmail());
     }
 
     @Test
-    @DisplayName("should return null when email does not exist")
-    void shouldReturnNullWhenEmailDoesNotExist() {
+    @DisplayName("should return empty when email does not exist")
+    void shouldReturnEmptyWhenEmailDoesNotExist() {
 
       // Arrange
       // No user with this email
 
       // Act
-      User result = userRepository.findByEmail("nonexistent@gmail.com");
+      Optional<User> result = userRepository.findByEmail("nonexistent@gmail.com");
 
       // Assert
-      assertThat(result).as("User should not be found").isNull();
+      assertThat(result).as("User should not be found").isEmpty();
     }
   }
 

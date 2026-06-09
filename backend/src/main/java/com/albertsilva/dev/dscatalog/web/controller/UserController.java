@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.albertsilva.dev.dscatalog.dto.user.request.UserCreateRequest;
-import com.albertsilva.dev.dscatalog.dto.user.request.UserRegisterRequest;
 import com.albertsilva.dev.dscatalog.dto.user.request.UserUpdateRequest;
 import com.albertsilva.dev.dscatalog.dto.user.response.UserDetailsResponse;
 import com.albertsilva.dev.dscatalog.dto.user.response.UserResponse;
@@ -85,42 +84,6 @@ public class UserController {
    */
   public UserController(UserService userService) {
     this.userService = userService;
-  }
-
-  /**
-   * Endpoint para criação de um novo usuário.
-   *
-   * <p>
-   * Recebe um JSON contendo os dados do usuário e retorna o recurso criado.
-   * </p>
-   *
-   * <p>
-   * <b>Fluxo:</b>
-   * </p>
-   * <ol>
-   * <li>Recebe o request</li>
-   * <li>Delega para o Service</li>
-   * <li>Gera a URI do recurso criado</li>
-   * <li>Retorna HTTP 201 (Created)</li>
-   * </ol>
-   *
-   * @param userCreateRequest dados do usuário
-   * @return usuário criado com status 201 e header Location
-   */
-  @Operation(summary = "Registra um novo usuário", description = "Requisição para registro de novo usuário", security = @SecurityRequirement(name = "security"), responses = {
-      @ApiResponse(responseCode = "201", description = "Usuário criado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.class))),
-      @ApiResponse(responseCode = "400", description = "Dados inválidos ou campos obrigatórios ausentes", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class))),
-      @ApiResponse(responseCode = "409", description = "Usuário já existente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))
-  })
-  @PostMapping("/register")
-  public ResponseEntity<UserResponse> register(@Valid @RequestBody UserRegisterRequest userRegisterRequest) {
-
-    logger.debug("Recebendo requisição para criar usuário: {}", userRegisterRequest);
-    UserResponse response = userService.register(userRegisterRequest);
-    URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(response.id()).toUri();
-
-    logger.info("Usuário criado com sucesso. id: {}", response.id());
-    return ResponseEntity.created(uri).body(response);
   }
 
   /**
