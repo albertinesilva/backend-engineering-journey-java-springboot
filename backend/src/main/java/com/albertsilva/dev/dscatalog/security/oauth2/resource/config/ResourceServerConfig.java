@@ -109,9 +109,9 @@ public class ResourceServerConfig {
 
   private static final String[] DOCUMENTATION_OPENAPI = { "/docs-dscatalog", "/docs-dscatalog/**",
       "/docs-dscatalog.html", "/swagger-ui/**" };
-  private static final String[] PUBLIC_GET_ENDPOINTS = { "/api/v1/categories/**", "/api/v1/products/**" };
+  private static final String[] PUBLIC_GET_ENDPOINTS = { "/api/v1/categories/**", "/api/v1/products/**" , "/api/v1/accounts/**"};
 
-  private static final String[] PUBLIC_POST_ENDPOINTS = { "/api/v1/account/register" };
+  private static final String[] PUBLIC_POST_ENDPOINTS = { "/api/v1/accounts/**" };
 
   @Value("${cors.origins}")
   private String corsOrigins;

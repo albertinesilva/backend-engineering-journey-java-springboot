@@ -30,9 +30,6 @@ public class Email implements Serializable {
   private String recipient;
 
   @Column(nullable = false, columnDefinition = "TEXT")
-  private String subject;
-
-  @Column(nullable = false, columnDefinition = "TEXT")
   private String content;
 
   @Column(nullable = false, columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
@@ -48,7 +45,6 @@ public class Email implements Serializable {
   public Email(EmailRegisterRequest request) {
     this.sender = request.sender();
     this.recipient = request.recipient();
-    this.subject = request.subject();
     this.content = request.content();
     this.createdAt = Instant.now();
     this.status = EmailStatus.PENDING;
@@ -76,14 +72,6 @@ public class Email implements Serializable {
 
   public void setRecipient(String recipient) {
     this.recipient = recipient;
-  }
-
-  public String getSubject() {
-    return subject;
-  }
-
-  public void setSubject(String subject) {
-    this.subject = subject;
   }
 
   public String getContent() {

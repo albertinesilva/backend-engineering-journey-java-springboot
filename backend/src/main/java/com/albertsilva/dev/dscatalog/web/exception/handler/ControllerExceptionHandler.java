@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.albertsilva.dev.dscatalog.service.exception.DatabaseException;
+import com.albertsilva.dev.dscatalog.service.exception.InvalidTokenException;
 import com.albertsilva.dev.dscatalog.service.exception.ResourceNotFoundException;
 import com.albertsilva.dev.dscatalog.web.exception.enums.ErrorType;
 import com.albertsilva.dev.dscatalog.web.exception.response.ProblemDetails;
@@ -240,6 +241,31 @@ public class ControllerExceptionHandler {
     logger.warn("AccessDeniedException - path: {}, message: {}", request.getRequestURI(), e.getMessage());
     ProblemDetails err = new ProblemDetails(Instant.now(), status.value(), "Access denied",
         "Você não possui permissão para acessar este recurso", request.getRequestURI());
+    return ResponseEntity.status(status).body(err);
+  }
+
+  /**
+   * Trata exceções do tipo {@link InvalidTokenException}.
+   *
+   * <p>
+   * Essa exceção ocorre quando um token de ativação é inválido ou expirado
+   * durante o processo de ativação de conta.
+   * </p>
+   *
+   * <p>
+   * Retorna HTTP 400 (Bad Request).
+   * </p>
+   *
+   * @param e       exceção lançada
+   * @param request requisição HTTP atual
+   * @return resposta padronizada contendo detalhes do erro
+   */
+  @ExceptionHandler(InvalidTokenException.class)
+  public ResponseEntity<ProblemDetails> handleInvalidToken(InvalidTokenException e, HttpServletRequest request) {
+    HttpStatus status = HttpStatus.BAD_REQUEST;
+    logger.warn("InvalidTokenException - path: {}, message: {}", request.getRequestURI(), e.getMessage());
+    ProblemDetails err = new ProblemDetails(Instant.now(), status.value(), ErrorType.INVALID_TOKEN.getMessage(),
+        e.getMessage(), request.getRequestURI());
     return ResponseEntity.status(status).body(err);
   }
 

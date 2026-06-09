@@ -5,10 +5,13 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
+import com.albertsilva.dev.dscatalog.domain.recovery.enums.TokenType;
 import com.albertsilva.dev.dscatalog.domain.user.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -36,19 +39,28 @@ public class Token implements Serializable {
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
-  @Column(nullable = false)
+  @Column(nullable = false, updatable = false, columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
+  private Instant createdAt;
+
+  @Column(nullable = false, columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
   private Instant expireDate;
 
   @Column(nullable = false)
   private boolean disabled;
 
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false)
+  private TokenType type;
+
   protected Token() {
   }
 
-  public Token(String token, User user, Instant expireDate) {
+  public Token(String token, User user, Instant expireDate, TokenType type) {
     this.token = token;
     this.user = user;
+    this.createdAt = Instant.now();
     this.expireDate = expireDate;
+    this.type = type;
     this.disabled = false;
   }
 
@@ -65,11 +77,13 @@ public class Token implements Serializable {
   }
 
   public static Token activationToken(User user) {
-    return new Token(UUID.randomUUID().toString(), user, Instant.now().plus(ACTIVATION_TOKEN_HOURS, ChronoUnit.HOURS));
+    return new Token(UUID.randomUUID().toString(), user,
+        Instant.now().plus(ACTIVATION_TOKEN_HOURS, ChronoUnit.HOURS), TokenType.ACTIVATION);
   }
 
   public static Token passwordRecoveryToken(User user) {
-    return new Token(UUID.randomUUID().toString(), user, Instant.now().plus(PASSWORD_RECOVERY_MINUTES, ChronoUnit.MINUTES));
+    return new Token(UUID.randomUUID().toString(), user,
+        Instant.now().plus(PASSWORD_RECOVERY_MINUTES, ChronoUnit.MINUTES), TokenType.PASSWORD_RECOVERY);
   }
 
   public Long getId() {
@@ -84,16 +98,16 @@ public class Token implements Serializable {
     return token;
   }
 
-  public void setToken(String token) {
-    this.token = token;
-  }
-
   public User getUser() {
     return user;
   }
 
   public void setUser(User user) {
     this.user = user;
+  }
+
+  public Instant getCreatedAt() {
+    return createdAt;
   }
 
   public Instant getExpireDate() {
@@ -110,6 +124,10 @@ public class Token implements Serializable {
 
   public void setDisabled(boolean disabled) {
     this.disabled = disabled;
+  }
+
+  public TokenType getType() {
+    return type;
   }
 
   @Override

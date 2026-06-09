@@ -2,7 +2,6 @@ package com.albertsilva.dev.dscatalog.dto.email.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 
 /**
  * DTO de requisição para criação de um email.
@@ -46,10 +45,6 @@ public record EmailRegisterRequest(
   @NotBlank(message = "{email.recipient.notBlank}")
   @Email(message = "{email.recipient.invalid}")
   String recipient,
-
-  @NotBlank(message = "{email.subject.notBlank}")
-  @Size(max = 500, message = "{email.subject.size}")
-  String subject,
 
   @NotBlank(message = "{email.content.notBlank}")
   String content) {

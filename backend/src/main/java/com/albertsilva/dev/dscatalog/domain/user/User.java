@@ -7,6 +7,8 @@ import java.util.Set;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.albertsilva.dev.dscatalog.domain.recovery.Token;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,6 +17,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 /**
@@ -75,6 +78,9 @@ public class User implements UserDetails {
   @JoinTable(name = "tb_user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
   /** Conjunto de roles/autoridades atribuídas ao usuário. */
   private Set<Role> roles = new HashSet<>();
+
+  @OneToMany(mappedBy = "user")
+  private Set<Token> tokens;
 
   /** Indica se a conta do usuário está ativa. */
   private boolean active;

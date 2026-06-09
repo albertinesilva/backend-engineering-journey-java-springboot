@@ -1,5 +1,7 @@
 package com.albertsilva.dev.dscatalog.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -35,5 +37,5 @@ import com.albertsilva.dev.dscatalog.domain.user.Role;
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Long> {
 
-  Role findByAuthority(String authority);
+  Optional<Role> findByAuthority(String authority);
 }
