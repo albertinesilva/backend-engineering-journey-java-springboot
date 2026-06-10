@@ -1,5 +1,7 @@
 package com.albertsilva.dev.dscatalog.projection;
 
+import org.springframework.security.core.userdetails.UserDetailsService;
+
 /**
  * Projeção para otimizar consultas de detalhes de usuário para autenticação.
  *
@@ -135,4 +137,17 @@ public interface UserDetailsProjection {
    *          {@link org.springframework.security.core.Authentication}
    */
   String getAuthority();
+
+  /**
+   * Indica se a conta do usuário está ativa ou não.
+   *
+   * <p>
+   * Este campo é utilizado para determinar se o usuário pode autenticar
+   * ou não. Se {@code false}, o usuário não poderá fazer login.
+   * </p>
+   *
+   * @return {@code true} se a conta do usuário está ativa; {@code false}
+   *         caso contrário
+   */
+  boolean getActive();
 }

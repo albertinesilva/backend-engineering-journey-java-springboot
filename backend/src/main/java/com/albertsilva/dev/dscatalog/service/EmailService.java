@@ -131,7 +131,7 @@ public class EmailService {
     context.setVariable("titulo", "Bem-vindo ao Dscatalog, " + name + "!");
     context.setVariable("texto",
         "Estamos felizes em tê-lo(a) conosco. Para começar a usar o Dscatalog, confirme seu cadastro clicando no link abaixo.");
-    context.setVariable("linkConfirmacao", backendUrl + "/api/v1/accounts/activate?token=" + activationToken);
+    context.setVariable("linkConfirmacao", frontendUrl + "/activate-account?token=" + activationToken);
 
     String htmlBody = templateEngine.process("activate_user_by_email_template", context);
     helper.setTo(email);

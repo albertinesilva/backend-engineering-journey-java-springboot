@@ -74,11 +74,12 @@ public class User implements UserDetails {
   /** Senha criptografada da conta do usuário. */
   private String password;
 
+  /** Conjunto de roles/autoridades atribuídas ao usuário. */
   @ManyToMany
   @JoinTable(name = "tb_user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-  /** Conjunto de roles/autoridades atribuídas ao usuário. */
   private Set<Role> roles = new HashSet<>();
 
+  /** Conjunto de tokens de recuperação associados ao usuário. */
   @OneToMany(mappedBy = "user")
   private Set<Token> tokens;
 
@@ -190,6 +191,34 @@ public class User implements UserDetails {
     return active;
   }
 
+  public void setActive(boolean active) {
+    this.active = active;
+  }
+
+  public void activate() {
+    this.active = true;
+  }
+
+  public void deactivate() {
+    this.active = false;
+  }
+
+  /**
+   * Verifica se o usuário possui uma role com o nome informado.
+   *
+   * @param roleName nome da role a ser verificada
+   * @return {@code true} se o usuário possui a role; {@code false} caso
+   *         contrário
+   */
+  public boolean hasRole(String roleName) {
+
+    if (roleName == null) {
+      return false;
+    }
+
+    return roles.stream().anyMatch(role -> roleName.equals(role.getAuthority()));
+  }
+
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -241,28 +270,24 @@ public class User implements UserDetails {
     return email;
   }
 
-  /**
-   * Verifica se o usuário possui uma role com o nome informado.
-   *
-   * @param roleName nome da role a ser verificada
-   * @return {@code true} se o usuário possui a role; {@code false} caso
-   *         contrário
-   */
-  public boolean hasRole(String roleName) {
-
-    if (roleName == null) {
-      return false;
-    }
-
-    return roles.stream().anyMatch(role -> roleName.equals(role.getAuthority()));
+  @Override
+  public boolean isAccountNonExpired() {
+    return true;
   }
 
-  public void activate() {
-    this.active = true;
+  @Override
+  public boolean isAccountNonLocked() {
+    return true;
   }
 
-  public void deactivate() {
-    this.active = false;
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isEnabled() {
+    return active;
   }
 
 }

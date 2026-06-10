@@ -8,6 +8,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -266,6 +267,15 @@ public class ControllerExceptionHandler {
     logger.warn("InvalidTokenException - path: {}, message: {}", request.getRequestURI(), e.getMessage());
     ProblemDetails err = new ProblemDetails(Instant.now(), status.value(), ErrorType.INVALID_TOKEN.getMessage(),
         e.getMessage(), request.getRequestURI());
+    return ResponseEntity.status(status).body(err);
+  }
+
+  
+  @ExceptionHandler(DisabledException.class)
+  public ResponseEntity<ProblemDetails> handleDisabledException(DisabledException e, HttpServletRequest request) {
+    HttpStatus status = HttpStatus.FORBIDDEN;
+    ProblemDetails err = new ProblemDetails(Instant.now(), status.value(), "Account disabled",
+        "Sua conta ainda não foi ativada. Verifique seu e-mail.", request.getRequestURI());
     return ResponseEntity.status(status).body(err);
   }
 

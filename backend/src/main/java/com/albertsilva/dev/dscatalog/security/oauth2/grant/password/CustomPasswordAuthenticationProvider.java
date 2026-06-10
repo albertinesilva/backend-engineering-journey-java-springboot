@@ -203,14 +203,14 @@ public class CustomPasswordAuthenticationProvider implements AuthenticationProvi
     String password = customPasswordAuthenticationToken.getPassword();
 
     UserDetails user;
+
     try {
       user = userDetailsService.loadUserByUsername(username);
+      validateCredentials(user, password);
+      validateUserStatus(user);
     } catch (UsernameNotFoundException e) {
-      throw new OAuth2AuthenticationException("Invalid credentials");
-    }
-
-    if (!passwordEncoder.matches(password, user.getPassword()) || !user.getUsername().equals(username)) {
-      throw new OAuth2AuthenticationException("Invalid credentials");
+      throw new OAuth2AuthenticationException(
+          new OAuth2Error(OAuth2ErrorCodes.INVALID_GRANT, "Invalid credentials", ERROR_URI));
     }
 
     Set<String> authorizedScopes = user.getAuthorities().stream().map(scope -> scope.getAuthority())
@@ -290,6 +290,35 @@ public class CustomPasswordAuthenticationProvider implements AuthenticationProvi
   }
 
   /**
+   * Valida as credenciais do usuário comparando a senha fornecida com o hash
+   * armazenado.
+   *
+   * <p>
+   * Verifica se o username corresponde ao nome de usuário do UserDetails e se a
+   * senha fornecida, quando codificada, corresponde à senha armazenada. Lança
+   * {@code OAuth2AuthenticationException} com mensagem genérica "Invalid
+   * credentials" se qualquer validação falhar.
+   * </p>
+   *
+   * @param user     detalhes do usuário carregados do banco
+   * @param username nome de usuário fornecido na autenticação
+   * @param password senha fornecida na autenticação
+   * @throws OAuth2AuthenticationException se o username não corresponder ou se a
+   *                                       senha for inválida
+   *
+   * @implNote
+   *           A mensagem de erro é genérica para evitar enumeração de usuários
+   *           válidos. O método utiliza {@link PasswordEncoder#matches} para
+   *           comparação segura de senhas.
+   */
+  private void validateCredentials(UserDetails user, String password) {
+    if (!passwordEncoder.matches(password, user.getPassword())) {
+      throw new OAuth2AuthenticationException(
+          new OAuth2Error(OAuth2ErrorCodes.INVALID_GRANT, "Invalid credentials", ERROR_URI));
+    }
+  }
+
+  /**
    * Valida e extrai o principal do cliente OAuth2 da autenticação.
    *
    * <p>
@@ -330,5 +359,30 @@ public class CustomPasswordAuthenticationProvider implements AuthenticationProvi
       return clientPrincipal;
     }
     throw new OAuth2AuthenticationException(OAuth2ErrorCodes.INVALID_CLIENT);
+  }
+
+  private void validateUserStatus(UserDetails user) {
+
+    if (!user.isEnabled()) {
+      OAuth2Error error = new OAuth2Error(OAuth2ErrorCodes.INVALID_GRANT,
+          "Your account has not been activated yet. Please check your email.", ERROR_URI);
+
+      throw new OAuth2AuthenticationException(error);
+    }
+
+    if (!user.isAccountNonLocked()) {
+      throw new OAuth2AuthenticationException(
+          new OAuth2Error(OAuth2ErrorCodes.INVALID_GRANT, "Account is locked", ERROR_URI));
+    }
+
+    if (!user.isAccountNonExpired()) {
+      throw new OAuth2AuthenticationException(
+          new OAuth2Error(OAuth2ErrorCodes.INVALID_GRANT, "Account expired", ERROR_URI));
+    }
+
+    if (!user.isCredentialsNonExpired()) {
+      throw new OAuth2AuthenticationException(
+          new OAuth2Error(OAuth2ErrorCodes.INVALID_GRANT, "Credentials expired", ERROR_URI));
+    }
   }
 }
