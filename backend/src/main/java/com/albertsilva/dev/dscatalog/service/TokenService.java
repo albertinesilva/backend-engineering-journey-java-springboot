@@ -2,6 +2,7 @@ package com.albertsilva.dev.dscatalog.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +16,12 @@ import com.albertsilva.dev.dscatalog.service.exception.ResourceNotFoundException
 @Transactional
 public class TokenService {
 
+  @Value("${account.activation.token.hours}")
+  private Long activationTokenExpirationHours;
+
+  @Value("${account.password-recovery.token.minutes}")
+  private Long passwordRecoveryTokenExpirationMinutes;
+
   private final TokenRepository tokenRepository;
 
   public TokenService(TokenRepository tokenRepository) {
@@ -22,11 +29,11 @@ public class TokenService {
   }
 
   public Token createActivationToken(User user) {
-    return tokenRepository.save(Token.activationToken(user));
+    return tokenRepository.save(Token.activationToken(user, activationTokenExpirationHours));
   }
 
   public Token createPasswordRecoveryToken(User user) {
-    return tokenRepository.save(Token.passwordRecoveryToken(user));
+    return tokenRepository.save(Token.passwordRecoveryToken(user, passwordRecoveryTokenExpirationMinutes));
   }
 
   public void disableAllActivationTokens(User user) {
@@ -43,7 +50,7 @@ public class TokenService {
     tokens.forEach(Token::disable);
   }
 
-  public Token findValidToken(String tokenValue, TokenType type) {
+  public Token findAndValidateToken(String tokenValue, TokenType type) {
 
     Token token = tokenRepository.findByToken(tokenValue)
         .orElseThrow(() -> new ResourceNotFoundException("Token não encontrado"));

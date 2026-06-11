@@ -26,9 +26,6 @@ import jakarta.persistence.Table;
 public class Token implements Serializable {
   private static final long serialVersionUID = 1L;
 
-  private static final long ACTIVATION_TOKEN_HOURS = 24;
-  private static final long PASSWORD_RECOVERY_MINUTES = 30;
-
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -77,14 +74,14 @@ public class Token implements Serializable {
     this.disabled = true;
   }
 
-  public static Token activationToken(User user) {
+  public static Token activationToken(User user, long expirationHours) {
     return new Token(UUID.randomUUID().toString(), user,
-        Instant.now().plus(ACTIVATION_TOKEN_HOURS, ChronoUnit.HOURS), TokenType.ACTIVATION);
+        Instant.now().plus(expirationHours, ChronoUnit.HOURS), TokenType.ACTIVATION);
   }
 
-  public static Token passwordRecoveryToken(User user) {
+  public static Token passwordRecoveryToken(User user, long expirationMinutes) {
     return new Token(UUID.randomUUID().toString(), user,
-        Instant.now().plus(PASSWORD_RECOVERY_MINUTES, ChronoUnit.MINUTES), TokenType.PASSWORD_RECOVERY);
+        Instant.now().plus(expirationMinutes, ChronoUnit.MINUTES), TokenType.PASSWORD_RECOVERY);
   }
 
   public void validate(TokenType expectedType) {

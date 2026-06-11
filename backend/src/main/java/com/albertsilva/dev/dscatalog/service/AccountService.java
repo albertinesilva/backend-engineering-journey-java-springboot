@@ -140,7 +140,7 @@ public class AccountService {
   @Transactional
   public void confirmEmail(String tokenValue) {
 
-    Token token = tokenService.findValidToken(tokenValue, TokenType.ACTIVATION);
+    Token token = tokenService.findAndValidateToken(tokenValue, TokenType.ACTIVATION);
 
     User user = token.getUser();
 
@@ -221,7 +221,7 @@ public class AccountService {
   @Transactional
   public void resetPassword(String tokenValue, String password) {
 
-    Token token = tokenService.findValidToken(tokenValue, TokenType.PASSWORD_RECOVERY);
+    Token token = tokenService.findAndValidateToken(tokenValue, TokenType.PASSWORD_RECOVERY);
 
     User user = token.getUser();
 
