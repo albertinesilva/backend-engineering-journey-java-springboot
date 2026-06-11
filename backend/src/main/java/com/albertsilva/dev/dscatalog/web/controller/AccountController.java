@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +23,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
@@ -168,6 +170,7 @@ public class AccountController {
   /**
    * Redefine a senha utilizando um token válido.
    */
+
   @PostMapping("/reset-password")
   public ResponseEntity<Void> resetPassword(@Valid @RequestBody PasswordResetRequest request) {
 
@@ -181,6 +184,12 @@ public class AccountController {
   /**
    * Desativa uma conta de usuário.
    */
+  @Operation(summary = "Desativar conta", description = "Desativa a conta do usuário autenticado. A conta desativada não poderá mais ser utilizada para autenticação ou acesso aos recursos protegidos.", security = @SecurityRequirement(name = "security"), responses = {
+      @ApiResponse(responseCode = "204", description = "Conta desativada com sucesso"),
+      @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
+      @ApiResponse(responseCode = "403", description = "Acesso negado")
+  })
+  @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
   @PostMapping("/deactivate")
   public ResponseEntity<Void> deactivateAccount() {
     logger.info("Solicitação de desativação de conta recebida");
@@ -188,6 +197,36 @@ public class AccountController {
     accountService.deactivateAccount();
 
     return ResponseEntity.noContent().build();
+  }
+
+  /**
+   * Endpoint para obter os dados do usuário autenticado.
+   *
+   * <p>
+   * Retorna as informações do usuário atualmente autenticado no sistema.
+   * </p>
+   *
+   * <p>
+   * <b>Requisitos de segurança:</b>
+   * </p>
+   * <ul>
+   * <li>Exige Bearer Token válido</li>
+   * <li>Acesso permitido para usuários com papel ADMIN ou OPERATOR</li>
+   * </ul>
+   *
+   * @return dados do usuário autenticado
+   */
+  @Operation(summary = "Obter usuário autenticado", description = "Retorna os dados do usuário autenticado")
+  @ApiResponses({
+      @ApiResponse(responseCode = "200", description = "Usuário retornado com sucesso"),
+      @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
+      @ApiResponse(responseCode = "403", description = "Acesso negado")
+  })
+  @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
+  @GetMapping("/me")
+  public ResponseEntity<UserResponse> getAuthenticatedUser() {
+    UserResponse response = accountService.getAuthenticatedUser();
+    return ResponseEntity.ok(response);
   }
 
 }

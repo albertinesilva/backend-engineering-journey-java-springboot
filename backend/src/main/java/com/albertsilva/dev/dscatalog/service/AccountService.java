@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.albertsilva.dev.dscatalog.domain.recovery.Token;
 import com.albertsilva.dev.dscatalog.domain.recovery.enums.TokenType;
@@ -17,11 +18,11 @@ import com.albertsilva.dev.dscatalog.dto.user.response.UserResponse;
 import com.albertsilva.dev.dscatalog.mapper.user.UserMapper;
 import com.albertsilva.dev.dscatalog.repository.RoleRepository;
 import com.albertsilva.dev.dscatalog.repository.UserRepository;
+import com.albertsilva.dev.dscatalog.security.auth.AuthenticatedUserService;
 import com.albertsilva.dev.dscatalog.service.exception.InvalidTokenException;
 import com.albertsilva.dev.dscatalog.service.exception.ResourceNotFoundException;
 
 import jakarta.mail.MessagingException;
-import jakarta.transaction.Transactional;
 
 /**
  * Serviço responsável pelo gerenciamento do ciclo de vida das contas
@@ -49,6 +50,7 @@ public class AccountService {
   private final PasswordEncoder passwordEncoder;
   private final TokenService tokenService;
   private final EmailService emailService;
+  private final AuthenticatedUserService authenticatedUserService;
 
   /**
    * Construtor para injeção de dependências.
@@ -61,13 +63,15 @@ public class AccountService {
    * @param emailService    serviço de envio de e-mails
    */
   public AccountService(UserRepository userRepository, RoleRepository roleRepository, UserMapper userMapper,
-      PasswordEncoder passwordEncoder, TokenService tokenService, EmailService emailService) {
+      PasswordEncoder passwordEncoder, TokenService tokenService, EmailService emailService,
+      AuthenticatedUserService authenticatedUserService) {
     this.userRepository = userRepository;
     this.roleRepository = roleRepository;
     this.userMapper = userMapper;
     this.passwordEncoder = passwordEncoder;
     this.tokenService = tokenService;
     this.emailService = emailService;
+    this.authenticatedUserService = authenticatedUserService;
   }
 
   /**
@@ -230,6 +234,14 @@ public class AccountService {
     token.disable();
 
     userRepository.save(user);
+  }
+
+  @Transactional(readOnly = true)
+  public UserResponse getAuthenticatedUser() {
+
+    User user = authenticatedUserService.getAuthenticatedUser();
+
+    return userMapper.toResponse(user);
   }
 
   public void deactivateAccount() {

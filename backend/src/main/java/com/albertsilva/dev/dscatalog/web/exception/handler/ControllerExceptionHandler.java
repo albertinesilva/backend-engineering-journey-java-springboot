@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import com.albertsilva.dev.dscatalog.service.exception.AuthenticatedUserNotFoundException;
 import com.albertsilva.dev.dscatalog.service.exception.DatabaseException;
 import com.albertsilva.dev.dscatalog.service.exception.InvalidTokenException;
 import com.albertsilva.dev.dscatalog.service.exception.ResourceNotFoundException;
@@ -270,7 +271,17 @@ public class ControllerExceptionHandler {
     return ResponseEntity.status(status).body(err);
   }
 
-  
+  @ExceptionHandler(AuthenticatedUserNotFoundException.class)
+  public ResponseEntity<ProblemDetails> handleAuthenticatedUserNotFound(AuthenticatedUserNotFoundException e,
+      HttpServletRequest request) {
+    HttpStatus status = HttpStatus.UNAUTHORIZED;
+    logger.warn("AuthenticatedUserNotFoundException - path: {}, message: {}", request.getRequestURI(), e.getMessage());
+    ProblemDetails err = new ProblemDetails(Instant.now(), status.value(), "User not authenticated",
+        "Usuário não autenticado. Faça login para acessar este recurso.", request.getRequestURI());
+
+    return ResponseEntity.status(status).body(err);
+  }
+
   @ExceptionHandler(DisabledException.class)
   public ResponseEntity<ProblemDetails> handleDisabledException(DisabledException e, HttpServletRequest request) {
     HttpStatus status = HttpStatus.FORBIDDEN;
