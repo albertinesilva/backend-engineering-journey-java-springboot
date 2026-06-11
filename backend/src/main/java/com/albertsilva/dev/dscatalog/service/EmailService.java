@@ -88,18 +88,28 @@ public class EmailService {
   }
 
   /**
-   * Envia um e-mail para recuperação de senha.
-   *
-   * <p>
-   * O e-mail contém instruções e um token temporário que permitirá
-   * ao usuário redefinir sua senha dentro do prazo de validade definido
-   * para o token.
-   * </p>
+   * Envia um e-mail para recuperação de senha de forma assíncrona.
    *
    * @param user  usuário que solicitou a recuperação de senha
    * @param token token temporário de recuperação
+   * @return um {@link CompletableFuture} representando a execução assíncrona do
+   *         envio do e-mail
    */
-  public void sendRecoveryEmail(User user, String token) {
+  @Async
+  public CompletableFuture<Void> sendPasswordRecoveryEmailAsync(User user, String token) {
+
+    try {
+      sendPasswordRecoveryEmail(user, token);
+
+      return CompletableFuture.completedFuture(null);
+
+    } catch (Exception ex) {
+
+      logger.error("Erro ao enviar email de recuperação de senha para {}", user.getEmail(), ex);
+
+      return CompletableFuture.failedFuture(ex);
+    }
+
   }
 
   /**
@@ -143,9 +153,48 @@ public class EmailService {
     emailSender.send(message);
     logger.info("Email de ativação enviado para {}", email);
 
-    EmailRegisterRequest dataRegisterMail = new EmailRegisterRequest("dscatalog@gmail.com", email,
+    EmailRegisterRequest registerMail = new EmailRegisterRequest("dscatalog@gmail.com", email,
         "Confirmação de Cadastro");
-    registerEmailLog(dataRegisterMail);
+    registerEmailLog(registerMail);
+  }
+
+  /**
+   * Envia um e-mail para recuperação de senha.
+   *
+   * <p>
+   * O e-mail contém instruções e um token temporário que permitirá
+   * ao usuário redefinir sua senha dentro do prazo de validade definido
+   * para o token.
+   * </p>
+   *
+   * @param user  usuário que solicitou a recuperação de senha
+   * @param token token temporário de recuperação
+   * @throws MessagingException
+   */
+  public void sendPasswordRecoveryEmail(User user, String token) throws MessagingException {
+
+    MimeMessage message = emailSender.createMimeMessage();
+    MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, "UTF-8");
+
+    helper.setTo(user.getEmail());
+    helper.setSubject("Redefinição de Senha");
+
+    Context context = new Context();
+    context.setVariable("nome", user.getFirstName());
+    context.setVariable("token", token);
+    context.setVariable("titulo", "Redefinição de Senha");
+    context.setVariable("linkRedefinicaoSenha", frontendUrl + "/reset-password?token=" + token);
+
+    String htmlBody = templateEngine.process("reset_password_email_template", context);
+    helper.setText(htmlBody, true);
+    helper.setFrom("nao-responder@dscatalog.com.br");
+    helper.addInline("logo", new ClassPathResource("/static/image/logo-ingenico-site.png"));
+
+    emailSender.send(message);
+
+    EmailRegisterRequest registerMail = new EmailRegisterRequest("dscatalog@gmail.com", user.getEmail(),
+        "Redefinição de Senha");
+    registerEmailLog(registerMail);
   }
 
   /**

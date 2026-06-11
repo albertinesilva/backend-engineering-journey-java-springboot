@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.albertsilva.dev.dscatalog.dto.email.request.ResendActivationRequest;
+import com.albertsilva.dev.dscatalog.dto.user.request.UserEmailRequest;
+import com.albertsilva.dev.dscatalog.dto.user.request.PasswordResetRequest;
 import com.albertsilva.dev.dscatalog.dto.user.request.UserRegisterRequest;
 import com.albertsilva.dev.dscatalog.dto.user.response.UserResponse;
 import com.albertsilva.dev.dscatalog.service.AccountService;
@@ -143,7 +144,7 @@ public class AccountController {
       @ApiResponse(responseCode = "500", description = "Erro interno ao processar a solicitação", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))
   })
   @PostMapping("/resend-activation")
-  public ResponseEntity<Void> resendActivationEmail(@Valid @RequestBody ResendActivationRequest request)
+  public ResponseEntity<Void> resendActivationEmail(@Valid @RequestBody UserEmailRequest request)
       throws MessagingException {
 
     logger.info("Solicitação de reenvio de ativação recebida. email={}", request.email());
@@ -152,24 +153,41 @@ public class AccountController {
   }
 
   /**
-   * Desativa uma conta de usuário.
-   */
-  public void deactivateAccount() {
-
-  }
-
-  /**
    * Solicita a recuperação de senha.
    */
-  public void requestPasswordRecovery() {
+  @PostMapping("/password-recovery")
+  public ResponseEntity<Void> requestPasswordRecovery(@Valid @RequestBody UserEmailRequest request) {
+    logger.info("Solicitação de recuperação de senha recebida. email={}", request.email());
+
+    accountService.requestPasswordRecovery(request.email());
+
+    return ResponseEntity.noContent().build();
 
   }
 
   /**
    * Redefine a senha utilizando um token válido.
    */
-  public void resetPassword() {
+  @PostMapping("/reset-password")
+  public ResponseEntity<Void> resetPassword(@Valid @RequestBody PasswordResetRequest request) {
 
+    logger.info("Solicitação de redefinição de senha recebida");
+
+    accountService.resetPassword(request.token(), request.password());
+
+    return ResponseEntity.noContent().build();
+  }
+
+  /**
+   * Desativa uma conta de usuário.
+   */
+  @PostMapping("/deactivate")
+  public ResponseEntity<Void> deactivateAccount() {
+    logger.info("Solicitação de desativação de conta recebida");
+
+    accountService.deactivateAccount();
+
+    return ResponseEntity.noContent().build();
   }
 
 }

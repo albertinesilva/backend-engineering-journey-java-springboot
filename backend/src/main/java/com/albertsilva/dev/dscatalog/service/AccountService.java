@@ -140,11 +140,7 @@ public class AccountService {
   @Transactional
   public void confirmEmail(String tokenValue) {
 
-    Token token = tokenService.findByValue(tokenValue);
-
-    if (token.getType() != TokenType.ACTIVATION || !token.isValid()) {
-      throw new InvalidTokenException("Token inválido ou expirado");
-    }
+    Token token = tokenService.findValidToken(tokenValue, TokenType.ACTIVATION);
 
     User user = token.getUser();
 
@@ -172,12 +168,11 @@ public class AccountService {
   @Transactional
   public void requestPasswordRecovery(String email) {
 
-    User user = userRepository.findByEmail(email)
-        .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
+    userRepository.findByEmail(email).ifPresent(user -> {
 
-    Token token = tokenService.createPasswordRecoveryToken(user);
-
-    emailService.sendRecoveryEmail(user, token.getToken());
+      Token token = tokenService.createPasswordRecoveryToken(user);
+      emailService.sendPasswordRecoveryEmailAsync(user, token.getToken());
+    });
   }
 
   /**
@@ -221,5 +216,23 @@ public class AccountService {
     Token token = tokenService.createActivationToken(user);
 
     emailService.sendActivationEmailAsync(user.getFirstName(), user.getEmail(), token.getToken());
+  }
+
+  @Transactional
+  public void resetPassword(String tokenValue, String password) {
+
+    Token token = tokenService.findValidToken(tokenValue, TokenType.PASSWORD_RECOVERY);
+
+    User user = token.getUser();
+
+    user.setPassword(passwordEncoder.encode(password));
+
+    token.disable();
+
+    userRepository.save(user);
+  }
+
+  public void deactivateAccount() {
+    throw new UnsupportedOperationException("Unimplemented method 'deactivateAccount'");
   }
 }

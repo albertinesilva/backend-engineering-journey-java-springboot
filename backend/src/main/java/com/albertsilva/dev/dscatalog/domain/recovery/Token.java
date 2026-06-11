@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import com.albertsilva.dev.dscatalog.domain.recovery.enums.TokenType;
 import com.albertsilva.dev.dscatalog.domain.user.User;
+import com.albertsilva.dev.dscatalog.service.exception.InvalidTokenException;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -84,6 +85,21 @@ public class Token implements Serializable {
   public static Token passwordRecoveryToken(User user) {
     return new Token(UUID.randomUUID().toString(), user,
         Instant.now().plus(PASSWORD_RECOVERY_MINUTES, ChronoUnit.MINUTES), TokenType.PASSWORD_RECOVERY);
+  }
+
+  public void validate(TokenType expectedType) {
+
+    if (type != expectedType) {
+      throw new InvalidTokenException("Tipo de token inválido");
+    }
+
+    if (disabled) {
+      throw new InvalidTokenException("Token desabilitado");
+    }
+
+    if (isExpired()) {
+      throw new InvalidTokenException("Token expirado");
+    }
   }
 
   public Long getId() {

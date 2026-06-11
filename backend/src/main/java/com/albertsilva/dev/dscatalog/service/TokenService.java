@@ -9,7 +9,7 @@ import com.albertsilva.dev.dscatalog.domain.recovery.Token;
 import com.albertsilva.dev.dscatalog.domain.recovery.enums.TokenType;
 import com.albertsilva.dev.dscatalog.domain.user.User;
 import com.albertsilva.dev.dscatalog.repository.TokenRepository;
-import com.albertsilva.dev.dscatalog.service.exception.InvalidTokenException;
+import com.albertsilva.dev.dscatalog.service.exception.ResourceNotFoundException;
 
 @Service
 @Transactional
@@ -29,15 +29,6 @@ public class TokenService {
     return tokenRepository.save(Token.passwordRecoveryToken(user));
   }
 
-  /**
-   * Busca token pelo valor.
-   */
-  @Transactional(readOnly = true)
-  public Token findByValue(String value) {
-    return tokenRepository.findByToken(value)
-        .orElseThrow(() -> new InvalidTokenException("Token inválido ou expirado"));
-  }
-
   public void disableAllActivationTokens(User user) {
 
     List<Token> tokens = tokenRepository.findByUserAndTypeAndDisabledFalse(user, TokenType.ACTIVATION);
@@ -50,5 +41,13 @@ public class TokenService {
     List<Token> tokens = tokenRepository.findByUserAndTypeAndDisabledFalse(user, TokenType.PASSWORD_RECOVERY);
 
     tokens.forEach(Token::disable);
+  }
+
+  public Token findValidToken(String tokenValue, TokenType type) {
+
+    Token token = tokenRepository.findByToken(tokenValue)
+        .orElseThrow(() -> new ResourceNotFoundException("Token não encontrado"));
+    token.validate(type);
+    return token;
   }
 }
