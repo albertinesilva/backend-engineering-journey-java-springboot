@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -255,7 +256,7 @@ public class ProductController {
       @ApiResponse(responseCode = "404", description = "Produto não encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class))),
       @ApiResponse(responseCode = "400", description = "Dados inválidos", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetails.class)))
   })
-  @PatchMapping(value = "/{id}")
+  @PutMapping(value = "/{id}")
   @PreAuthorize("hasRole('ADMIN') or hasRole('OPERATOR')")
   public ResponseEntity<ProductResponse> update(@PathVariable Long id,
       @Valid @RequestBody ProductUpdateRequest productUpdateRequest) {

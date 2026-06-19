@@ -1,6 +1,5 @@
 package com.albertsilva.dev.dscatalog.dto.product.response;
 
-import java.time.Instant;
 import java.util.List;
 
 import com.albertsilva.dev.dscatalog.dto.category.response.CategoryResponse;
@@ -24,7 +23,7 @@ import com.albertsilva.dev.dscatalog.dto.category.response.CategoryResponse;
  * @param description descrição
  * @param price       preço
  * @param imgUrl      imagem
- * @param date        data
+ * @param createdAt   data de criação
  * @param categories  lista de categorias (geralmente vazia neste DTO)
  */
 public record ProductResponse(
@@ -33,6 +32,5 @@ public record ProductResponse(
     String description,
     Double price,
     String imgUrl,
-    Instant date,
     List<CategoryResponse> categories) {
 }

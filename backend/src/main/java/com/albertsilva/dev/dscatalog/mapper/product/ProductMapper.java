@@ -71,7 +71,6 @@ public class ProductMapper {
     entity.setDescription(request.description());
     entity.setPrice(request.price());
     entity.setImgUrl(request.imgUrl());
-    entity.setDate(request.date());
 
     return entity;
   }
@@ -121,9 +120,6 @@ public class ProductMapper {
       entity.setImgUrl(request.imgUrl());
     }
 
-    if (request.date() != null) {
-      entity.setDate(request.date());
-    }
   }
 
   /**
@@ -159,7 +155,6 @@ public class ProductMapper {
         entity.getDescription(),
         entity.getPrice(),
         entity.getImgUrl(),
-        entity.getDate(),
         entity.getCategories().stream().map(cat -> new CategoryResponse(cat.getId(), cat.getName())).toList());
   }
 
@@ -195,7 +190,8 @@ public class ProductMapper {
         entity.getDescription(),
         entity.getPrice(),
         entity.getImgUrl(),
-        entity.getDate(),
+        entity.getCreatedAt(),
+        entity.getUpdatedAt(),
         entity.isActive(),
         entity.getCategories().stream().map(cat -> new CategoryDetailsResponse(
             cat.getId(),

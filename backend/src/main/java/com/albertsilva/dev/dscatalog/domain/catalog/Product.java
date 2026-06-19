@@ -15,6 +15,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 /**
@@ -97,15 +99,24 @@ public class Product implements Serializable, Identifiable<Long> {
   private String imgUrl;
 
   /**
-   * Data associada ao produto.
+   * Data de criação do registro.
    *
    * <p>
-   * Pode representar data de cadastro, publicação ou outro contexto definido pela
-   * aplicação.
+   * Preenchida automaticamente no momento da persistência.
    * </p>
    */
   @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
-  private Instant date;
+  private Instant createdAt;
+
+  /**
+   * Data da última atualização do registro.
+   *
+   * <p>
+   * Atualizada automaticamente sempre que a entidade é modificada.
+   * </p>
+   */
+  @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
+  private Instant updatedAt;
 
   /**
    * Indica se o produto está ativo.
@@ -139,22 +150,20 @@ public class Product implements Serializable, Identifiable<Long> {
   public Product() {
   }
 
-  public Product(Long id, String name, String description, Double price, String imgUrl, Instant date, boolean active) {
+  public Product(Long id, String name, String description, Double price, String imgUrl, boolean active) {
     this.id = id;
     this.name = name;
     this.description = description;
     this.price = price;
     this.imgUrl = imgUrl;
-    this.date = date;
     this.active = active;
   }
 
-  public Product(String name, String description, Double price, String imgUrl, Instant date, boolean active) {
+  public Product(String name, String description, Double price, String imgUrl, boolean active) {
     this.name = name;
     this.description = description;
     this.price = price;
     this.imgUrl = imgUrl;
-    this.date = date;
     this.active = active;
   }
 
@@ -230,17 +239,17 @@ public class Product implements Serializable, Identifiable<Long> {
   }
 
   /**
-   * @return data associada ao produto
+   * @return data de criação do registro
    */
-  public Instant getDate() {
-    return date;
+  public Instant getCreatedAt() {
+    return createdAt;
   }
 
   /**
-   * @param date data associada ao produto
+   * @return data da última atualização do registro
    */
-  public void setDate(Instant date) {
-    this.date = date;
+  public Instant getUpdatedAt() {
+    return updatedAt;
   }
 
   /**
@@ -255,6 +264,19 @@ public class Product implements Serializable, Identifiable<Long> {
    */
   public boolean isActive() {
     return active;
+  }
+
+  @PrePersist
+  private void prePersist() {
+    Instant now = Instant.now();
+
+    createdAt = now;
+    updatedAt = now;
+  }
+
+  @PreUpdate
+  private void preUpdate() {
+    updatedAt = Instant.now();
   }
 
   /**

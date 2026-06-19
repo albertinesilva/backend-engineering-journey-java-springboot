@@ -1,13 +1,11 @@
 package com.albertsilva.dev.dscatalog.dto.product.request;
 
-import java.time.Instant;
 import java.util.List;
 
 import com.albertsilva.dev.dscatalog.validation.product.annotation.ProductUpdateValid;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
@@ -34,7 +32,6 @@ import jakarta.validation.constraints.Size;
  * <li>Validação de caracteres permitidos</li>
  * <li>Validação do preço</li>
  * <li>Validação da URL da imagem</li>
- * <li>Validação da data</li>
  * <li>Validação das categorias associadas</li>
  * <li>Validações contextuais de atualização</li>
  * </ul>
@@ -59,7 +56,6 @@ import jakarta.validation.constraints.Size;
  * @param description nova descrição do produto
  * @param price       novo preço do produto
  * @param imgUrl      nova URL da imagem do produto
- * @param date        nova data associada ao produto
  * @param categoryIds lista contendo os identificadores
  *                    das categorias do produto
  */
@@ -79,9 +75,6 @@ public record ProductUpdateRequest(
 
     @Pattern(regexp = "^(https?://).+$", message = "{product.imgUrl.pattern}") 
     String imgUrl,
-
-    @PastOrPresent(message = "{product.date.pastOrPresent}") 
-    Instant date,
 
     @NotEmpty(message = "{product.categoryIds.notEmpty}") 
     List<Long> categoryIds) {

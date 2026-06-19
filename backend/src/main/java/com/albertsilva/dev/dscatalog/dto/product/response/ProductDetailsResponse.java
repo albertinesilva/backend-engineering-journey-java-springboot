@@ -39,7 +39,8 @@ import com.albertsilva.dev.dscatalog.dto.category.response.CategoryDetailsRespon
  * @param description descrição
  * @param price       preço
  * @param imgUrl      imagem
- * @param date        data
+ * @param createdAt   data de criação
+ * @param updatedAt   data da última atualização
  * @param active      status do produto
  * @param categories  categorias completas
  */
@@ -49,7 +50,8 @@ public record ProductDetailsResponse(
     String description,
     Double price,
     String imgUrl,
-    Instant date,
+    Instant createdAt,
+    Instant updatedAt,
     boolean active,
     List<CategoryDetailsResponse> categories) {
 }

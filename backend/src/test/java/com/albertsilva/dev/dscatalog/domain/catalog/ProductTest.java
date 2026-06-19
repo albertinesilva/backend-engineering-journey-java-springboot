@@ -1,7 +1,5 @@
 package com.albertsilva.dev.dscatalog.domain.catalog;
 
-import java.time.Instant;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,7 +26,8 @@ public class ProductTest {
     Assertions.assertNotNull(product.getDescription());
     Assertions.assertNotNull(product.getPrice());
     Assertions.assertNotNull(product.getImgUrl());
-    Assertions.assertNotNull(product.getDate());
+    Assertions.assertNotNull(product.getCreatedAt());
+    Assertions.assertNotNull(product.getUpdatedAt());
   }
 
   @Test
@@ -114,18 +113,4 @@ public class ProductTest {
     Assertions.assertFalse(product.isActive());
   }
 
-  @Test
-  @DisplayName("Product date should be mutable")
-  void productDateShouldBeMutable() {
-
-    // Arrange
-    Product product = ProductFactory.createProduct();
-    Instant newDate = Instant.now();
-
-    // Act
-    product.setDate(newDate);
-
-    // Assert
-    Assertions.assertEquals(newDate, product.getDate());
-  }
 }

@@ -19,29 +19,27 @@ public class ProductFactory {
   public static Product createProduct() {
     return new Product("Smart TV-Test",
         "Smart TV com alta resolução, acesso a streaming e conectividade Wi-Fi.", 2190.0,
-        "https://raw.githubusercontent.com/devsuperior/dscatalog-resources/master/backend/img/2-big.jpg",
-        Instant.parse("2023-01-01T00:00:00Z"), true);
+        "https://raw.githubusercontent.com/devsuperior/dscatalog-resources/master/backend/img/2-big.jpg", true);
   }
 
   public static ProductResponse createProductResponse() {
     return new ProductResponse(1L, "Smart TV", "Smart TV com alta resolução, acesso a streaming e conectividade Wi-Fi.",
-        2190.0, "https://raw.githubusercontent.com/devsuperior/dscatalog-resources/master/backend/img/2-big.jpg",
-        Instant.parse("2023-01-01T00:00:00Z"), List.of());
+        2190.0, "https://raw.githubusercontent.com/devsuperior/dscatalog-resources/master/backend/img/2-big.jpg", List.of());
   }
 
   public static ProductDetailsResponse createProductDetailsResponse() {
     return new ProductDetailsResponse(1L, "Smart TV", "TV 50 polegadas", 2500.0,
-        "https://img.com/tv.png", Instant.parse("2024-01-10T10:00:00Z"), true, List.of());
+        "https://img.com/tv.png", Instant.parse("2024-01-10T10:00:00Z"), Instant.parse("2024-01-10T10:00:00Z"), true, List.of());
   }
 
   public static ProductUpdateRequest createProductUpdateRequest() {
     return new ProductUpdateRequest("Updated Smart TV", "TV 50 polegadas atualizada", 2799.0,
-        "https://img.com/updated-tv.png", Instant.parse("2024-01-10T10:00:00Z"), List.of(1L));
+        "https://img.com/updated-tv.png", List.of(1L));
   }
 
   public static ProductResponse createUpdatedProductResponse() {
     return new ProductResponse(1L, "Updated Smart TV", "TV 50 polegadas atualizada", 2799.0,
-        "https://img.com/updated-tv.png", Instant.parse("2024-01-10T10:00:00Z"), List.of());
+        "https://img.com/updated-tv.png", List.of());
   }
 
   public static ProductCreateRequest createProductCreateRequest() {
