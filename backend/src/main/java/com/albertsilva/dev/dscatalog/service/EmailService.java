@@ -138,22 +138,22 @@ public class EmailService {
 
     Context context = new Context();
     context.setVariable("nome", name);
-    context.setVariable("titulo", "Bem-vindo ao Dscatalog, " + name + "!");
+    context.setVariable("titulo", "Bem-vindo ao ASJ Catalog, " + name + "!");
     context.setVariable("texto",
-        "Estamos felizes em tê-lo(a) conosco. Para começar a usar o Dscatalog, confirme seu cadastro clicando no link abaixo.");
+        "Estamos felizes em tê-lo(a) conosco. Para começar a usar o ASJ Catalog, confirme seu cadastro clicando no link abaixo.");
     context.setVariable("linkConfirmacao", frontendUrl + "/activate-account?token=" + activationToken);
 
     String htmlBody = templateEngine.process("activate_user_by_email_template", context);
     helper.setTo(email);
     helper.setText(htmlBody, true);
     helper.setSubject("Confirmação de Cadastro");
-    helper.setFrom("nao-responder@dscatalog.com.br");
-    helper.addInline("logo", new ClassPathResource("/static/image/logo-ingenico-site.png"));
+    helper.setFrom("nao-responder@asjcatalog.com.br");
+    helper.addInline("logo", new ClassPathResource("/static/image/logo-ASJ-Catalog-favicon.ico"));
 
     emailSender.send(message);
     logger.info("Email de ativação enviado para {}", email);
 
-    EmailRegisterRequest registerMail = new EmailRegisterRequest("dscatalog@gmail.com", email,
+    EmailRegisterRequest registerMail = new EmailRegisterRequest("asjcatalog@gmail.com", email,
         "Confirmação de Cadastro");
     registerEmailLog(registerMail);
   }
@@ -187,12 +187,12 @@ public class EmailService {
 
     String htmlBody = templateEngine.process("reset_password_email_template", context);
     helper.setText(htmlBody, true);
-    helper.setFrom("nao-responder@dscatalog.com.br");
-    helper.addInline("logo", new ClassPathResource("/static/image/logo-ingenico-site.png"));
+    helper.setFrom("nao-responder@asjcatalog.com.br");
+    helper.addInline("logo", new ClassPathResource("/static/image/logo-ASJ-Catalog-favicon.ico"));
 
     emailSender.send(message);
 
-    EmailRegisterRequest registerMail = new EmailRegisterRequest("dscatalog@gmail.com", user.getEmail(),
+    EmailRegisterRequest registerMail = new EmailRegisterRequest("asjcatalog@gmail.com", user.getEmail(),
         "Redefinição de Senha");
     registerEmailLog(registerMail);
   }
