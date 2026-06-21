@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.albertsilva.dev.dscatalog.domain.recovery.Token;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -80,8 +81,8 @@ public class User implements UserDetails {
   private Set<Role> roles = new HashSet<>();
 
   /** Conjunto de tokens de recuperação associados ao usuário. */
-  @OneToMany(mappedBy = "user")
-  private Set<Token> tokens;
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  private Set<Token> tokens = new HashSet<>();
 
   /** Indica se a conta do usuário está ativa. */
   private boolean active;
