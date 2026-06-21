@@ -222,7 +222,7 @@ public class AccountController {
       @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
       @ApiResponse(responseCode = "403", description = "Acesso negado")
   })
-  @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
+  @PreAuthorize("isAuthenticated()")
   @GetMapping("/me")
   public ResponseEntity<UserResponse> getAuthenticatedUser() {
     UserResponse response = accountService.getAuthenticatedUser();
